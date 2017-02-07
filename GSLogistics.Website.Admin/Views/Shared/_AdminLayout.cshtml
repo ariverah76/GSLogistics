@@ -1,0 +1,44 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/bootstrap-theme.css" rel="stylesheet" type="text/css" />
+
+    <link href="~/Content/ErrorStyles.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    
+    <title></title>
+</head>
+<body>
+    <div>
+        @if (TempData["message"] != null)
+        {
+            <div class="alert alert-success">@TempData["message"]</div>
+        }
+        <table class="table" style="align-content: center">
+            <tbody>
+                <tr>
+                    <td width="25%">
+                        &nbsp;
+                    </td>
+                    <td style="align-content:center" width="50%">
+                        @RenderBody()
+                    </td>
+                    <td>&nbsp;</td>
+                </tr>
+            </tbody>
+            
+        </table>
+    </div>
+</body>
+</html>

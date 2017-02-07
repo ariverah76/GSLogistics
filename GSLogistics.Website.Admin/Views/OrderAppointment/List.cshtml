@@ -1,0 +1,463 @@
+﻿
+@using GSLogistics.Website.Admin.Models
+@using GSLogistics.Website.Common
+
+@model  OrderAppointmentsIndex_ViewModel
+
+
+@{
+    ViewBag.Title = "List";
+}
+@{
+    var customers = this.ViewBag.Customers as SelectList;
+    var scacCodes = this.ViewBag.ScacCodes as SelectList;
+}
+<div class="panel-heading">
+    <h2>Order Appointments</h2>
+</div>
+@using (Html.BeginForm())
+{
+    <div class="btn-group btn-group-justified">
+        <a href="#" class="btn btn-info" onclick="setAppointment()">Set Appointment</a>
+        <a href="#" class="btn btn-info" id="btnRefresh">Refresh</a>
+
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Search</div>
+        <div class="panel-body">
+            @if (customers.Count() > 0)
+            {
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.SelectedClientId)
+                            @Html.DropDownListFor(m => m.SelectedClientId, customers, "Select", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CancelDateStartDate)
+                        @Html.DatePicker(x => x.CancelDateStartDate, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CancelDateEndDate)
+                        @Html.DatePicker(x => x.CancelDateEndDate, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+}
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Orders for Appointment
+        </div>
+
+        <div class="panel-body">
+            <table class="table display-compact"  display compact" id="tableAppointments">
+                <thead>
+                    <tr>
+                        <th class="text-center">
+
+                        </th>
+                        <th>
+                            @*@Html.DisplayNameFor(model => model.StoreName)*@
+                            SHIP TO
+                        </th>
+                        <th>
+                            START DATE
+                        </th>
+                        <th>CANCEL DATE</th>
+                        <th>
+                            PO#
+                            @*@Html.DisplayNameFor(model => model.PurchaseOrderId)*@
+                        </th>
+                        <th>
+                            PT#
+                            @*@Html.DisplayNameFor(model => model.PickTicketId)*@
+                        </th>
+                        <th>
+                            PCS
+                            @*@Html.DisplayNameFor(model => model.Pieces)*@
+                        </th>
+                        <th>
+                            LBS@*@Html.DisplayNameFor(model => model.Weight)*@
+                        </th>
+                        <th>
+                            CTNS
+                            @*@Html.DisplayNameFor(model => model.BoxesNumber)*@
+                        </th>
+                        <th>
+                            CUBIC
+                            @*@Html.DisplayNameFor(model => model.Volume)*@
+                        </th>
+                        <th>
+                            CTN SIZE
+                            @*@Html.DisplayNameFor(model => model.BoxSize)*@
+                        </th>
+                        <th>
+                            CREATE DATE
+                            @*@Html.DisplayNameFor(model => model.EstimatedShippingDate)*@
+                        </th>
+                        <th style="visibility:hidden"></th>
+                        <th style="visibility:hidden"></th>
+                        <th style="visibility:hidden"></th>
+                        <th>NOTES</th>
+
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>PO#</th>
+                        <th>PT#</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th style="visibility:hidden"></th>
+                        <th style="visibility:hidden"></th>
+                        <th style="visibility:hidden"></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach (var item in Model.OrderAppointments)
+            {
+                        <tr class="info">
+                            <td></td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.StoreName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.StartDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EndDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PurchaseOrderId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PickTicketId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Pieces)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Weight)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.BoxesNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Volume)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.BoxSize)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EstimatedShippingDate)
+                            </td>
+                            <td style="visibility:hidden">
+                                @Html.DisplayFor(modelItem => item.PtBulk)
+                            </td>
+                            <td style="visibility:hidden">
+                                @Html.DisplayFor(modelItem => item.CustomerId)
+                            </td>
+                            <td style="visibility:hidden">
+                                @Html.DisplayFor(modelItem => item.DivisionName)
+                            </td>
+                            <td >
+                                @Html.DisplayFor(modelItem => item.Notes)
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>
+    
+    <div class="modal fade" id="setAppointmentModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dissmiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">Set appointment</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" class="validate">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.AppointmentNumber)
+                                    @Html.TextBoxFor(m => m.AppointmentNumber, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.AppointmentNumber)
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ShippingDate)
+                                    @Html.DatePicker(m => m.ShippingDate, new { @class = "form-control"} )
+                                    @Html.ValidationMessageFor(m => m.ShippingDate)
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ShippingTime)
+                                    @Html.DateTimePicker(model => model.ShippingTime, null, jsFormat: "hh:ii", cFormat: "LT", minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
+                                    @Html.ValidationMessageFor(m => m.ShippingTime)
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.ShippingCompanyId)
+                                    @Html.DropDownListFor(m => m.ShippingCompanyId, scacCodes, "Select", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.ShippingCompanyId)
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                    <button type="button" onclick="setNewAppointment()" class="btn btn-info">Set Appointment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+@Scripts.Render("~/bundles/datetimepicker")
+@Scripts.Render("~/bundles/dataTables")
+@Scripts.Render("~/bundles/jqueryval")
+<script src="~/Scripts/DataTables/dataTables.select.min.js"></script>
+
+<script type="text/javascript">
+    
+    var editor;
+    $(document).ready(function () {
+        editor = new $.fn.dataTable.Editor({
+            //ajax: "/orderappointment/updatenotes",
+            ajax: "/api/orderappointmentapi/updatenotes",
+            table: "#tableAppointments",
+            idSrc: 'PickTicketId',
+            bServerSide: true,
+            fields: [{
+                label: "Notes:",
+                name: "Notes"
+            }
+            ]
+        });
+
+        // Activate an inline edit on click of a table cell
+        $('#tableAppointments').on('click', 'tbody td:not(:first-child)', function (e) {
+            editor.bubble(this);
+        });
+
+
+        $("#tableAppointments").DataTable({
+            dom: 'Bfrtip',
+                columnDefs: [{
+                    orderable: false,
+                    className: 'select-checkbox',
+                    targets: 0
+                }],
+                columns: [
+                    {
+                       
+                    },
+                    {
+                        data: 'StoreName'
+                    }
+                    ,
+                    {
+
+                    }
+                    ,
+                    {
+
+                    }
+                    ,
+                    {
+                        data: 'PurchaseOrderId'
+                    }
+                    ,
+                    {
+                        data: 'PickTicketId'
+                    }
+                    ,
+                    {
+
+                    }
+                    ,
+                    {
+
+                    }
+                    ,
+                    {
+
+                    }
+                    ,
+                    {
+
+                    }
+                    ,
+                    {
+
+                    }
+                    ,
+                    {
+
+                    }
+                    ,
+                    {
+                        visible: false
+                    }
+                    ,
+                    {
+                        visible: false
+                    }
+                    ,
+                    {
+                        visible: false
+                    }
+                    ,
+                    {
+                        data: 'Notes', className: 'editable'
+                    }
+                    
+
+
+
+                ]
+                ,
+                select: {
+                    style: 'multi',
+                },
+                "drawCallback": function (settings) {
+                    var api = this.api();
+                    var rows = api.rows({ page: 'current' }).nodes();
+                    var last = null;
+
+                    api.column(14, { page: 'current' }).data().each(function (group, i) {
+                        if (last !== group) {
+                            $(rows).eq(i).before(
+                                '<tr class="group"><td colspan="14">' + group + '</td></tr>'
+                            );
+
+                            last = group;
+                        }
+                    });
+                }
+
+            });
+
+            $('#tableAppointments tfoot th').each(function () {
+                
+                var title = $(this).text();
+                if (title == "PO#" || title == "PT#") {
+
+
+                    $(this).html('<input type="text" style="width:100px" placeholder="Search ' + title + '" />');
+                }
+            });
+            $('#tableAppointments tbody').on('click', 'tr.group', function () {
+                var currentOrder = table.order()[0];
+                if (currentOrder[0] === 2 && currentOrder[1] === 'asc') {
+                    table.order([14, 'desc']).draw();
+                }
+                else {
+                    table.order([14, 'asc']).draw();
+                }
+            });
+
+
+            // DataTable
+            var table = $("#tableAppointments").DataTable();
+
+            // Apply the search
+            table.columns().every(function () {
+                var that = this;
+
+                $('input', this.footer()).on('keyup change', function () {
+                    if (that.search() !== this.value) {
+                        that
+                            .search(this.value)
+                            .draw();
+                    }
+                });
+            });
+
+            $("#btnRefresh").click(function () {
+                $(this).closest("form").submit();
+            });
+        });
+
+        function setAppointment() {
+            $('#setAppointmentModal').modal({
+                show: true,
+                backdrop: "static"
+            });
+
+            $('#setAppointmentModal form').validate();
+
+        }
+
+        function setNewAppointment() {
+            var table = $("#tableAppointments").DataTable();
+            if ($('#setAppointmentModal form').valid()) {
+
+                var selected  = table.rows('.selected').data();
+
+                var orders = new Array();
+
+
+
+                for (var i = 0; i < selected.length; i++) {
+
+                    var orderForAppointment = {
+                        PurchaseOrderId: selected[i]["PurchaseOrderId"],
+                        PickTicketId: selected[i]["PickTicketId"],
+                        PtBulk: selected[i][12],
+                        CustomerId: selected[i][13]
+                    };
+                    orders.push(orderForAppointment);
+                }
+
+                var model = {};
+                model.AppointmentNumber = $("#AppointmentNumber").val();
+                model.Shippingdate = $("#ShippingDate").val();
+                model.ShippingTime = $("#ShippingTime").val();
+                model.ScacCode = $("#ShippingCompanyId").val();
+                model.Orders = orders;
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("SetAppointment", "OrderAppointment")',
+                    contentType: "application/json; charset=utf-8",
+                    data:  JSON.stringify(model),
+                    dataType: "json",
+                    success: function (result) {
+                        alert('Appointment set successfully');
+                        window.location.href = result.url;
+                    }
+                });
+                $('#setAppointmentModal').modal("hide");
+            }
+        }
+
+</script>
+
+@Styles.Render("~/Content/datetimepicker")
+@Styles.Render("~/Content/datatables")

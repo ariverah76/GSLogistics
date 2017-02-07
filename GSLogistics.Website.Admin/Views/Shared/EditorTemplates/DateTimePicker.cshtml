@@ -1,0 +1,39 @@
+﻿@{
+    var propertyName = ViewData["PropertyName"] as string;
+    var jsFormat = ViewData["JsFormat"] as string;
+    var cFormat = ViewData["CFormat"] as string;
+    var autoClose = (bool)ViewData["AutoClose"];
+    var todayHighlight = (bool)ViewData["TodayHighlight"];
+    var minView = (int)ViewData["MinView"];
+    var startView = (int)ViewData["StartView"];
+    var htmlAttributes = ViewData["HtmlAttributes"] as IDictionary<string, object>;
+
+    if (htmlAttributes == null)
+    {
+        htmlAttributes = new Dictionary<string, object>();
+    }
+
+    if (!htmlAttributes.ContainsKey("id"))
+    {
+        htmlAttributes.Add("id", propertyName);
+    }
+
+    var value = Model == null ? string.Empty : Model is DateTime ? (Model as DateTime?).Value.ToString(cFormat) : (Model as DateTimeOffset?).Value.DateTime.ToString(cFormat);
+}
+
+@Html.TextBox(string.Empty, value, htmlAttributes)
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#" + "@(propertyName)").datetimepicker({
+            format: "@(jsFormat)"
+            , autoclose: @(autoClose.ToString().ToLower())
+            , todayHighlight: @(todayHighlight.ToString().ToLower())
+            , minView: @(minView)
+            ,startView:@(startView)
+
+        });
+    });
+
+</script>
