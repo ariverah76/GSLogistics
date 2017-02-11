@@ -41,7 +41,15 @@ namespace GSLogistics.Entities.Concrete
 
                 if (entity != null)
                 {
-                    entity.Status = orderAppointment.Status;
+                    if (orderAppointment.Status != 0)
+                    {
+                        entity.Status = orderAppointment.Status;
+                    }
+
+                    if (!string.IsNullOrEmpty(orderAppointment.Notes))
+                    {
+                        entity.Notes = orderAppointment.Notes;
+                    }
 
                     context.SaveChanges();
                 }

@@ -23,11 +23,11 @@ namespace GSLogistics.Website.Admin.App_Start
                      "~/Scripts/respond.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/datatables").Include(
-                    "~/Scripts/DataTables/jquery.dataTables.js",
-                    "~/Scripts/DataTables/dataTables.bootstrap.js",
-                    "~/Scripts/DataTables/dataTables.select.js",
-                    "~/Scripts/Editor/dataTables.editor.js",
-                    "~/Scripts/Editor/editor.bootstrap.js"
+                    "~/Scripts/DataTables/jquery.dataTables.min.js",
+                    "~/Scripts/DataTables/dataTables.fixedColumns.min.js",
+                    //"~/Scripts/DataTables/dataTables.bootstrap.min.js",
+                    "~/Scripts/DataTables/dataTables.select.min.js",
+                    "~/Scripts/dataTablesCellEdit.js"
                 ));
 
             bundles.Add(new ScriptBundle("~/bundles/datetimepicker").Include(
@@ -48,11 +48,12 @@ namespace GSLogistics.Website.Admin.App_Start
               "~/Content/smalot-datetimepicker/bootstrap-datetimepicker.css"));
 
             bundles.Add(new StyleBundle("~/Content/dataTables").Include(
-                "~/Content/DataTables/css/dataTables.bootstrap.css",
-                "~/Content/DataTables/css/select.dataTables.min.css",
-                "~/Content/Editor/dataTables.editor.css",
-                "~/Content/Editor/editor.bootstrap.css"
-                ));
+                "~/Content/DataTables/css/jquery.dataTables.min.css",
+                //"~/Content/DataTables/css/dataTables.bootstrap.min.css",
+                "~/Content/DataTables/css/fixedColumns.dataTables.min.css",
+                "~/Content/DataTables/css/bootstrap.min.css",
+                "~/Content/DataTables/css/select.dataTables.min.css"
+               ));
         }
     }
 }

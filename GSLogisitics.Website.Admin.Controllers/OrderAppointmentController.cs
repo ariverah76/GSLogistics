@@ -89,7 +89,7 @@ namespace GSLogistics.Website.Admin.Controllers
             }
 
 
-            model.OrderAppointments = orders.Where(x => x.EndDate >= model.CancelDateStartDate && x.EndDate <= model.CancelDateEndDate).ToList();
+            model.OrderAppointments = orders;
 
             return View("List", model);
         }
@@ -188,6 +188,17 @@ namespace GSLogistics.Website.Admin.Controllers
                 repository.UpdateOrderAppointment(oappt);
                     
             }
+
+            return Json(new { url = "List" });
+        }
+
+        [HttpPost]
+        public ActionResult UpdateOrderAppointment(UpdateOrderAppointment update)
+        {
+
+            Entities.OrderAppointment oappt = new Entities.OrderAppointment() { PurchaseOrderId = update.PurchaseOrderId, PickTicketId = update.PickTicketId, PtBulk = update.PtBulk, CustomerId = update.CustomerId, Notes = update.Notes };
+
+            repository.UpdateOrderAppointment(oappt);
 
             return Json(new { url = "List" });
         }

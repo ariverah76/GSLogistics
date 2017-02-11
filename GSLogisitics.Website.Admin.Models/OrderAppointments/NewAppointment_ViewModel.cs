@@ -13,7 +13,6 @@ namespace GSLogistics.Website.Admin.Models.OrderAppointments
         public DateTime ShippingDate { get; set; }
         public DateTime ShippingTime { get; set; }
         public string ScacCode { get; set; }
-
         public OrderForAppointment[] Orders { get; set; }
     }
 
@@ -23,6 +22,7 @@ namespace GSLogistics.Website.Admin.Models.OrderAppointments
         public  string PickTicketId{ get; set; }
         public string PtBulk { get; set; }
         public string CustomerId { get; set; }
+        
 
     }
 }

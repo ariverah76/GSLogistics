@@ -17,42 +17,43 @@
 </div>
 @using (Html.BeginForm())
 {
-    <div class="btn-group btn-group-justified">
-        <a href="#" class="btn btn-info" onclick="setAppointment()">Set Appointment</a>
-        <a href="#" class="btn btn-info" id="btnRefresh">Refresh</a>
+    <div class="row">
+        <div class="btn-group btn-group-justified">
+            <a href="#" class="btn btn-info" onclick="setAppointment()">Set Appointment</a>
+            <a href="#" class="btn btn-info" id="btnRefresh">Refresh</a>
 
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">Search</div>
-        <div class="panel-body">
-            @if (customers.Count() > 0)
-            {
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Search</div>
+            <div class="panel-body">
+                @if (customers.Count() > 0)
+                {
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.SelectedClientId)
+                                @Html.DropDownListFor(m => m.SelectedClientId, customers, "Select", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                }
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            @Html.LabelFor(model => model.SelectedClientId)
-                            @Html.DropDownListFor(m => m.SelectedClientId, customers, "Select", new { @class = "form-control" })
+                            @Html.LabelFor(model => model.CancelDateStartDate)
+                            @Html.DatePicker(x => x.CancelDateStartDate, new { @class = "form-control" })
                         </div>
                     </div>
-                </div>
-            }
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.CancelDateStartDate)
-                        @Html.DatePicker(x => x.CancelDateStartDate, new { @class = "form-control" })
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.CancelDateEndDate)
-                        @Html.DatePicker(x => x.CancelDateEndDate, new { @class = "form-control" })
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.CancelDateEndDate)
+                            @Html.DatePicker(x => x.CancelDateEndDate, new { @class = "form-control" })
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
 }
 <div class="row">
     <div class="panel panel-default">
@@ -61,7 +62,7 @@
         </div>
 
         <div class="panel-body">
-            <table class="table display-compact"  display compact" id="tableAppointments">
+            <table class="table display-compact table-bordered table-striped"  id="tableAppointments">
                 <thead>
                     <tr>
                         <th class="text-center">
@@ -247,23 +248,23 @@
     
     var editor;
     $(document).ready(function () {
-        editor = new $.fn.dataTable.Editor({
-            //ajax: "/orderappointment/updatenotes",
-            ajax: "/api/orderappointmentapi/updatenotes",
-            table: "#tableAppointments",
-            idSrc: 'PickTicketId',
-            bServerSide: true,
-            fields: [{
-                label: "Notes:",
-                name: "Notes"
-            }
-            ]
-        });
+        //editor = new $.fn.dataTable.Editor({
+        //    //ajax: "/orderappointment/updatenotes",
+        //    ajax: "/api/orderappointmentapi/updatenotes",
+        //    table: "#tableAppointments",
+        //    idSrc: 'PickTicketId',
+        //    bServerSide: true,
+        //    fields: [{
+        //        label: "Notes:",
+        //        name: "Notes"
+        //    }
+        //    ]
+        //});
 
         // Activate an inline edit on click of a table cell
-        $('#tableAppointments').on('click', 'tbody td:not(:first-child)', function (e) {
-            editor.bubble(this);
-        });
+        //$('#tableAppointments').on('click', 'tbody td:not(:first-child)', function (e) {
+        //    editor.bubble(this);
+        //});
 
 
         $("#tableAppointments").DataTable({
@@ -398,6 +399,53 @@
                     }
                 });
             });
+             
+            function myCallbackFunction(updatedCell, updatedRow, oldValue) {
+                console.log("The new value for the cell is: " + updatedCell.data());
+                console.log("The values for each cell in that row are: " + updatedRow.data());
+
+                
+
+                var model = {
+                    PurchaseOrderId: updatedRow.data()["PurchaseOrderId"],
+                    PickTicketId: updatedRow.data()["PickTicketId"],
+                    PtBulk: updatedRow.data()[12],
+                    CustomerId: updatedRow.data()[13],
+                    Notes: updatedCell.data()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("UpdateOrderAppointment", "OrderAppointment")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(model),
+                    dataType: "json",
+                    success: function (result) {
+                        alert('Notes updated');
+                        //window.location.href = result.url;
+                    }
+                });
+
+            }
+
+            table.MakeCellsEditable({
+                "onUpdate": myCallbackFunction,
+                "columns": [15],
+                "confirmationButton" : true,
+                "inputTypes": [
+                    {
+                        "column":0, 
+                        "type":"text", 
+                        "options":null 
+                    }]
+
+            });
+
+
+
+
+
+
 
             $("#btnRefresh").click(function () {
                 $(this).closest("form").submit();
@@ -460,4 +508,4 @@
 </script>
 
 @Styles.Render("~/Content/datetimepicker")
-@Styles.Render("~/Content/datatables")
+@*@Styles.Render("~/Content/datatables")*@
