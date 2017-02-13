@@ -200,7 +200,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dissmiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title">Set appointment</h4>
+                    <h3 class="modal-title">Set appointment</h3>
+                    <h4 class="pull-right"><span id="totalOrdersLabel"></span></h4>
                 </div>
                 <div class="modal-body">
                     <form role="form" class="validate">
@@ -452,7 +453,17 @@
             });
         });
 
-        function setAppointment() {
+    function setAppointment() {
+        var table = $("#tableAppointments").DataTable();
+        var selected = table.rows('.selected').data();
+        if (selected.length == 0) {
+            alert("Please select at least an Order");
+            return false;
+        }
+        $('#totalOrdersLabel').html(function(n, c) { 
+            return selected.length + ' order(s) to assign'
+        });
+
             $('#setAppointmentModal').modal({
                 show: true,
                 backdrop: "static"
@@ -460,7 +471,7 @@
 
             $('#setAppointmentModal form').validate();
 
-        }
+     }
 
         function setNewAppointment() {
             var table = $("#tableAppointments").DataTable();
