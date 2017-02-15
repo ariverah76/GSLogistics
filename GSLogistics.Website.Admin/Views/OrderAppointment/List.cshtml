@@ -12,189 +12,297 @@
     var customers = this.ViewBag.Customers as SelectList;
     var scacCodes = this.ViewBag.ScacCodes as SelectList;
 }
-<div class="panel-heading">
+@*<div class="panel-heading">
     <h2>Order Appointments</h2>
-</div>
-@using (Html.BeginForm())
-{
-    <div class="row">
-        <div class="btn-group btn-group-justified">
-            <a href="#" class="btn btn-info" onclick="setAppointment()">Set Appointment</a>
-            <a href="#" class="btn btn-info" id="btnRefresh">Refresh</a>
-
+</div>*@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <ul class="nav nav-pills nav-justified">
+                <li class="active" role="presentation"><a data-toggle="pill" href="#orders">Orders</a></li>
+                <li role="presentation"><a data-toggle="pill" href="#appointments">Appointments</a></li>
+            </ul>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">Search</div>
-            <div class="panel-body">
-                @if (customers.Count() > 0)
-                {
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.SelectedClientId)
-                                @Html.DropDownListFor(m => m.SelectedClientId, customers, "Select", new { @class = "form-control" })
+    </div>
+</div>
+<div class="tab-content">
+    <div id="orders" class="tab-pane fade in active">
+        
+        <h2>Orders</h2>
+        @using (Html.BeginForm())
+        {
+            <div class="row">
+                <div class="btn-group btn-group-justified">
+                    <a href="#" class="btn btn-info" onclick="setAppointment()">Set Appointment</a>
+                    <a href="#" class="btn btn-info" id="btnRefresh">Refresh</a>
+
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    <div class="panel-body">
+                        @if (customers.Count() > 0)
+                        {
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.SelectedClientId)
+                                        @Html.DropDownListFor(m => m.SelectedClientId, customers, "Select", new { @class = "form-control" })
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                }
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.CancelDateStartDate)
-                            @Html.DatePicker(x => x.CancelDateStartDate, new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.CancelDateEndDate)
-                            @Html.DatePicker(x => x.CancelDateEndDate, new { @class = "form-control" })
+                        }
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.CancelDateStartDate)
+                                    @Html.DatePicker(x => x.CancelDateStartDate, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.CancelDateEndDate)
+                                    @Html.DatePicker(x => x.CancelDateEndDate, new { @class = "form-control" })
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-}
-<div class="row">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            Orders for Appointment
-        </div>
+        }
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Orders for Appointment
+                </div>
 
-        <div class="panel-body">
-            <table class="table display-compact table-bordered table-striped"  id="tableAppointments">
-                <thead>
-                    <tr>
-                        <th class="text-center">
+                <div class="panel-body">
+                    <table class="table display-compact table-bordered table-striped" id="tableAppointments">
+                        <thead>
+                            <tr>
+                                <th class="text-center">
 
-                        </th>
-                        <th>
-                            @*@Html.DisplayNameFor(model => model.StoreName)*@
-                            SHIP TO
-                        </th>
-                        <th>
-                            START DATE
-                        </th>
-                        <th>CANCEL DATE</th>
-                        <th>
-                            PO#
-                            @*@Html.DisplayNameFor(model => model.PurchaseOrderId)*@
-                        </th>
-                        <th>
-                            PT#
-                            @*@Html.DisplayNameFor(model => model.PickTicketId)*@
-                        </th>
-                        <th>
-                            PCS
-                            @*@Html.DisplayNameFor(model => model.Pieces)*@
-                        </th>
-                        <th>
-                            LBS@*@Html.DisplayNameFor(model => model.Weight)*@
-                        </th>
-                        <th>
-                            CTNS
-                            @*@Html.DisplayNameFor(model => model.BoxesNumber)*@
-                        </th>
-                        <th>
-                            CUBIC
-                            @*@Html.DisplayNameFor(model => model.Volume)*@
-                        </th>
-                        <th>
-                            CTN SIZE
-                            @*@Html.DisplayNameFor(model => model.BoxSize)*@
-                        </th>
-                        <th>
-                            CREATE DATE
-                            @*@Html.DisplayNameFor(model => model.EstimatedShippingDate)*@
-                        </th>
-                        <th style="visibility:hidden"></th>
-                        <th style="visibility:hidden"></th>
-                        <th style="visibility:hidden"></th>
-                        <th>NOTES</th>
+                                </th>
+                                <th>
+                                    @*@Html.DisplayNameFor(model => model.StoreName)*@
+                                    SHIP TO
+                                </th>
+                                <th>
+                                    START DATE
+                                </th>
+                                <th>CANCEL DATE</th>
+                                <th>
+                                    PO#
+                                    @*@Html.DisplayNameFor(model => model.PurchaseOrderId)*@
+                                </th>
+                                <th>
+                                    PT#
+                                    @*@Html.DisplayNameFor(model => model.PickTicketId)*@
+                                </th>
+                                <th>
+                                    PCS
+                                    @*@Html.DisplayNameFor(model => model.Pieces)*@
+                                </th>
+                                <th>
+                                    LBS@*@Html.DisplayNameFor(model => model.Weight)*@
+                                </th>
+                                <th>
+                                    CTNS
+                                    @*@Html.DisplayNameFor(model => model.BoxesNumber)*@
+                                </th>
+                                <th>
+                                    CUBIC
+                                    @*@Html.DisplayNameFor(model => model.Volume)*@
+                                </th>
+                                <th>
+                                    CTN SIZE
+                                    @*@Html.DisplayNameFor(model => model.BoxSize)*@
+                                </th>
+                                <th>
+                                    CREATE DATE
+                                    @*@Html.DisplayNameFor(model => model.EstimatedShippingDate)*@
+                                </th>
+                                <th style="visibility:hidden"></th>
+                                <th style="visibility:hidden"></th>
+                                <th style="visibility:hidden"></th>
+                                <th>NOTES</th>
 
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th>PO#</th>
-                        <th>PT#</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th style="visibility:hidden"></th>
-                        <th style="visibility:hidden"></th>
-                        <th style="visibility:hidden"></th>
-                        <th></th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    @foreach (var item in Model.OrderAppointments)
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th>PO#</th>
+                                <th>PT#</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th style="visibility:hidden"></th>
+                                <th style="visibility:hidden"></th>
+                                <th style="visibility:hidden"></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            @foreach (var item in Model.OrderAppointments)
             {
-                        <tr class="info">
-                            <td></td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.StoreName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.StartDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.EndDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.PurchaseOrderId)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.PickTicketId)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Pieces)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Weight)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.BoxesNumber)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Volume)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.BoxSize)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.EstimatedShippingDate)
-                            </td>
-                            <td style="visibility:hidden">
-                                @Html.DisplayFor(modelItem => item.PtBulk)
-                            </td>
-                            <td style="visibility:hidden">
-                                @Html.DisplayFor(modelItem => item.CustomerId)
-                            </td>
-                            <td style="visibility:hidden">
-                                @Html.DisplayFor(modelItem => item.DivisionName)
-                            </td>
-                            <td >
-                                @Html.DisplayFor(modelItem => item.Notes)
-                            </td>
+                                <tr class="info">
+                                    <td></td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.StoreName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.StartDate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.EndDate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PurchaseOrderId)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PickTicketId)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Pieces)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Weight)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.BoxesNumber)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Volume)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.BoxSize)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.EstimatedShippingDate)
+                                    </td>
+                                    <td style="visibility:hidden">
+                                        @Html.DisplayFor(modelItem => item.PtBulk)
+                                    </td>
+                                    <td style="visibility:hidden">
+                                        @Html.DisplayFor(modelItem => item.CustomerId)
+                                    </td>
+                                    <td style="visibility:hidden">
+                                        @Html.DisplayFor(modelItem => item.DivisionName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Notes)
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div> 
+    <div id="appointments" class="tab-pane fade">
+        <h2>Appointments</h2>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Orders with Appointment
+            </div>
+
+            <div class="panel-body">
+                <table class="table display-compact table-bordered table-striped" id="tableappt">
+                    <thead>
+                        <tr>
+                            <th class="text-center">
+
+                            </th>
+                            <th>
+                                CUSTOMER ID
+                            </th>
+                            <th>
+                                CUSTOMER
+                            </th>
+                            <th>
+                                PT#
+                            </th>
+                            <th>
+                                APPOINTMENT NUMBER
+                            </th>
+                            <th>
+                                SHIPPING DATE
+                            </th>
+                            <th>
+                                SHIPPING TIME
+                            </th>
+                            <th>
+                                SCACCODE
+                            </th>
+                            <th>
+                                CARRIER
+                            </th>
 
                         </tr>
-                    }
-                </tbody>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>PT#</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model.Appointments)
+                {
+                            <tr class="info">
+                                <td></td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CustomerId)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CustomerName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PickTicket)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AppointmentNo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShipDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShipTime)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SaccCode)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Carrier)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
 
-            </table>
-        </div>
+                </table>
+            </div>
     </div>
 
+    </div>
 </div>
-    
+
     <div class="modal fade" id="setAppointmentModal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -219,7 +327,7 @@
                                 </div>
                                 <div class="form-group">
                                     @Html.LabelFor(m => m.ShippingTime)
-                                    @Html.DateTimePicker(model => model.ShippingTime, null, jsFormat: "hh:ii", cFormat: "LT", minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
+                                    @Html.DateTimePicker(model => model.ShippingTime, null, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight:false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
                                     @Html.ValidationMessageFor(m => m.ShippingTime)
                                 </div>
                                 <div class="form-group">
@@ -267,6 +375,13 @@
         //    editor.bubble(this);
         //});
 
+        //$('#ShippingDate').datetimepicker().
+        //    on('changeDate', function(ev) {
+        //        $('#ShippingTime').datetimepicker('setStartDate', $('#ShippingDate').val());
+        //    }   );
+
+     
+        
 
         $("#tableAppointments").DataTable({
             dom: 'Bfrtip',
@@ -442,10 +557,8 @@
 
             });
 
-
-
-
-
+            $('.datetimepicker-minutes .switch').attr('style', 'visibility:hidden;');
+            $('.datetimepicker-hours .switch').attr('style', 'visibility:hidden;');
 
 
             $("#btnRefresh").click(function () {

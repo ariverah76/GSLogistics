@@ -10,6 +10,8 @@ namespace GSLogistics.Entities.Abstract
     {
         IEnumerable<OrderAppointment> OrderAppointments { get; }
         IEnumerable<ScacCode> ScacCodes { get; }
+        IEnumerable<Appointment> Appointments { get; }
+        IEnumerable<Customer> Customers { get; }
 
         void SaveAppointment(Appointment appointment);
         void UpdateOrderAppointment(OrderAppointment orderAppointment);

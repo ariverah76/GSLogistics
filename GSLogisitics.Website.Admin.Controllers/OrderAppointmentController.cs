@@ -35,7 +35,8 @@ namespace GSLogistics.Website.Admin.Controllers
             model.CancelDateEndDate = DateTime.Today;
 
 
-            var clients = repository.OrderAppointments.Select(x => new { Id = x.CustomerId, Name = x.CompanyName }).ToList();
+            var clients = repository.OrderAppointments.Select(x => new { Id = x.CustomerId, Name = x.Customer.CompanyName }).ToList();
+
 
 
             Dictionary<string, string> result = new Dictionary<string, string>();
@@ -88,8 +89,19 @@ namespace GSLogistics.Website.Admin.Controllers
                 
             }
 
+            List<Models.Appointment> appointments = new List<Models.Appointment>();
+
+            var appointmentList = repository.Appointments.AsQueryable();
+
+            appointmentList = appointmentList.Where(x => x.Status == "A");
+
+            foreach(var appt in appointmentList.ToList())
+            {
+                appointments.Add(new Models.Appointment() { AppointmentNo = appt.AppointmentNumber, CustomerName = appt.Customer.CompanyName, CustomerId = appt.CustomerId, Carrier = appt.CatScacCode.ScacCodeName, PickTicket = appt.PickTicket, PtBulk = appt.PtBulk, SaccCode = appt.ScacCode, ShipDate = appt.ShipDate, ShipTime = appt.ShipTime });
+            }
 
             model.OrderAppointments = orders;
+            model.Appointments = appointments;
 
             return View("List", model);
         }
@@ -158,8 +170,19 @@ namespace GSLogistics.Website.Admin.Controllers
                 }
 
             }
+            List<Models.Appointment> appointments = new List<Models.Appointment>();
+
+            var appointmentList = repository.Appointments.AsQueryable();
+
+            appointmentList = appointmentList.Where(x => x.Status == "A");
+
+            foreach (var appt in appointmentList.ToList())
+            {
+                appointments.Add(new Models.Appointment() { AppointmentNo = appt.AppointmentNumber, CustomerName = appt.Customer.CompanyName, CustomerId = appt.CustomerId, Carrier = appt.CatScacCode.ScacCodeName, PickTicket = appt.PickTicket, PtBulk = appt.PtBulk, SaccCode = appt.ScacCode, ShipDate = appt.ShipDate, ShipTime = appt.ShipTime });
+            }
 
             model.OrderAppointments = orders;
+            model.Appointments = appointments;
 
 
             return View("List", model);
@@ -171,16 +194,22 @@ namespace GSLogistics.Website.Admin.Controllers
         {
             foreach (var order in model.Orders)
             {
-                Appointment appointment = new Appointment();
+                Entities.Appointment appointment = new Entities.Appointment();
                 appointment.CustomerId = order.CustomerId;
                 appointment.DateAdd = DateTime.Now;
                 appointment.PickTicket = order.PickTicketId;
-                appointment.PtBulk = string.IsNullOrEmpty(order.PtBulk) ? order.PickTicketId : order.PtBulk;
+                
                 appointment.ScacCode = model.ScacCode;
                 appointment.ShipDate = model.ShippingDate;
-                appointment.ShipTime = model.ShippingTime;
+                appointment.ShipTime = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTime.Hour, model.ShippingDate.Minute,0);
                 appointment.AppointmentNumber = model.AppointmentNumber;
 
+                appointment.PtBulk = string.Empty;
+                if (!string.IsNullOrEmpty(order.PtBulk))
+                {
+                    appointment.PtBulk = order.PtBulk;
+                    appointment.PickTicket = order.PtBulk;
+                }
                 repository.SaveAppointment(appointment);
 
                 Entities.OrderAppointment oappt = new Entities.OrderAppointment() { PurchaseOrderId = order.PurchaseOrderId, PickTicketId = order.PickTicketId, PtBulk = order.PtBulk, CustomerId = order.CustomerId, Status = 1 };
@@ -189,7 +218,7 @@ namespace GSLogistics.Website.Admin.Controllers
                     
             }
 
-            return Json(new { url = "List" });
+            return Json(new { url = "OrderAppointment/List" });
         }
 
         [HttpPost]

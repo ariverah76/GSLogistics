@@ -53,6 +53,8 @@ namespace GSLogistics.Entities
         [Column(Order = 15)]
         public string ScacCode { get; set; }
 
+        [ForeignKey("CustomerId")]
+        public virtual Customer Customer { get; set; }
 
         //[Column(Order = 3)]
         //public int CustomerId { get; set; }
@@ -61,20 +63,20 @@ namespace GSLogistics.Entities
         //[Column(Order = 5)]
         //public int StoreId { get; set; }
         //public string StoreName { get; set; }
-       
-        
-       
-       
 
-        
-        
-        
+
+
+
+
+
+
+
 
 
         //public DateTime ShippingTime { get; set; }
         //public DateTime ShippingDate { get; set; }
         //public string AppointmentNumber { get; set; }
-        
+
         [Column(Order = 16)]
         public int Status { get; set; }
 

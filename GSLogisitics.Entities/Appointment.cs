@@ -45,5 +45,11 @@ namespace GSLogistics.Entities
 
         [Column("Transferred", Order = 9 )]
         public bool Transferred { get; set; }
+
+        [ForeignKey("ScacCode")]
+        public virtual ScacCode CatScacCode { get; set; }
+
+        [ForeignKey("CustomerId")]
+        public virtual Customer Customer { get; set; }
     }
 }

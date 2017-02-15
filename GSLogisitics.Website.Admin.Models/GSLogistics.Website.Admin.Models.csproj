@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account\LoginViewModel.cs" />
+    <Compile Include="OrderAppointments\Appointment.cs" />
     <Compile Include="OrderAppointments\NewAppointment_ViewModel.cs" />
     <Compile Include="OrderAppointments\OrderAppointment.cs" />
     <Compile Include="OrderAppointments\OrderAppointmentsIndex_ViewModel.cs" />

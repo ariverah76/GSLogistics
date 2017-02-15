@@ -11,10 +11,11 @@ namespace GSLogistics.Entities.Concrete
     {
         private GSLogisticsContext context = new GSLogisticsContext();
 
-        public IEnumerable<OrderAppointment> OrderAppointments { get { return context.OrderAppointments; } }
+        public IEnumerable<OrderAppointment> OrderAppointments { get { return context.OrderAppointments.Include("Customer"); } }
         public IEnumerable<ScacCode> ScacCodes { get { return context.ScacCodes; } }
 
-        public IEnumerable<Appointment> Appointments { get { return context.Appointments; } }
+        public IEnumerable<Appointment> Appointments { get { return context.Appointments.Include("Customer"); } }
+        public IEnumerable<Customer> Customers { get { return context.Customers; } }
 
         public void SaveAppointment(Appointment appointment)
         {

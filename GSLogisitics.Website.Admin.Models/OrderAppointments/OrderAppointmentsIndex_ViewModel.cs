@@ -41,6 +41,23 @@ namespace GSLogistics.Website.Admin.Models
         }
 
 
+        private List<Appointment> _appointments;
+        public List<Appointment> Appointments
+        {
+            get
+            {
+                if (_appointments == null)
+                {
+                    _appointments = new List<Appointment>();
+                }
+                return _appointments;
+            }
+            set
+            {
+                _appointments = value;
+            }
+        }
+
         #region appointments
 
         [Display(Name = "Shipping Date")]
