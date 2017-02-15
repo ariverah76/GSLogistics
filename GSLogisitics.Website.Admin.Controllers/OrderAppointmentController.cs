@@ -31,86 +31,19 @@ namespace GSLogistics.Website.Admin.Controllers
         public ActionResult List()
         {
             var model = new OrderAppointmentsIndex_ViewModel();
-            model.CancelDateStartDate = DateTime.Today.AddDays(-30);
+            model.CancelDateStartDate = DateTime.Today.AddDays(-60);
             model.CancelDateEndDate = DateTime.Today;
+            
 
+            return this.List(model);
 
-            var clients = repository.OrderAppointments.Select(x => new { Id = x.CustomerId, Name = x.Customer.CompanyName }).ToList();
-
-
-
-            Dictionary<string, string> result = new Dictionary<string, string>();
-            foreach(var c in clients)
-            {
-                if (!result.ContainsKey(c.Id.ToString()))
-                {
-                    result.Add(c.Id.ToString(), c.Name);
-                }
-            }
-            ViewBag.Customers = new SelectList(result, "Key", "Value", null);
-
-
-            var shippingCompanies = repository.ScacCodes.Select(x => new { Id = x.ScacCodeId, Name = x.ScacCodeName }).ToList();
-
-            Dictionary<string, string> result2 = new Dictionary<string, string>();
-            foreach(var sc in shippingCompanies)
-            {
-                if (!result2.ContainsKey(sc.Id.ToString()))
-                {
-                    result2.Add(sc.Id.ToString(), $"{sc.Id} - {sc.Name}");
-                }
-            }
-
-            ViewBag.ScacCodes = new SelectList(result2, "Key", "Value", null);
-
-
-            List<Models.OrderAppointment> orders = new List<Models.OrderAppointment>();
-
-            var ordersforAppt = repository.OrderAppointments.AsQueryable();
-
-            ordersforAppt = ordersforAppt.Where(x => x.Status == 0);
-            if (! string.IsNullOrEmpty(model.SelectedClientId))
-            {
-                ordersforAppt = ordersforAppt.Where(x => x.ScheduledShippingDate >= model.CancelDateStartDate && x.ScheduledShippingDate <= model .CancelDateEndDate);
-            }
-
-
-
-            foreach(var o in ordersforAppt.ToList())
-            {
-                try
-                {
-                    orders.Add(new Models.OrderAppointment() { BoxesNumber = o.BoxesCount.Value, BoxSize = o.BoxSize, CustomerId = o.CustomerId, CustomerName = o.CompanyName, EndDate = o.EndDate.Value, EstimatedShippingDate = o.ScheduledShippingDate, PickTicketId = o.PickTicketId, Pieces = o.Pieces.Value, PurchaseOrderId = o.PurchaseOrderId, StartDate = o.StartDate.Value, Volume = o.Size.Value, Weight = o.Weigth, StoreName = o.ShipTo, DivisionName = o.DivisionName, PtBulk = o.PtBulk, Notes = o.Notes });
-                }
-                catch(Exception exc)
-                {
-                    throw exc;
-                }
-                
-            }
-
-            List<Models.Appointment> appointments = new List<Models.Appointment>();
-
-            var appointmentList = repository.Appointments.AsQueryable();
-
-            appointmentList = appointmentList.Where(x => x.Status == "A");
-
-            foreach(var appt in appointmentList.ToList())
-            {
-                appointments.Add(new Models.Appointment() { AppointmentNo = appt.AppointmentNumber, CustomerName = appt.Customer.CompanyName, CustomerId = appt.CustomerId, Carrier = appt.CatScacCode.ScacCodeName, PickTicket = appt.PickTicket, PtBulk = appt.PtBulk, SaccCode = appt.ScacCode, ShipDate = appt.ShipDate, ShipTime = appt.ShipTime });
-            }
-
-            model.OrderAppointments = orders;
-            model.Appointments = appointments;
-
-            return View("List", model);
         }
 
         [HttpPost]
         public ActionResult List(OrderAppointmentsIndex_ViewModel model)
         {
-            var clients = repository.OrderAppointments.Select(x => new { Id = x.CustomerId, Name = x.CompanyName }).ToList();
-
+            
+            var clients = repository.OrderAppointments.Select(x => new { Id = x.CustomerId, Name = x.Customer.CompanyName }).ToList();
 
             Dictionary<string, string> result = new Dictionary<string, string>();
             foreach (var c in clients)
@@ -146,16 +79,15 @@ namespace GSLogistics.Website.Admin.Controllers
             {
                 ordersforAppt = ordersforAppt.Where(x => x.CustomerId == model.SelectedClientId);
                 
-                    // ordersforAppt.Where(x => x.ScheduledShippingDate >= model.CancelDateStartDate && x.ScheduledShippingDate <= model.CancelDateEndDate);
             }
 
             if (model.CancelDateStartDate.HasValue)
             {
-                ordersforAppt = ordersforAppt.Where(x => x.ScheduledShippingDate >= model.CancelDateStartDate.Value);
+                ordersforAppt = ordersforAppt.Where(x => x.StartDate >= model.CancelDateStartDate.Value);
             }
             if (model.CancelDateEndDate.HasValue)
             {
-                ordersforAppt = ordersforAppt.Where(x => x.ScheduledShippingDate <= model.CancelDateEndDate.Value);
+                ordersforAppt = ordersforAppt.Where(x => x.StartDate <= model.CancelDateEndDate.Value);
             }
 
             foreach (var o in ordersforAppt.ToList())
