@@ -73,7 +73,7 @@ namespace GSLogistics.Website.Admin.Controllers
 
             var ordersforAppt = repository.OrderAppointments.AsQueryable();
 
-            ordersforAppt = ordersforAppt.Where(x => x.Status == 0);
+            //ordersforAppt = ordersforAppt.Where(x => x.Status == 0);
 
             if (!string.IsNullOrEmpty(model.SelectedClientId))
             {
@@ -89,8 +89,8 @@ namespace GSLogistics.Website.Admin.Controllers
             {
                 ordersforAppt = ordersforAppt.Where(x => x.StartDate <= model.CancelDateEndDate.Value);
             }
-
-            foreach (var o in ordersforAppt.ToList())
+            
+            foreach (var o in ordersforAppt.Where(x => x.Status == 0).ToList())
             {
                 try
                 {
@@ -108,9 +108,34 @@ namespace GSLogistics.Website.Admin.Controllers
 
             appointmentList = appointmentList.Where(x => x.Status == "A");
 
+            var orderAppts = repository.OrderAppointments.ToList();
+
+            var list = appointmentList.ToList();
+
             foreach (var appt in appointmentList.ToList())
             {
-                appointments.Add(new Models.Appointment() { AppointmentNo = appt.AppointmentNumber, CustomerName = appt.Customer.CompanyName, CustomerId = appt.CustomerId, Carrier = appt.CatScacCode.ScacCodeName, PickTicket = appt.PickTicket, PtBulk = appt.PtBulk, SaccCode = appt.ScacCode, ShipDate = appt.ShipDate, ShipTime = appt.ShipTime });
+                var thisAppointment = new Models.Appointment()
+                {
+                    AppointmentNo = appt.AppointmentNumber,
+                    CustomerName = appt.Customer.CompanyName,
+                    CustomerId = appt.CustomerId,
+                    Carrier = appt.CatScacCode.ScacCodeName,
+                    PickTicket = appt.PickTicket,
+                    PtBulk = appt.PtBulk,
+                    SaccCode = appt.ScacCode,
+                    ShipDate = appt.ShipDate,
+                    ShipTime = appt.ShipTime
+                };
+
+                var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
+                if (orderAppt != null)
+                {
+                    thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
+                    thisAppointment.Pieces = orderAppt.Pieces.Value;
+                    thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
+                }
+
+                appointments.Add(thisAppointment);
             }
 
             model.OrderAppointments = orders;

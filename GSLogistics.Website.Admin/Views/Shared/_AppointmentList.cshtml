@@ -1,0 +1,198 @@
+﻿@using GSLogistics.Website.Admin.Models
+@model List<Appointment>
+    
+    <table class="table display-compact table-striped table-bordered" id="tableappt" width="100">
+        <thead>
+            <tr>
+                <th class="text-center">
+
+                </th>
+                <th>
+                    CustID
+                </th>
+                <th>
+                    Customer
+                </th>
+                <th>
+                    PO#
+                </th>
+                <th>
+                    Order#
+                </th>
+                <th>
+                    Appt#
+                </th>
+                <th>
+                    Pieces
+                </th>
+                <th>
+                    Boxes
+                </th>
+                <th>
+                    S. Date
+                </th>
+                <th>
+                    S. Time
+                </th>
+                <th>
+                    Scac
+                </th>
+                <th>
+                    Carrier
+                </th>
+
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>PO#</th>
+                <th>ORDER#</th>
+                <th>APPT#</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </tfoot>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td></td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CustomerId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CustomerName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PurchaseOrder)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PickTicket)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AppointmentNo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Pieces)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BoxesNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ShipDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ShippingTimeFriendly)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SaccCode)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Carrier)
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#tableappt").DataTable({
+            dom: 'Bfrtip',
+            columnDefs: [{
+                orderable: false,
+                className: 'select-checkbox',
+                targets: 0
+            }],
+            columns: [
+                {
+                    
+                }
+                ,
+                {
+                    data : 'CustomerId'
+                }
+                ,
+                {
+                    data: 'CustomerName'
+                }
+                ,
+                {
+                    data: 'PurchaseOrder'
+                }
+                ,
+                {
+                    data: 'PickTicket'
+                }
+                ,
+                {
+                    data: 'AppointmentNo'
+                }
+                ,
+                {
+                    data: 'Pieces'
+                }
+                ,
+                {
+                    data: 'BoxesNumber'
+                }
+                ,
+                {
+                    data: 'ShipDate'
+                }
+                ,
+                {
+                    data: 'ShipTime'
+                }
+                ,
+                {
+                    data: 'ScaccCode' 
+                }
+                ,
+                {
+                    data: 'Carrier'
+                }
+            ],
+            select: {
+                style: 'multi'
+            }
+
+        });
+
+        $('#tableappt tfoot th').each(function () {
+
+            var title = $(this).text();
+            if (title == "APPT#" || title == "ORDER#" || title == "PO#") {
+
+
+                $(this).html('<input type="text" style="width:100px" placeholder="Search ' + title + '" />');
+            }
+        });
+
+
+        var table = $("#tableappt").DataTable();
+
+        table.columns().every(function () {
+            var that = this;
+
+            $('input', this.footer()).on('keyup change', function () {
+                if (that.search() !== this.value) {
+                    that
+                        .search(this.value)
+                        .draw();
+                }
+            });
+        });
+
+
+    });
+</script>

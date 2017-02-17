@@ -12,9 +12,7 @@
     var customers = this.ViewBag.Customers as SelectList;
     var scacCodes = this.ViewBag.ScacCodes as SelectList;
 }
-@*<div class="panel-heading">
-    <h2>Order Appointments</h2>
-</div>*@
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
@@ -211,94 +209,17 @@
     </div> 
     <div id="appointments" class="tab-pane fade">
         <h2>Appointments</h2>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Orders with Appointment
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Orders with Appointment
+                </div>
+
+                <div class="panel-body">
+                    @{ Html.RenderPartial("_AppointmentList", Model.Appointments); }
+                </div>
             </div>
-
-            <div class="panel-body">
-                <table class="table display-compact table-bordered table-striped" id="tableappt">
-                    <thead>
-                        <tr>
-                            <th class="text-center">
-
-                            </th>
-                            <th>
-                                CUSTOMER ID
-                            </th>
-                            <th>
-                                CUSTOMER
-                            </th>
-                            <th>
-                                PT#
-                            </th>
-                            <th>
-                                APPOINTMENT NUMBER
-                            </th>
-                            <th>
-                                SHIPPING DATE
-                            </th>
-                            <th>
-                                SHIPPING TIME
-                            </th>
-                            <th>
-                                SCACCODE
-                            </th>
-                            <th>
-                                CARRIER
-                            </th>
-
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th>PT#</th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </tfoot>
-                    <tbody>
-                        @foreach (var item in Model.Appointments)
-                {
-                            <tr class="info">
-                                <td></td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.CustomerId)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.CustomerName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PickTicket)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.AppointmentNo)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ShipDate)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ShipTime)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.SaccCode)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Carrier)
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-
-                </table>
-            </div>
-    </div>
+        </div>
 
     </div>
 </div>
