@@ -1,0 +1,1 @@
+ALTER TABLE dbo.Appointments ADD Posted BIT NOT NULL CONSTRAINT Dft_Posted DEFAULT '0' with values
