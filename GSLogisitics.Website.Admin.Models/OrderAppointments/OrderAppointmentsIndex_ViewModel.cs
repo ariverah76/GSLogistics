@@ -21,6 +21,8 @@ namespace GSLogistics.Website.Admin.Models
         [Display(Name = "Customer")]
         public string SelectedClientId { get; set; }
 
+        [Display(Name = "Status")]
+        public string SelectedStatus { get; set; }
 
         private List<OrderAppointment> _orderAppointments;
         public List<OrderAppointment> OrderAppointments

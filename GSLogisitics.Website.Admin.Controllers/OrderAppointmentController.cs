@@ -68,7 +68,13 @@ namespace GSLogistics.Website.Admin.Controllers
             }
 
             ViewBag.ScacCodes = new SelectList(result2, "Key", "Value", null);
-            
+
+            var status = new Dictionary<string, string>();
+            status.Add("1", "Posted");
+            status.Add("2", "Pending");
+
+            ViewBag.AppointmentStatus = new SelectList(status, "Key", "Value", null);
+
             List<Models.OrderAppointment> orders = new List<Models.OrderAppointment>();
 
             var ordersforAppt = repository.OrderAppointments.AsQueryable();
@@ -105,6 +111,19 @@ namespace GSLogistics.Website.Admin.Controllers
             List<Models.Appointment> appointments = new List<Models.Appointment>();
 
             var appointmentList = repository.Appointments.AsQueryable();
+
+            if (!string.IsNullOrEmpty(model.SelectedStatus))
+            {
+                if (model.SelectedStatus == "1")
+                {
+                    appointmentList = appointmentList.Where(x => x.Posted);
+
+                }
+                else
+                {
+                    appointmentList = appointmentList.Where(x => !x.Posted);
+                }
+            }
 
             appointmentList = appointmentList.Where(x => x.Status == "A");
 

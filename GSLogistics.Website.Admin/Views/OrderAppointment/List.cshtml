@@ -11,6 +11,7 @@
 @{
     var customers = this.ViewBag.Customers as SelectList;
     var scacCodes = this.ViewBag.ScacCodes as SelectList;
+    var appointmentStatus = this.ViewBag.AppointmentStatus as SelectList;
 }
 
 <div class="panel panel-default">
@@ -212,9 +213,29 @@
         <div class="row">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    Orders with Appointment
                 </div>
+                @using (Html.BeginForm())
+                {
 
+                        <div class="btn-group btn-group-justified">
+                            <a href="#" class="btn btn-info" onclick="postAppointment()">Post Appointments</a>
+                            <a href="#" class="btn btn-info" id="btnRefreshAppt">Refresh</a>
+
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Search</div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.SelectedStatus)
+                                            @Html.DropDownListFor(x => x.SelectedStatus, appointmentStatus, "Select", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                }
                 <div class="panel-body">
                     @{ Html.RenderPartial("_AppointmentList", Model.Appointments); }
                 </div>
@@ -485,6 +506,12 @@
             $("#btnRefresh").click(function () {
                 $(this).closest("form").submit();
             });
+            $("#btnRefreshAppt").click(function () {
+                $(this).closest("form").submit();
+                $("#appointments").tab('show');
+
+            });
+            
         });
 
     function setAppointment() {
