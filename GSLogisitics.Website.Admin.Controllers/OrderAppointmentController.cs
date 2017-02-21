@@ -124,6 +124,10 @@ namespace GSLogistics.Website.Admin.Controllers
                     appointmentList = appointmentList.Where(x => !x.Posted);
                 }
             }
+            else
+            {
+                appointmentList = appointmentList.Where(x => !x.Posted);
+            }
 
             appointmentList = appointmentList.Where(x => x.Status == "A");
 
@@ -198,6 +202,26 @@ namespace GSLogistics.Website.Admin.Controllers
         }
 
         [HttpPost]
+        public async Task<ActionResult> PostAppointments(PostAppointment model)
+        {
+            foreach (var appt in model.Appointments)
+            {
+                Entities.Appointment appointment = new Entities.Appointment()
+                {
+                    CustomerId = appt.CustomerId,
+                    PickTicket = appt.PickTicket,
+                    AppointmentNumber = appt.AppointmentNo,
+                    Posted = true,
+                    Status = appt.Status
+                };
+
+                await repository.UpdateAppointment(appointment);
+            }
+
+            return Json(new { url = "OrderAppointment/List" });
+        }
+
+        [HttpPost]
         public ActionResult UpdateOrderAppointment(UpdateOrderAppointment update)
         {
 
@@ -207,6 +231,7 @@ namespace GSLogistics.Website.Admin.Controllers
 
             return Json(new { url = "List" });
         }
+        
 
         [HttpPost]
         public JsonResult UpdateNotes()
@@ -226,6 +251,79 @@ namespace GSLogistics.Website.Admin.Controllers
 
 
             return Json(resp);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> UpdateAppointment(UpdateAppointment update)
+        {
+
+            Entities.Appointment appt = new Entities.Appointment() { CustomerId = update.CustomerId, PickTicket = update.PickTicket, AppointmentNumber = update.AppointmentNo, Posted = update.Posted ?? false, Status = update.Status};
+
+           await repository.UpdateAppointment(appt) ;
+
+            return Json(new { url = "List" });
+        }
+
+        public PartialViewResult GetAppointments(OrderAppointmentsIndex_ViewModel model)
+        {
+            List<Models.Appointment> appointments = new List<Models.Appointment>();
+
+            var appointmentList = repository.Appointments.AsQueryable();
+
+            if (!string.IsNullOrEmpty(model.SelectedStatus))
+            {
+                if (model.SelectedStatus == "1")
+                {
+                    appointmentList = appointmentList.Where(x => x.Posted);
+
+                }
+                else
+                {
+                    appointmentList = appointmentList.Where(x => !x.Posted);
+                }
+            }
+            else
+            {
+                appointmentList = appointmentList.Where(x => !x.Posted);
+            }
+
+            appointmentList = appointmentList.Where(x => x.Status == "A");
+            
+
+            var orderAppts = repository.OrderAppointments.ToList();
+
+            var list = appointmentList.ToList();
+
+            foreach (var appt in appointmentList.ToList())
+            {
+                var thisAppointment = new Models.Appointment()
+                {
+                    AppointmentNo = appt.AppointmentNumber,
+                    CustomerName = appt.Customer.CompanyName,
+                    CustomerId = appt.CustomerId,
+                    Carrier = appt.CatScacCode.ScacCodeName,
+                    PickTicket = appt.PickTicket,
+                    PtBulk = appt.PtBulk,
+                    SaccCode = appt.ScacCode,
+                    ShipDate = appt.ShipDate,
+                    ShipTime = appt.ShipTime
+                };
+
+                var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
+                if (orderAppt != null)
+                {
+                    thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
+                    thisAppointment.Pieces = orderAppt.Pieces.Value;
+                    thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
+                }
+
+                appointments.Add(thisAppointment);
+            }
+
+            model.Appointments = appointments;
+
+            return PartialView("_AppointmentList",appointments);
+
         }
 
         private class data

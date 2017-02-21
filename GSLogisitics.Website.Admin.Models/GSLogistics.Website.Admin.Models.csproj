@@ -46,6 +46,8 @@
     <Compile Include="OrderAppointments\NewAppointment_ViewModel.cs" />
     <Compile Include="OrderAppointments\OrderAppointment.cs" />
     <Compile Include="OrderAppointments\OrderAppointmentsIndex_ViewModel.cs" />
+    <Compile Include="OrderAppointments\PostAppointment.cs" />
+    <Compile Include="OrderAppointments\UpdateAppointment.cs" />
     <Compile Include="OrderAppointments\UpdateOrderAppointment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

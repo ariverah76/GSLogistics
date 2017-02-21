@@ -63,6 +63,30 @@ namespace GSLogistics.Entities.Concrete
             }
         }
 
+        public async Task UpdateAppointment(Appointment appointment)
+        {
+            try
+            {
+                var entity = context.Appointments.Where(x => x.AppointmentNumber == appointment.AppointmentNumber && x.CustomerId == appointment.CustomerId && appointment.PickTicket == appointment.PickTicket).FirstOrDefault();
+
+                if (entity != null)
+                {
+                    entity.Posted = appointment.Posted;
+                    if (!string.IsNullOrEmpty(appointment.Status))
+                    {
+                        entity.Status = appointment.Status;
+                    }
+
+                    await context.SaveChangesAsync();
+                }
+
+            }
+            catch (Exception exc)
+            {
+                throw exc;
+            }
+        }
+
 
         public void UpdateOrderAppointmentNotes(string pickTicketId, string notes)
         {

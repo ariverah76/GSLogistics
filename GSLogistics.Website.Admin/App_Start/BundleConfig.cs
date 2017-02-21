@@ -17,6 +17,10 @@ namespace GSLogistics.Website.Admin.App_Start
                         "~/Scripts/jquery.validate*",
                         "~/Scripts/jquery.validate.unobtrusive.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/jqueryajax").Include(
+                        "~/Scripts/jquery.unobtrusive-ajax.min.js"
+                ));
+
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                      "~/Scripts/bootstrap.js",
                      "~/Scripts/bootstrap.datepicker.js",
