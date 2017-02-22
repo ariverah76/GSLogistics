@@ -34,7 +34,7 @@ namespace GSLogistics.Website.Admin.Models
         public string PurchaseOrder { get; set; }
         public int Pieces { get; set; }
         public int BoxesNumber { get; set; } 
-
+        public string Posted { get; set; }
 
 
 

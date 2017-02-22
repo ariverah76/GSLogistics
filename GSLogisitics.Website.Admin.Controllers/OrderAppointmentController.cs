@@ -306,7 +306,9 @@ namespace GSLogistics.Website.Admin.Controllers
                     PtBulk = appt.PtBulk,
                     SaccCode = appt.ScacCode,
                     ShipDate = appt.ShipDate,
-                    ShipTime = appt.ShipTime
+                    ShipTime = appt.ShipTime, 
+                    Posted = appt.Posted.ToString()
+                    
                 };
 
                 var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
