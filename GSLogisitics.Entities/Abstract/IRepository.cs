@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GSLogistics.Entities.Abstract
 {
-    public interface IRepository
+    public interface IRepository : IDisposable
     {
         IEnumerable<OrderAppointment> OrderAppointments { get; }
         IEnumerable<ScacCode> ScacCodes { get; }

@@ -41,7 +41,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IAuthProvider.cs" />
+    <Compile Include="IScacCodeLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GSLogistics.Model\GSLogistics.Model.csproj">
+      <Project>{D8DD60D0-A0C4-4533-AA8F-F98AED3DE7D1}</Project>
+      <Name>GSLogistics.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

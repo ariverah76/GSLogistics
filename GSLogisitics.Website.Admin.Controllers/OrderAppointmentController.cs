@@ -1,21 +1,17 @@
-﻿using GSLogistics.Entities;
-using GSLogistics.Entities.Abstract;
+﻿using GSLogistics.Entities.Abstract;
 using GSLogistics.Website.Admin.Models;
 using GSLogistics.Website.Admin.Models.OrderAppointments;
-using Newtonsoft.Json;
+using GSLogistics.Website.Common.Controllers;
+using Ninject;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Script.Serialization;
 namespace GSLogistics.Website.Admin.Controllers
 {
     [Authorize]
-    public class OrderAppointmentController : Controller
+    public class OrderAppointmentController : Controller // : BaseController
     {
 
         //TOOD: Implement ninject kernel on the constructor
@@ -26,6 +22,12 @@ namespace GSLogistics.Website.Admin.Controllers
         {
             this.repository = orderApptRepository;
         }
+
+        //public OrderAppointmentController(IKernel kernel)
+        //    : base(kernel)
+        //{
+
+        //}
 
         [HttpGet]
         public ActionResult List()
@@ -108,62 +110,10 @@ namespace GSLogistics.Website.Admin.Controllers
                 }
 
             }
-            List<Models.Appointment> appointments = new List<Models.Appointment>();
-
-            var appointmentList = repository.Appointments.AsQueryable();
-
-            if (!string.IsNullOrEmpty(model.SelectedStatus))
-            {
-                if (model.SelectedStatus == "1")
-                {
-                    appointmentList = appointmentList.Where(x => x.Posted);
-
-                }
-                else
-                {
-                    appointmentList = appointmentList.Where(x => !x.Posted);
-                }
-            }
-            else
-            {
-                appointmentList = appointmentList.Where(x => !x.Posted);
-            }
-
-            appointmentList = appointmentList.Where(x => x.Status == "A");
-
+          
             var orderAppts = repository.OrderAppointments.ToList();
 
-            var list = appointmentList.ToList();
-
-            foreach (var appt in appointmentList.ToList())
-            {
-                var thisAppointment = new Models.Appointment()
-                {
-                    AppointmentNo = appt.AppointmentNumber,
-                    CustomerName = appt.Customer.CompanyName,
-                    CustomerId = appt.CustomerId,
-                    Carrier = appt.CatScacCode.ScacCodeName,
-                    PickTicket = appt.PickTicket,
-                    PtBulk = appt.PtBulk,
-                    SaccCode = appt.ScacCode,
-                    ShipDate = appt.ShipDate,
-                    ShipTime = appt.ShipTime
-                };
-
-                var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
-                if (orderAppt != null)
-                {
-                    thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
-                    thisAppointment.Pieces = orderAppt.Pieces.Value;
-                    thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
-                }
-
-                appointments.Add(thisAppointment);
-            }
-
             model.OrderAppointments = orders;
-            model.Appointments = appointments;
-
 
             return View("List", model);
 

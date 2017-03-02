@@ -21,10 +21,10 @@ namespace GSLogistics.Website.Admin.Controllers
             this.repository = orderApptRepository;
         }
 
-        public OrderAppointmentApiController()
-        {
-            this.repository = new GSLogisticsRepository();
-        }
+        //public OrderAppointmentApiController()
+        //{
+        //    this.repository = new GSLogisticsRepository();
+        //}
 
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/orderappointment/updatenotes")]

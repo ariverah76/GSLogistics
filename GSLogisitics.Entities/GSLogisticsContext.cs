@@ -7,7 +7,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Threading;
 
 namespace GSLogistics.Website.Models
 {
@@ -28,6 +28,11 @@ namespace GSLogistics.Entities
             base("GSLogisiticsWebEntities")
         {
 
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
         }
 
         public static GSLogisticsContext Create()

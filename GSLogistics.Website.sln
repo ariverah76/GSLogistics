@@ -39,6 +39,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSLogistics.Website.Custome
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSLogistics.Website.Customers.Controllers", "GSLogistics.Website.Customers.Controllers\GSLogistics.Website.Customers.Controllers.csproj", "{A470A34B-39E1-484D-A781-92895B492F0F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSLogistics.Website.Common.Controllers", "GSLogistics.Website.Common.Controllers\GSLogistics.Website.Common.Controllers.csproj", "{5A4BC5AB-1B01-4EC7-B38F-4124661D1496}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSLogistics.Model", "GSLogistics.Model\GSLogistics.Model.csproj", "{D8DD60D0-A0C4-4533-AA8F-F98AED3DE7D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +97,14 @@ Global
 		{A470A34B-39E1-484D-A781-92895B492F0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A470A34B-39E1-484D-A781-92895B492F0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A470A34B-39E1-484D-A781-92895B492F0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A4BC5AB-1B01-4EC7-B38F-4124661D1496}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A4BC5AB-1B01-4EC7-B38F-4124661D1496}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A4BC5AB-1B01-4EC7-B38F-4124661D1496}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A4BC5AB-1B01-4EC7-B38F-4124661D1496}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8DD60D0-A0C4-4533-AA8F-F98AED3DE7D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8DD60D0-A0C4-4533-AA8F-F98AED3DE7D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8DD60D0-A0C4-4533-AA8F-F98AED3DE7D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8DD60D0-A0C4-4533-AA8F-F98AED3DE7D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,5 +124,7 @@ Global
 		{BE03D7BD-7E4A-4D18-A6FC-12DEB434A441} = {1F3E1538-7232-4114-8DBF-D4B4B844AEFD}
 		{8B148A8D-C5B2-4DE3-91D2-D080BDFB8B15} = {BE03D7BD-7E4A-4D18-A6FC-12DEB434A441}
 		{A470A34B-39E1-484D-A781-92895B492F0F} = {BE03D7BD-7E4A-4D18-A6FC-12DEB434A441}
+		{5A4BC5AB-1B01-4EC7-B38F-4124661D1496} = {4921FCF2-E3E8-4B6C-8FA0-3A17E3E8C474}
+		{D8DD60D0-A0C4-4533-AA8F-F98AED3DE7D1} = {83E0C2C7-C0AE-45FF-A7BF-123DEEFD02F3}
 	EndGlobalSection
 EndGlobal

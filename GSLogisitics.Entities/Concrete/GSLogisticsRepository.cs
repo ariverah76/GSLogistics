@@ -1,4 +1,5 @@
 ﻿using GSLogistics.Entities.Abstract;
+using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,44 @@ using System.Threading.Tasks;
 
 namespace GSLogistics.Entities.Concrete
 {
-    public class GSLogisticsRepository : IRepository
+    public partial class GSLogisticsRepository : IRepository
     {
+        private IKernel _Kernel;
+        private GSLogisticsContext _Context;
+
+        public GSLogisticsRepository(IKernel kernel, GSLogisticsContext context = null)
+        {
+            if (kernel == null)
+            {
+                throw new ArgumentNullException(nameof(kernel));
+            }
+
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            _Kernel = kernel;
+            _Context = _Kernel.Get<GSLogisticsContext>();
+
+        }
+
+        protected GSLogisticsContext Context
+        {
+            get
+            {
+                return _Context;
+            }
+        }
+
+        private GSLogisticsContext CreateContext()
+        {
+            return _Kernel.Get<GSLogisticsContext>();
+        }
+
+        
+
+
         private GSLogisticsContext context = new GSLogisticsContext();
 
         public IEnumerable<OrderAppointment> OrderAppointments { get { return context.OrderAppointments.Include("Customer"); } }
@@ -111,5 +148,27 @@ namespace GSLogistics.Entities.Concrete
             }
         }
 
+
+        bool disposed = false;
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+            {
+                return;
+            }
+            if (disposing)
+            {
+                context.Dispose();
+                context = null;
+            }
+
+            disposed = true;
+        }
     }
 }
