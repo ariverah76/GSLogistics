@@ -24,6 +24,20 @@ namespace GSLogistics.Website.Admin.Models
         [Display(Name = "Status")]
         public string SelectedStatus { get; set; }
 
+        [Display(Name = "Shipping Date Start")]
+        public DateTime? ShippingDateStart { get; set; }
+
+        [Display(Name = "ShippingDate End")]
+        public DateTime? ShippingDateEnd { get; set; }
+
+        [Display(Name ="Appointment #")]
+        public string AppointmentNumberSearch { get; set; }
+
+        [Display(Name ="PO#")]
+        public string AppointmentPOSearch { get; set; }
+
+
+
         private List<OrderAppointment> _orderAppointments;
         public List<OrderAppointment> OrderAppointments
         {

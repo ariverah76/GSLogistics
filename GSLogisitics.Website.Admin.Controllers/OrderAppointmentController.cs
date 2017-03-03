@@ -35,7 +35,8 @@ namespace GSLogistics.Website.Admin.Controllers
             var model = new OrderAppointmentsIndex_ViewModel();
             model.CancelDateStartDate = DateTime.Today.AddDays(-60);
             model.CancelDateEndDate = DateTime.Today;
-            
+            model.ShippingDateStart = DateTime.Today.AddDays(-60);
+            model.ShippingDateEnd = DateTime.Today.AddDays(15);
 
             return this.List(model);
 
@@ -236,6 +237,26 @@ namespace GSLogistics.Website.Admin.Controllers
             {
                 appointmentList = appointmentList.Where(x => !x.Posted);
             }
+
+            if (!string.IsNullOrEmpty(model.AppointmentNumberSearch))
+            {
+                appointmentList = appointmentList.Where(x => x.AppointmentNumber == model.AppointmentNumberSearch);
+            }
+
+            if (model.ShippingDateStart.HasValue)
+            {
+                appointmentList = appointmentList.Where(x => x.ShipDate >= model.ShippingDateStart.Value);
+            }
+
+            if (model.ShippingDateEnd.HasValue)
+            {
+                appointmentList = appointmentList.Where(x => x.ShipDate <= model.ShippingDateEnd.Value);
+            }
+
+            //if (!string.IsNullOrEmpty(model.AppointmentPOSearch))
+            //{
+            //    appointmentList = appointmentList.Where(x => x.o)
+            //}
 
             appointmentList = appointmentList.Where(x => x.Status == "A");
             

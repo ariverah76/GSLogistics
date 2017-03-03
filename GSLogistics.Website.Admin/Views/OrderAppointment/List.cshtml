@@ -234,6 +234,26 @@
                                             @Html.DropDownListFor(x => x.SelectedStatus, appointmentStatus, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.AppointmentNumberSearch)
+                                            @Html.TextBoxFor(x => x.AppointmentNumberSearch, new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.ShippingDateStart)
+                                            @Html.DatePicker(x => x.ShippingDateStart, new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.ShippingDateEnd)
+                                            @Html.DatePicker(x => x.ShippingDateEnd, new { @class = "form-control" })
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
