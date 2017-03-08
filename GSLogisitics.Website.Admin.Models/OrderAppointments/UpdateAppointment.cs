@@ -13,5 +13,6 @@ namespace GSLogistics.Website.Admin.Models.OrderAppointments
         public string AppointmentNo { get; set; }
         public bool? Posted { get; set; }
         public string Status { get; set; }
+        public string PurchaseOrderId { get; set; }
     }
 }

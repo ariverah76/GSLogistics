@@ -120,6 +120,8 @@ namespace GSLogistics.Website.Admin.Controllers
 
         }
 
+       
+
         [HttpPost]
         public ActionResult SetAppointment(NewAppointment_ViewModel model)
         {
@@ -153,24 +155,61 @@ namespace GSLogistics.Website.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> PostAppointments(PostAppointment model)
+        public async Task<ActionResult> ActionAppointments(ActionAppointment model)
         {
             foreach (var appt in model.Appointments)
             {
-                Entities.Appointment appointment = new Entities.Appointment()
+                Model.Appointment appointment = new Model.Appointment()
                 {
                     CustomerId = appt.CustomerId,
                     PickTicket = appt.PickTicket,
                     AppointmentNumber = appt.AppointmentNo,
-                    Posted = true,
+                    Posted = appt.Posted.Value,
                     Status = appt.Status
                 };
 
                 await repository.UpdateAppointment(appointment);
+                if (model.Action == AppointmentAction.Cancel)
+                {
+                    Entities.OrderAppointment orderAppointment = new Entities.OrderAppointment()
+                    {
+                        CustomerId = appt.CustomerId,
+                        PickTicketId = appt.PickTicket,
+                        PurchaseOrderId = appt.PurchaseOrderId,
+                        Status = 0
+                    };
+
+                     repository.UpdateOrderAppointment(orderAppointment);
+
+                }
+            }
+            
+
+            return Json(new { url = "OrderAppointment/List" });
+        }
+
+        [HttpPost]
+        public ActionResult SaveEditedAppointment(NewAppointment_ViewModel model)
+        {
+            foreach (var appt in model.Orders)
+            {
+                Model.Appointment appointment = new Model.Appointment()
+                {
+                    CustomerId = appt.CustomerId,
+                    AppointmentNumber = model.AppointmentNumber,
+                    PickTicket = appt.PickTicketId,
+                    PtBulk = appt.PtBulk,
+                    ShippingDate = model.ShippingDate,
+                    ShippingTime = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTime.Hour, model.ShippingDate.Minute, 0),//model.ShippingTime,
+                    ScacCode = model.ScacCode
+                };
+            
+                repository.UpdateAppointment(appointment);
             }
 
             return Json(new { url = "OrderAppointment/List" });
         }
+
 
         [HttpPost]
         public ActionResult UpdateOrderAppointment(UpdateOrderAppointment update)
@@ -208,7 +247,7 @@ namespace GSLogistics.Website.Admin.Controllers
         public async Task<ActionResult> UpdateAppointment(UpdateAppointment update)
         {
 
-            Entities.Appointment appt = new Entities.Appointment() { CustomerId = update.CustomerId, PickTicket = update.PickTicket, AppointmentNumber = update.AppointmentNo, Posted = update.Posted ?? false, Status = update.Status};
+            Model.Appointment appt = new Model.Appointment() { CustomerId = update.CustomerId, PickTicket = update.PickTicket, AppointmentNumber = update.AppointmentNo, Posted = update.Posted ?? false, Status = update.Status};
 
            await repository.UpdateAppointment(appt) ;
 

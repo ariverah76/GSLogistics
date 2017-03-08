@@ -16,6 +16,6 @@ namespace GSLogistics.Entities.Abstract
         void SaveAppointment(Appointment appointment);
         void UpdateOrderAppointment(OrderAppointment orderAppointment);
         void UpdateOrderAppointmentNotes(string pickTicketId, string notes);
-        Task UpdateAppointment(Appointment appointment);
+        Task UpdateAppointment(Model.Appointment appointment);
     }
 }

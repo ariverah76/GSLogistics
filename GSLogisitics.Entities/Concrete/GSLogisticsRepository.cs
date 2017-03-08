@@ -79,10 +79,10 @@ namespace GSLogistics.Entities.Concrete
 
                 if (entity != null)
                 {
-                    if (orderAppointment.Status != 0)
-                    {
+                    //if (orderAppointment.Status != 0)
+                    //{
                         entity.Status = orderAppointment.Status;
-                    }
+                    //}
 
                     if (!string.IsNullOrEmpty(orderAppointment.Notes))
                     {
@@ -100,7 +100,7 @@ namespace GSLogistics.Entities.Concrete
             }
         }
 
-        public async Task UpdateAppointment(Appointment appointment)
+        public async Task UpdateAppointment(Model.Appointment appointment)
         {
             try
             {
@@ -108,11 +108,32 @@ namespace GSLogistics.Entities.Concrete
 
                 if (entity != null)
                 {
-                    entity.Posted = appointment.Posted;
+                    if (appointment.Posted.HasValue)
+                    {
+                        entity.Posted = appointment.Posted.Value;
+                    }
                     if (!string.IsNullOrEmpty(appointment.Status))
                     {
                         entity.Status = appointment.Status;
                     }
+
+                    if (!string.IsNullOrEmpty(appointment.AppointmentNumber))
+                    {
+                        entity.AppointmentNumber = appointment.AppointmentNumber;
+                    }
+                    if(!string.IsNullOrEmpty(appointment.ScacCode))
+                    {
+                        entity.ScacCode = appointment.ScacCode;
+                    }
+                    if(appointment.ShippingDate.HasValue)
+                    {
+                        entity.ShipDate = appointment.ShippingDate.Value;
+                    }
+                    if (appointment.ShippingTime.HasValue)
+                    {
+                        entity.ShipTime = appointment.ShippingTime.Value;
+                    }
+
 
                     await context.SaveChangesAsync();
                 }

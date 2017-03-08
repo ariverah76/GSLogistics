@@ -221,6 +221,8 @@
 
                         <div class="btn-group btn-group-justified">
                             <a href="#" class="btn btn-info" onclick="postAppointment()">Post Appointments</a>
+                            <a href="#" class="btn btn-info" onclick="deleteAppointment()">Cancel Appointments</a>
+                            <a href="#" class="btn btn-info" onclick="editAppointment()">Edit Appointments</a>
                             <a href="#" class="btn btn-info" id="btnRefreshAppt">Refresh</a>
 
                         </div>
@@ -310,7 +312,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-                    <button type="button" onclick="setNewAppointment()" class="btn btn-info">Set Appointment</button>
+                    <button type="button" id="btnSave" onclick="setNewAppointment()" class="btn btn-info">Set Appointment</button>
                 </div>
             </div>
         </div>
@@ -539,7 +541,93 @@
 
             });
             
-        });
+    });
+
+    function editAppointment() {
+        var table = $("#tableappt").DataTable();
+        var selected = table.rows('.selected').data();
+        if (selected.length == 0) {
+            alert("Please select at least an Order");
+            return false;
+        }
+        var appts = new Array();
+
+
+
+        for (var i = 0; i < selected.length; i++) {
+            appts.push(selected[i]["AppointmentNo"]);
+           
+        }
+
+        var allSameAppointmentNumber = appts.allValuesSame();
+
+        if (allSameAppointmentNumber == false){
+            alert("Please ensure all the Appointments are grouped on the same appointment number");
+        }
+        else {
+            $('#setAppointmentModal').modal({
+                show: true,
+                backdrop: "static"
+            });
+            $("#AppointmentNumber").val(selected[0]["AppointmentNo"]);
+            $("#ShippingDate").val(selected[0]["ShipDate"]);
+            $("#ShippingTime").val(selected[0]["ShipTime"]);
+            $("#ShippingCompanyId").val(selected[0]["ScaccCode"]);
+
+            $('#btnSave').html("Save");
+            $('#btnSave').attr('onclick', 'saveEditedAppointments()')
+            $('#setAppointmentModal form').validate();
+        }
+
+
+    }
+    
+    function saveEditedAppointments() {
+        var table = $("#tableappt").DataTable();
+        if ($('#setAppointmentModal form').valid()) {
+            var selected  = table.rows('.selected').data();
+            var orders = new Array();
+
+            for (var i = 0; i < selected.length; i++) {
+
+                var orderWithAppointment = {
+                    PurchaseOrderId: selected[i]["PurchaseOrder"],
+                    PickTicketId: selected[i]["PickTicket"],
+                    CustomerId: selected[i]["CustomerId"]
+                };
+                orders.push(orderWithAppointment);
+            }
+
+            var model = {};
+            model.AppointmentNumber = $("#AppointmentNumber").val();
+            model.Shippingdate = $("#ShippingDate").val();
+            model.ShippingTime = $("#ShippingTime").val();
+            model.ScacCode = $("#ShippingCompanyId").val();
+            model.Orders = orders;
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveEditedAppointment", "OrderAppointment")',
+                contentType: "application/json; charset=utf-8",
+                data:  JSON.stringify(model),
+                dataType: "json",
+                success: function (result) {
+                    alert('Appointment set successfully');
+                    window.location.href = "List";
+                }
+            });
+            $('#setAppointmentModal').modal("hide");
+        }
+    }
+
+    Array.prototype.allValuesSame = function () {
+        for (var i = 1; i < this.length; i++) {
+            if (this[i] !== this[0])
+                return false;
+        }
+
+        return true;
+    };
 
     function setAppointment() {
         var table = $("#tableAppointments").DataTable();
@@ -631,11 +719,12 @@
                 }
 
                 var model = {};
+                model.Action = 1;
                 model.Appointments = appointments;
 
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("PostAppointments", "OrderAppointment")',
+                    url: '@Url.Action("ActionAppointments", "OrderAppointment")',
                     contentType: "application/json; charset=utf-8",
                     data: JSON.stringify(model),
                     dataType: "json",
@@ -650,6 +739,52 @@
            
         }
 
+    function deleteAppointment() {
+        var table = $("#tableappt").DataTable();
+        var selected = table.rows('.selected').data();
+        if (selected.length == 0) {
+            alert("Please select at least one Appointment");
+            return false;
+        }
+
+        if (confirm('Are you sure you want to cancel these ' + selected.length + ' selected appointments ?')) {
+            var selected = table.rows('.selected').data();
+
+            var appointments = new Array();
+
+            for (var i = 0; i < selected.length; i++) {
+
+                var appointment = {
+                    CustomerId: selected[i]["CustomerId"],
+                    PickTicket: selected[i]["PickTicket"],
+                    AppointmentNo: selected[i]["AppointmentNo"],
+                    PurchaseOrderId: selected[i]["PurchaseOrder"],
+                    Posted: false,
+                    Status: "D"
+                };
+                appointments.push(appointment);
+            }
+
+            var model = {};
+            model.Action = 2;
+            model.Appointments = appointments;
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ActionAppointments", "OrderAppointment")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(model),
+                dataType: "json",
+                success: function (result) {
+                    alert('Appointment(s) cancelled succesfully');
+                    table.rows('.selected').remove().draw(false);
+                }
+
+            });
+
+        }
+
+    }
 
 
 

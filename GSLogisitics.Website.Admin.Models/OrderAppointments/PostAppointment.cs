@@ -6,8 +6,15 @@ using System.Threading.Tasks;
 
 namespace GSLogistics.Website.Admin.Models.OrderAppointments
 {
-    public class PostAppointment
+    public class ActionAppointment
     {
+        public AppointmentAction Action { get; set; }
         public UpdateAppointment[] Appointments { get; set; }
+    }
+
+    public enum AppointmentAction
+    {
+        Post =1,
+        Cancel = 2
     }
 }

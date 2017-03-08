@@ -155,6 +155,10 @@
       <Project>{d7cce6ee-8c18-4d86-a449-4d90401f632f}</Project>
       <Name>GSLogistics.Logic.Interface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GSLogistics.Model\GSLogistics.Model.csproj">
+      <Project>{d8dd60d0-a0c4-4533-aa8f-f98aed3de7d1}</Project>
+      <Name>GSLogistics.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GSLogistics.Website.Common.Controllers\GSLogistics.Website.Common.Controllers.csproj">
       <Project>{5A4BC5AB-1B01-4EC7-B38F-4124661D1496}</Project>
       <Name>GSLogistics.Website.Common.Controllers</Name>
