@@ -613,7 +613,8 @@
                 dataType: "json",
                 success: function (result) {
                     alert('Appointment set successfully');
-                    window.location.href = "List";
+                    $("#btnRefreshAppt").trigger("click");
+                    //window.location.href = "GetAppointments";
                 }
             });
             $('#setAppointmentModal').modal("hide");
@@ -685,6 +686,7 @@
                     dataType: "json",
                     success: function (result) {
                         alert('Appointment set successfully');
+                        
                         window.location.href = "List";
                     }
                 });
