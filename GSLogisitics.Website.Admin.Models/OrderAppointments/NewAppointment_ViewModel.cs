@@ -22,6 +22,7 @@ namespace GSLogistics.Website.Admin.Models.OrderAppointments
         public  string PickTicketId{ get; set; }
         public string PtBulk { get; set; }
         public string CustomerId { get; set; }
+        public DateTime DateAdded { get; set; }
         
 
     }

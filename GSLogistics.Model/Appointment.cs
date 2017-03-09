@@ -17,5 +17,6 @@ namespace GSLogistics.Model
         public string AppointmentNumber { get; set; }
         public string PickTicket { get; set; }
         public string PtBulk { get; set; }
+        public DateTime DateAdded { get; set; }
     }
 }

@@ -66,7 +66,7 @@ namespace GSLogistics.Website.Admin.Controllers
             {
                 if (!result2.ContainsKey(sc.Id.ToString()))
                 {
-                    result2.Add(sc.Id.ToString(), sc.Name);
+                    result2.Add(sc.Id.ToString(), $"{sc.Id.ToString()} {sc.Name}");
                 }
             }
 
@@ -201,7 +201,9 @@ namespace GSLogistics.Website.Admin.Controllers
                     PtBulk = appt.PtBulk,
                     ShippingDate = model.ShippingDate,
                     ShippingTime = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTime.Hour, model.ShippingDate.Minute, 0),//model.ShippingTime,
-                    ScacCode = model.ScacCode
+                    ScacCode = model.ScacCode,
+                    DateAdded = appt.DateAdded
+
                 };
             
                 repository.UpdateAppointment(appointment);
@@ -317,7 +319,8 @@ namespace GSLogistics.Website.Admin.Controllers
                     SaccCode = appt.ScacCode,
                     ShipDate = appt.ShipDate,
                     ShipTime = appt.ShipTime, 
-                    Posted = appt.Posted.ToString()
+                    Posted = appt.Posted.ToString(),
+                    DateAdded = appt.DateAdd
                     
                 };
 

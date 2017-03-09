@@ -35,6 +35,7 @@ namespace GSLogistics.Website.Admin.Models
         public int Pieces { get; set; }
         public int BoxesNumber { get; set; } 
         public string Posted { get; set; }
+        public DateTime DateAdded { get; set; }
 
 
 
