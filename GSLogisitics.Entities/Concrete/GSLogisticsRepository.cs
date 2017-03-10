@@ -105,13 +105,7 @@ namespace GSLogistics.Entities.Concrete
             try
             {
                 var entity = context.Appointments.Where(x => x.AppointmentNumber == appointment.AppointmentNumber && x.CustomerId == appointment.CustomerId && x.PickTicket == appointment.PickTicket).FirstOrDefault();
-                //if (entity == null)
-                //{
-                //    entity = context.Appointments.Where(x => x.CustomerId == appointment.CustomerId && x.PickTicket == appointment.PickTicket &&
-                //    (x.DateAdd.Year == appointment.DateAdded.Year && x.DateAdd.Month == appointment.DateAdded.Month && x.DateAdd.Day == appointment.DateAdded.Day
-                //    && x.DateAdd.Hour == appointment.DateAdded.Hour && x.DateAdd.Minute == appointment.DateAdded.Minute))
-                //    .FirstOrDefault();
-                //}
+                
                 if (entity != null)
                 {
                     if (appointment.Posted.HasValue)

@@ -56,6 +56,9 @@ namespace GSLogistics.Entities
         [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; }
 
+        [Column(Order = 16)]
+        public string ConfirmationNumber { get; set; }
+
         //[Column(Order = 3)]
         //public int CustomerId { get; set; }
         //[Column(Order = 4)]
