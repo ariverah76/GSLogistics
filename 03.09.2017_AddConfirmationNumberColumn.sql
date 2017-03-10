@@ -1,0 +1,1 @@
+ALTER TABLE dbo.OrderAppointment ADD ConfirmationNumber varchar(20)  NULL 
