@@ -36,6 +36,10 @@ namespace GSLogistics.Website.Admin.Models
         [Display(Name ="PO#")]
         public string AppointmentPOSearch { get; set; }
 
+        [Display(Name = "Confirmation Number")]
+        [Required]
+        public string ConfirmationNumber { get; set; }
+
 
 
         private List<OrderAppointment> _orderAppointments;

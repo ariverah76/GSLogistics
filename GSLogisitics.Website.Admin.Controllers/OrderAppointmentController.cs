@@ -155,6 +155,20 @@ namespace GSLogistics.Website.Admin.Controllers
         }
 
         [HttpPost]
+        public ActionResult SetConfirmationNumber(NewAppointment_ViewModel model)
+        {
+            foreach (var order in model.Orders)
+            {
+                Entities.OrderAppointment oappt = new Entities.OrderAppointment() { PurchaseOrderId = order.PurchaseOrderId, PickTicketId = order.PickTicketId, PtBulk = order.PtBulk, CustomerId = order.CustomerId, ConfirmationNumber = model.ConfirmationNumber};
+
+                repository.UpdateOrderAppointment(oappt);
+
+            }
+
+            return Json(new { url = "OderAppointment/List" });
+        }
+
+        [HttpPost]
         public async Task<ActionResult> ActionAppointments(ActionAppointment model)
         {
             foreach (var appt in model.Appointments)

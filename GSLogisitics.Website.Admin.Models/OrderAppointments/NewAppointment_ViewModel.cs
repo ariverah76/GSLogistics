@@ -13,7 +13,9 @@ namespace GSLogistics.Website.Admin.Models.OrderAppointments
         public DateTime ShippingDate { get; set; }
         public DateTime ShippingTime { get; set; }
         public string ScacCode { get; set; }
+        public string ConfirmationNumber { get; set; }
         public OrderForAppointment[] Orders { get; set; }
+
     }
 
     public class OrderForAppointment

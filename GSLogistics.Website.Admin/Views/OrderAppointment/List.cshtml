@@ -35,6 +35,7 @@
             <div class="row">
                 <div class="btn-group btn-group-justified">
                     <a href="#" class="btn btn-info" onclick="setAppointment()">Set Appointment</a>
+                    <a href="#" class="btn btn-info" onclick="showConfirmationNumberModal()">Set Confirmation #</a>
                     <a href="#" class="btn btn-info" id="btnRefresh">Refresh</a>
 
                 </div>
@@ -85,12 +86,12 @@
                                 </th>
                                 <th>
                                     @*@Html.DisplayNameFor(model => model.StoreName)*@
-                                    SHIP TO
+                                    Ship To
                                 </th>
                                 <th>
-                                    START DATE
+                                    Start Date
                                 </th>
-                                <th>CANCEL DATE</th>
+                                <th>Cancel Date</th>
                                 <th>
                                     PO#
                                     @*@Html.DisplayNameFor(model => model.PurchaseOrderId)*@
@@ -100,32 +101,33 @@
                                     @*@Html.DisplayNameFor(model => model.PickTicketId)*@
                                 </th>
                                 <th>
-                                    PCS
+                                    Pcs
                                     @*@Html.DisplayNameFor(model => model.Pieces)*@
                                 </th>
                                 <th>
-                                    LBS@*@Html.DisplayNameFor(model => model.Weight)*@
+                                    Lbs@*@Html.DisplayNameFor(model => model.Weight)*@
                                 </th>
                                 <th>
-                                    CTNS
+                                    Ctns.
                                     @*@Html.DisplayNameFor(model => model.BoxesNumber)*@
                                 </th>
                                 <th>
-                                    CUBIC
+                                    Cubic
                                     @*@Html.DisplayNameFor(model => model.Volume)*@
                                 </th>
                                 <th>
-                                    CTN SIZE
+                                    Ctn Size
                                     @*@Html.DisplayNameFor(model => model.BoxSize)*@
                                 </th>
                                 <th>
-                                    CREATE DATE
+                                    Create Dt
                                     @*@Html.DisplayNameFor(model => model.EstimatedShippingDate)*@
                                 </th>
                                 <th style="visibility:hidden"></th>
                                 <th style="visibility:hidden"></th>
                                 <th style="visibility:hidden"></th>
-                                <th>NOTES</th>
+                                <th>Notes</th>
+                                <th>Confirmation #</th>
 
                             </tr>
                         </thead>
@@ -146,6 +148,7 @@
                                 <th style="visibility:hidden"></th>
                                 <th style="visibility:hidden"></th>
                                 <th style="visibility:hidden"></th>
+                                <th></th>
                                 <th></th>
                             </tr>
                         </tfoot>
@@ -198,6 +201,9 @@
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Notes)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ConfirmationNumber)
                                     </td>
 
                                 </tr>
@@ -274,6 +280,35 @@
     </div>
 </div>
 
+    <div class="modal fade" id="setConfirmationNumberModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dissmiss="modal" aria-hidden="true"></button>
+                    <h3 class="modal-title">Set Confirmation Number</h3>
+                    <h4 class="pull-right"><span id="totalOrdersSelectedLabel"></span></h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" class="validate">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ConfirmationNumber)
+                                    @Html.TextBoxFor(m => m.ConfirmationNumber, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.ConfirmationNumber)
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSaveConfNumber" onclick="setNewConfirmationNumber()" class="btn btn-info">Save</button>
+            </div>
+        </div>
+      </div>
+    </div>
+
     <div class="modal fade" id="setAppointmentModal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -328,30 +363,6 @@
     
     var editor;
     $(document).ready(function () {
-        //editor = new $.fn.dataTable.Editor({
-        //    //ajax: "/orderappointment/updatenotes",
-        //    ajax: "/api/orderappointmentapi/updatenotes",
-        //    table: "#tableAppointments",
-        //    idSrc: 'PickTicketId',
-        //    bServerSide: true,
-        //    fields: [{
-        //        label: "Notes:",
-        //        name: "Notes"
-        //    }
-        //    ]
-        //});
-
-        // Activate an inline edit on click of a table cell
-        //$('#tableAppointments').on('click', 'tbody td:not(:first-child)', function (e) {
-        //    editor.bubble(this);
-        //});
-
-        //$('#ShippingDate').datetimepicker().
-        //    on('changeDate', function(ev) {
-        //        $('#ShippingTime').datetimepicker('setStartDate', $('#ShippingDate').val());
-        //    }   );
-
-     
         
 
         $("#tableAppointments").DataTable({
@@ -424,6 +435,10 @@
                     {
                         data: 'Notes', className: 'editable'
                     }
+                    ,
+                    {
+                        data: 'ConfirmationNumber'
+                    }
                     
 
 
@@ -447,6 +462,11 @@
                             last = group;
                         }
                     });
+                },
+                "createdRow": function (row, data, dataIndex) {
+                    if (data['ConfirmationNumber'].length > 0) {
+                        $(row).css("background-color", "#EBE566");
+                    }
                 }
 
             });
@@ -631,6 +651,62 @@
         return true;
     };
 
+    function showConfirmationNumberModal() {
+        var table = $("#tableAppointments").DataTable();
+        var selected = table.rows('.selected').data();
+        if (selected.length == 0) {
+            alert("Please select at least an Order");
+            return false;
+        }
+        $('#totalOrdersSelectedLabel').html(function (n, c) {
+            return selected.length + ' selected order(s)'
+        });
+        $('#setConfirmationNumberModal').modal({
+            show: true,
+            backdrop: "static"
+        });
+
+        $('#setConfirmationNumberModal form').validate();
+    }
+
+    function setNewConfirmationNumber() {
+        var table = $("#tableAppointments").DataTable();
+        if ($('#setConfirmationNumberModal form').valid()) {
+
+            var selected = table.rows('.selected').data();
+
+            var orders = new Array();
+            for (var i = 0; i < selected.length; i++) {
+
+                var orderForAppointment = {
+                    PurchaseOrderId: selected[i]["PurchaseOrderId"],
+                    PickTicketId: selected[i]["PickTicketId"],
+                    PtBulk: selected[i][12],
+                    CustomerId: selected[i][13]
+                };
+                orders.push(orderForAppointment);
+
+            }
+            var model = {};
+            model.ConfirmationNumber = $("#ConfirmationNumber").val();
+            model.Orders = orders;
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SetConfirmationNumber", "OrderAppointment")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(model),
+                dataType: "json",
+                success: function (result) {
+                    alert('Confirmation Number set successfully');
+
+                    window.location.href = "List";
+                }
+            });
+            $('#setAppointmentModal').modal("hide");
+        }
+    }
+
     function setAppointment() {
         var table = $("#tableAppointments").DataTable();
         var selected = table.rows('.selected').data();
@@ -732,7 +808,7 @@
                     data: JSON.stringify(model),
                     dataType: "json",
                     success: function (result) {
-                        alert('Appointment(s) posted succesfully');
+                        alert('Appointment(s) posted successfully');
                         table.rows('.selected').remove().draw(false);
                     }
 

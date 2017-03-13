@@ -89,6 +89,11 @@ namespace GSLogistics.Entities.Concrete
                         entity.Notes = orderAppointment.Notes;
                     }
 
+                    if (!string.IsNullOrEmpty(orderAppointment.ConfirmationNumber))
+                    {
+                        entity.ConfirmationNumber = orderAppointment.ConfirmationNumber;
+                    }
+
                     context.SaveChanges();
                 }
 
