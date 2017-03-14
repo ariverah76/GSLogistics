@@ -127,7 +127,7 @@
                                 <th style="visibility:hidden"></th>
                                 <th style="visibility:hidden"></th>
                                 <th>Notes</th>
-                                <th>Confirmation #</th>
+                                <th>Conf. #</th>
 
                             </tr>
                         </thead>
@@ -367,6 +367,7 @@
 
         $("#tableAppointments").DataTable({
             dom: 'Bfrtip',
+            responsive: true,
                 columnDefs: [{
                     orderable: false,
                     className: 'select-checkbox',
@@ -456,7 +457,7 @@
                     api.column(14, { page: 'current' }).data().each(function (group, i) {
                         if (last !== group) {
                             $(rows).eq(i).before(
-                                '<tr class="group"><td colspan="14">' + group + '</td></tr>'
+                                '<tr class="group"><td colspan="15">' + group + '</td></tr>'
                             );
 
                             last = group;
@@ -477,7 +478,7 @@
                 if (title == "PO#" || title == "PT#") {
 
 
-                    $(this).html('<input type="text" style="width:100px" placeholder="Search ' + title + '" />');
+                    $(this).html('<input type="text" style="width:80px" placeholder="Search ' + title + '" />');
                 }
             });
             $('#tableAppointments tbody').on('click', 'tr.group', function () {
@@ -699,8 +700,8 @@
                 dataType: "json",
                 success: function (result) {
                     alert('Confirmation Number set successfully');
-
-                    window.location.href = "List";
+                    $("#btnRefresh").trigger("click");
+                   // window.location.href = "List";
                 }
             });
             $('#setAppointmentModal').modal("hide");
@@ -763,8 +764,8 @@
                     dataType: "json",
                     success: function (result) {
                         alert('Appointment set successfully');
-                        
-                        window.location.href = "List";
+                        $("#btnRefresh").trigger("click");
+                        //window.location.href = "List";
                     }
                 });
                 $('#setAppointmentModal').modal("hide");
