@@ -363,7 +363,9 @@
     
     var editor;
     $(document).ready(function () {
-        
+        $("#ShippingCompanyId").select2();
+
+        $(".select2-container").width(200);
 
         $("#tableAppointments").DataTable({
             dom: 'Bfrtip',

@@ -21,6 +21,9 @@ namespace GSLogistics.Website.Admin.App_Start
                         "~/Scripts/jquery.unobtrusive-ajax.min.js"
                 ));
 
+            bundles.Add(new ScriptBundle("~/bundles/select2").Include(
+                        "~/Scripts/select2.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                      "~/Scripts/bootstrap.js",
                      "~/Scripts/bootstrap.datepicker.js",
@@ -58,6 +61,10 @@ namespace GSLogistics.Website.Admin.App_Start
                 "~/Content/DataTables/css/bootstrap.min.css",
                 "~/Content/DataTables/css/select.dataTables.min.css"
                ));
+
+            bundles.Add(new StyleBundle("~/Content/select2").Include(
+                        "~/Content/css/select2.css", // NUGET
+                        "~/Content/select2-bootstrap.css"));
         }
     }
 }
