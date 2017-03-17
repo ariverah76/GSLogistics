@@ -1,0 +1,88 @@
+﻿@using GSLogistics.Website.Admin.Models
+@using GSLogistics.Website.Common
+
+@model LogReportIndex_ViewModel
+
+@{
+    ViewBag.Title = "Log Report";
+    AjaxOptions ajaxOptions = new AjaxOptions { UpdateTargetId = "panelBody", LoadingElementId = "loading", LoadingElementDuration = 10000 };
+
+}
+
+@{
+    var customers = this.ViewBag.Customers as SelectList;
+    var divisions = this.ViewBag.Divisions as SelectList;
+}
+
+<div class="panel panel-title">
+    <h2>Log Report</h2>
+</div>
+
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+
+        </div>
+        @using (Ajax.BeginForm("GetLogReport", ajaxOptions))
+        {
+            <div class="btn-group btn-group-justified">
+                @Html.ActionLink("Back to Orders", "List", "OrderAppointment", new { @class ="btn btn-info"})
+                <a href="#" class="btn btn-info" id="btnRefresh">Refresh</a>
+            </div>
+            <div class="panel panel-default">
+                 <div class="panel-heading">Search</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.SelectedDay)
+                                @Html.DatePicker(x => x.SelectedDay, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.SelectedClientId)
+                                @Html.DropDownListFor(m => m.SelectedClientId, customers, "Select", new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.SelectedDivisionId)
+                            @Html.DropDownListFor(m => m.SelectedDivisionId, divisions, "Select", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="panel-body" id="panelBody">
+            <div id="loading" class="load" style="display:none">
+                <p>Loading Data...</p>
+            </div>
+            @Html.Action("GetLogReport", Model)
+        </div>
+     </div>
+</div>
+
+@Scripts.Render("~/bundles/datetimepicker")
+@Scripts.Render("~/bundles/dataTables")
+@Scripts.Render("~/bundles/jqueryval")
+<script src="~/Scripts/DataTables/dataTables.select.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#SelectedClientId").select2();
+        $("#SelectedDivisionId").select2();
+
+        $("#btnRefresh").click(function () {
+            $(this).closest("form").submit();
+        });
+
+    });
+</script>
+
+@Styles.Render("~/Content/datetimepicker")
+   

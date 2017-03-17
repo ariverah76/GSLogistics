@@ -12,6 +12,7 @@ namespace GSLogistics.Entities.Abstract
         IEnumerable<ScacCode> ScacCodes { get; }
         IEnumerable<Appointment> Appointments { get; }
         IEnumerable<Customer> Customers { get; }
+        IEnumerable<CustomerDivision> Divisions { get; }
 
         void SaveAppointment(Appointment appointment);
         void UpdateOrderAppointment(OrderAppointment orderAppointment);

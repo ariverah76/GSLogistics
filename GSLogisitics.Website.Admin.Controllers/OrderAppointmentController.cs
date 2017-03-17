@@ -103,7 +103,7 @@ namespace GSLogistics.Website.Admin.Controllers
             {
                 try
                 {
-                    orders.Add(new Models.OrderAppointment() { BoxesNumber = o.BoxesCount.Value, BoxSize = o.BoxSize, CustomerId = o.CustomerId, CustomerName = o.CompanyName, EndDate = o.EndDate.Value, EstimatedShippingDate = o.ScheduledShippingDate, PickTicketId = o.PickTicketId, Pieces = o.Pieces.Value, PurchaseOrderId = o.PurchaseOrderId, StartDate = o.StartDate.Value, Volume = o.Size.Value, Weight = o.Weigth, StoreName = o.ShipTo, DivisionName = o.DivisionName, PtBulk = o.PtBulk, Notes = o.Notes , ConfirmationNumber = o.ConfirmationNumber });
+                    orders.Add(new Models.OrderAppointment() { BoxesNumber = o.BoxesCount.Value, BoxSize = o.BoxSize, CustomerId = o.CustomerId, CustomerName = o.CompanyName, EndDate = o.EndDate.Value, EstimatedShippingDate = o.ScheduledShippingDate, PickTicketId = o.PickTicketId, Pieces = o.Pieces.Value, PurchaseOrderId = o.PurchaseOrderId, StartDate = o.StartDate.Value, Volume = o.Size.Value, Weight = o.Weigth, StoreName = o.ShipTo, DivisionName = o.DivisionName, PtBulk = o.PtBulk, Notes = o.Notes , ConfirmationNumber = o.ConfirmationNumber, DivisionId = o.DivisionId });
                 }
                 catch (Exception exc)
                 {
@@ -131,6 +131,7 @@ namespace GSLogistics.Website.Admin.Controllers
                 appointment.CustomerId = order.CustomerId;
                 appointment.DateAdd = DateTime.Now;
                 appointment.PickTicket = order.PickTicketId;
+                appointment.DivisionId = order.DivisionId;
                 
                 appointment.ScacCode = model.ScacCode;
                 appointment.ShipDate = model.ShippingDate;
@@ -354,6 +355,104 @@ namespace GSLogistics.Website.Admin.Controllers
             return PartialView("_AppointmentList",appointments);
 
         }
+
+
+
+        #region LogReport
+
+        public PartialViewResult GetLogReport(LogReportIndex_ViewModel model)
+        {
+            List<Models.Appointment> appointments = new List<Models.Appointment>();
+
+            var appointmentList = repository.Appointments.AsQueryable();
+
+            if (model.SelectedDay.HasValue)
+            {
+                appointmentList = appointmentList.Where(x => x.ShipDate.Year == model.SelectedDay.Value.Year && x.ShipDate.Month == model.SelectedDay.Value.Month && x.ShipDate.Day == model.SelectedDay.Value.Day);
+            }
+
+            if (!string.IsNullOrEmpty(model.SelectedClientId))
+            {
+                appointmentList = appointmentList.Where(x => x.CustomerId == model.SelectedClientId);
+            }
+
+            if (model.SelectedDivisionId.HasValue)
+            {
+                appointmentList = appointmentList.Where(x => x.DivisionId == model.SelectedDivisionId.Value);
+            }
+
+            var orderAppts = repository.OrderAppointments.ToList();
+
+            var list = appointmentList.ToList();
+
+            foreach (var appt in appointmentList.ToList())
+            {
+                var thisAppointment = new Models.Appointment()
+                {
+                    AppointmentNo = appt.AppointmentNumber,
+                    CustomerName = appt.Customer.CompanyName,
+                    CustomerId = appt.CustomerId,
+                    DivisionId = appt.DivisionId,
+                    DivisionName = appt.Division.Description,
+                    Carrier = appt.CatScacCode.ScacCodeName,
+                    PickTicket = appt.PickTicket,
+                    PtBulk = appt.PtBulk,
+                    SaccCode = appt.ScacCode,
+                    ShipDate = appt.ShipDate,
+                    ShipTime = appt.ShipTime,
+                    Posted = appt.Posted.ToString(),
+
+                    DateAdded = appt.DateAdd
+
+                };
+
+                var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
+                if (orderAppt != null)
+                {
+                    thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
+                    thisAppointment.Pieces = orderAppt.Pieces.Value;
+                    thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
+                }
+
+                appointments.Add(thisAppointment);
+            }
+
+
+            return PartialView("_LogReport_AppointmentsPartial", appointments);
+        }
+
+        [HttpGet]
+        public ActionResult LogReport()
+        {
+            var model = new LogReportIndex_ViewModel();
+            model.SelectedDay = DateTime.Today;
+            return this.LogReport(model);
+        }
+
+        [HttpPost]
+        public ActionResult LogReport(LogReportIndex_ViewModel model)
+        {
+            var clients = repository.Customers.Select(x => new { Id = x.CustomerId, Name = x.CompanyName }).ToList();
+
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            clients.ForEach(x => result.Add(x.Id, x.Name));
+
+            ViewBag.Customers = new SelectList(result, "Key", "Value", null);
+
+            Dictionary<int, string> result2 = new Dictionary<int, string>();
+
+
+            var divisions = repository.Divisions.Select(d => new { Id = d.DivisionId, Name = d.Description }).ToList();
+
+            divisions.ForEach(x => result2.Add(x.Id, x.Name));
+            ViewBag.Divisions = new SelectList(result2, "Key", "Value", null);
+
+            return this.View("LogReport", model);
+        }
+
+
+
+        #endregion  
 
         private class data
         {

@@ -664,6 +664,8 @@
     <Content Include="Views\RoleAdmin\Create.cshtml" />
     <Content Include="Views\RoleAdmin\Edit.cshtml" />
     <Content Include="Views\Shared\_AppointmentList.cshtml" />
+    <Content Include="Views\OrderAppointment\LogReport.cshtml" />
+    <Content Include="Views\OrderAppointment\_LogReport_AppointmentsPartial.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -675,6 +677,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Controllers\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\Appointments\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GSLogisitics.Entities\GSLogistics.Entities.csproj">

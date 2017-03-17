@@ -49,11 +49,17 @@ namespace GSLogistics.Entities
         [Column("Posted", Order = 10 )]
         public bool Posted { get; set; }
 
+        [Column("DivisionId", Order = 11)]
+        public int DivisionId { get; set; }
+
         [ForeignKey("ScacCode")]
         public virtual ScacCode CatScacCode { get; set; }
 
         [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; }
+
+        [ForeignKey("DivisionId")]
+        public virtual CustomerDivision Division { get; set; }
 
     }
 }

@@ -128,6 +128,7 @@
                                 <th style="visibility:hidden"></th>
                                 <th>Notes</th>
                                 <th>Conf. #</th>
+                                <th style="visibility:hidden"></th>
 
                             </tr>
                         </thead>
@@ -150,6 +151,7 @@
                                 <th style="visibility:hidden"></th>
                                 <th></th>
                                 <th></th>
+                                <th style="visibility:hidden"></th>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -204,6 +206,9 @@
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.ConfirmationNumber)
+                                    </td>
+                                    <td style="visibility:hidden">
+                                        @Html.DisplayFor(modelItem => item.DivisionId)
                                     </td>
 
                                 </tr>
@@ -442,7 +447,10 @@
                     {
                         data: 'ConfirmationNumber'
                     }
-                    
+                    , 
+                    {
+                        data: 'DivisionId', visible :false
+                    }
 
 
 
@@ -746,7 +754,8 @@
                         PurchaseOrderId: selected[i]["PurchaseOrderId"],
                         PickTicketId: selected[i]["PickTicketId"],
                         PtBulk: selected[i][12],
-                        CustomerId: selected[i][13]
+                        CustomerId: selected[i][13],
+                        DivisionId: selected[i]["DivisionId"]
                     };
                     orders.push(orderForAppointment);
                 }

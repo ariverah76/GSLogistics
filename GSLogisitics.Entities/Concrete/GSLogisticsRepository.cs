@@ -54,6 +54,8 @@ namespace GSLogistics.Entities.Concrete
         public IEnumerable<Appointment> Appointments { get { return context.Appointments.Include("Customer"); } }
         public IEnumerable<Customer> Customers { get { return context.Customers; } }
 
+        public IEnumerable<CustomerDivision> Divisions { get { return context.CustomerDivisions; } }
+
         public void SaveAppointment(Appointment appointment)
         {
             context.Appointments.Add(appointment);

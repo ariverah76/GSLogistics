@@ -46,5 +46,7 @@ namespace GSLogistics.Website.Admin.Models
         public string Notes { get; set; }
         public string ConfirmationNumber { get; set; }
 
+        public int? DivisionId { get; set; }
+
     }
 }
