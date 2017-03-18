@@ -366,6 +366,7 @@ namespace GSLogistics.Website.Admin.Controllers
 
             var appointmentList = repository.Appointments.AsQueryable();
 
+            appointmentList = appointmentList.Where(x => x.Posted == true);
             if (model.SelectedDay.HasValue)
             {
                 appointmentList = appointmentList.Where(x => x.ShipDate.Year == model.SelectedDay.Value.Year && x.ShipDate.Month == model.SelectedDay.Value.Month && x.ShipDate.Day == model.SelectedDay.Value.Day);

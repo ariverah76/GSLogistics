@@ -100,7 +100,8 @@
     $(document).ready(function () {
 
         $("#tableLogReport").DataTable({
-            dom: 'Bfrtip',
+            dom: 'lfTrtip',
+            "displayLength": 25,
             columns: [
                 {
                     data: 'AppointmentNo'
@@ -159,16 +160,58 @@
                 var api = this.api();
                 var rows = api.rows({ page: 'current' }).nodes();
                 var last = null;
+                var columna = api.row(0).data.length;
+               // var total = new Array();
+                // total['Total']
+                var groupid = -1;
+                var subtotal = new Array();
 
                 api.column(0, { page: 'current' }).data().each(function (group, i) {
                     if (last !== group) {
+                        groupid++;
                         $(rows).eq(i).before(
-                            '<tr class="group"><td colspan="13"> Appointment #: ' + group + '</td></tr>'
+                            '<tr class="group"><td colspan=7> Appointment #: ' + group + '</td></tr>'
                         );
+                       // $(rows).eq(i).after(
+                       //    '<tr class="footer"><td> Totals:</td></tr>'
+                       //);
 
                         last = group;
                     }
+                    val = api.row(api.row($(rows).eq(i)).index()).data();      //current order index
+                    console.log('Val: ' + val);
+                    console.log(val);
+                    $.each(val, function (index2, val2) {
+                        if (index2 == "Pieces" || index2 == "BoxesNumber") {
+                            if (typeof subtotal[groupid] == 'undefined') {
+                                subtotal[groupid] = new Array();
+                            }
+                            if (typeof subtotal[groupid][index2] == 'undefined') {
+                                subtotal[groupid][index2] = 0;
+                            }
+                            valore = Number(val2.replace('€', "").replace('.', "").replace(',', "."));
+                            subtotal[groupid][index2] += valore;
+                        }
+                    });
+
+                    console.log(subtotal);
+
                 });
+                $('tbody').find('.group').each(function (i,v) {
+                    var rowCount = $(this).nextUntil('.group').length;
+                    $(this).find('td:first').append($('<span />', { 'class': 'rowCount-grid' }).append($('<b />', { 'text': ' ( Total Appointments '+rowCount+')' })));
+                    var subtd = '';
+                    //for (var a=2;a<columna;a++)
+                    //{ 
+                    //    subtd += '<td> Total'+subtotal[i][a] +'</td>';
+                    //}
+                    subtd += '<td> <span><strong> ' + subtotal[i]["Pieces"] + '</strong></span></td>';
+                    subtd += '<td colspan=5><span><strong>' + subtotal[i]["BoxesNumber"] + '</strong></span></td>';
+                    $(this).append(subtd);
+
+                });
+						
+            
             },
         });
 
