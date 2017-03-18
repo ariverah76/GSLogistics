@@ -18,5 +18,6 @@ namespace GSLogistics.Entities.Abstract
         void UpdateOrderAppointment(OrderAppointment orderAppointment);
         void UpdateOrderAppointmentNotes(string pickTicketId, string notes);
         Task UpdateAppointment(Model.Appointment appointment);
+        IList<CustomerDivision> GetDivisionByClient(string customerId);
     }
 }

@@ -432,7 +432,7 @@ namespace GSLogistics.Website.Admin.Controllers
         [HttpPost]
         public ActionResult LogReport(LogReportIndex_ViewModel model)
         {
-            var clients = repository.Customers.Select(x => new { Id = x.CustomerId, Name = x.CompanyName }).ToList();
+            var clients = repository.Customers.OrderBy(x=> x.CompanyName).Select(x => new { Id = x.CustomerId, Name = x.CompanyName }).ToList();
 
             Dictionary<string, string> result = new Dictionary<string, string>();
             clients.ForEach(x => result.Add(x.Id, x.Name));
@@ -440,11 +440,11 @@ namespace GSLogistics.Website.Admin.Controllers
             ViewBag.Customers = new SelectList(result, "Key", "Value", null);
 
             Dictionary<int, string> result2 = new Dictionary<int, string>();
+            result2.Add(7777, "Select a Customer");
 
+            //var divisions = repository.Divisions.Select(d => new { Id = d.DivisionId, Name = d.Description }).ToList();
 
-            var divisions = repository.Divisions.Select(d => new { Id = d.DivisionId, Name = d.Description }).ToList();
-
-            divisions.ForEach(x => result2.Add(x.Id, x.Name));
+            //divisions.ForEach(x => );
             ViewBag.Divisions = new SelectList(result2, "Key", "Value", null);
 
             return this.View("LogReport", model);
@@ -453,6 +453,23 @@ namespace GSLogistics.Website.Admin.Controllers
 
 
         #endregion  
+
+        [HttpGet]
+        public ActionResult GetDivisionByClient(string customerId)
+        {
+            if (String.IsNullOrEmpty(customerId))
+            {
+                throw new ArgumentNullException("countryId");
+            }
+
+            //Dictionary<int, string> result2 = new Dictionary<int, string>();
+
+            var divisions = repository.GetDivisionByClient(customerId).Select(d => new { Id = d.DivisionId, Name = d.Description }).ToList();
+
+            //divisions.ForEach(x => result2.Add(x.Id, x.Name));
+
+            return Json(divisions, JsonRequestBehavior.AllowGet);
+        }
 
         private class data
         {

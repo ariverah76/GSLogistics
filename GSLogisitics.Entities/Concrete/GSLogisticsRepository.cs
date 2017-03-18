@@ -176,6 +176,14 @@ namespace GSLogistics.Entities.Concrete
             }
         }
 
+        public IList<CustomerDivision> GetDivisionByClient(string customerId)
+        {
+            var query = context.CustomerDivisions.Where(x => x.CustomerId == customerId);
+
+            return query.ToList();
+        }
+
+        #region Dispose
 
         bool disposed = false;
 
@@ -198,5 +206,6 @@ namespace GSLogistics.Entities.Concrete
 
             disposed = true;
         }
+        #endregion
     }
 }

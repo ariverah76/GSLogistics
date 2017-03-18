@@ -81,7 +81,35 @@
             $(this).closest("form").submit();
         });
 
-    });
+        $("#SelectedClientId").change(function () {
+            var selectedItem = $(this).val();
+            var ddDivisions = $("#SelectedDivisionId");
+            $.ajax({
+                cache: false,
+                type: 'GET',
+                url: '@Url.Action("GetDivisionByClient","OrderAppointment")',
+                data: {"customerId": selectedItem },
+                success: function (data) {
+                    ddDivisions.html('');
+                    $.each(data, function (id, option) {
+                        ddDivisions.append($('<option></option>').val(option.Id).html(option.Name));
+
+                    });
+                    
+                   
+                }
+                ,  error: function (xhr, ajaxOptions, thrownError) {
+                    alert ('Failed to get Divisions');
+                }
+            });
+                
+
+            });
+
+        });
+
+
+   
 </script>
 
 @Styles.Render("~/Content/datetimepicker")
