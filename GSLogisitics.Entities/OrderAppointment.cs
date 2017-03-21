@@ -59,6 +59,9 @@ namespace GSLogistics.Entities
         [Column(Order = 19)]
         public string ConfirmationNumber { get; set; }
 
+        [ForeignKey("DivisionId")]
+        public virtual CustomerDivision Division { get; set; }
+
         //[Column(Order = 3)]
         //public int CustomerId { get; set; }
         //[Column(Order = 4)]

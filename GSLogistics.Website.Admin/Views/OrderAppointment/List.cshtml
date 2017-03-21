@@ -468,7 +468,7 @@
                     api.column(14, { page: 'current' }).data().each(function (group, i) {
                         if (last !== group) {
                             $(rows).eq(i).before(
-                                '<tr class="group"><td colspan="15">' + group + '</td></tr>'
+                                '<tr class="group"><td colspan="14">' + group + '</td></tr>'
                             );
 
                             last = group;
@@ -651,6 +651,10 @@
                 }
             });
             $('#setAppointmentModal').modal("hide");
+            $('#ShippingDate').val('');
+            $('#ShippingTime').val('');
+            $("#ShippingCompanyId").val(selected[0]["ScaccCode"]);
+            
         }
     }
 
@@ -716,6 +720,7 @@
                 }
             });
             $('#setAppointmentModal').modal("hide");
+            $("#ConfirmationNumber").val('');
         }
     }
 
@@ -781,6 +786,10 @@
                     }
                 });
                 $('#setAppointmentModal').modal("hide");
+                $('#setAppointmentModal').modal("hide");
+                $('#ShippingDate').val('');
+                $('#ShippingTime').val('');
+                $("#ShippingCompanyId").val(selected[0]["ScaccCode"]);
             }
         }
 
