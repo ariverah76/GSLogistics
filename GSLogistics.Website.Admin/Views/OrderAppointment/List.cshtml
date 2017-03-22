@@ -344,6 +344,10 @@
                                     @Html.ValidationMessageFor(m => m.ShippingTime)
                                 </div>
                                 <div class="form-group">
+                                    @Html.LabelFor(m => m.ShippingTimeLimit)
+                                    @Html.DateTimePicker(model => model.ShippingTimeLimit, null, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight: false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
+                                </div>
+                                <div class="form-group">
                                     @Html.LabelFor(model => model.ShippingCompanyId)
                                     @Html.DropDownListFor(m => m.ShippingCompanyId, scacCodes, "Select", new { @class = "form-control" })
                                     @Html.ValidationMessageFor(m => m.ShippingCompanyId)
@@ -384,7 +388,10 @@
 <script src="~/Scripts/DataTables/dataTables.select.min.js"></script>
 
 <script type="text/javascript">
-    
+    setTimeout(function () {
+        window.location.reload(1);
+    }, 300000);
+
     var editor;
     $(document).ready(function () {
         $("#ShippingCompanyId").select2();
@@ -776,12 +783,14 @@
             return totalCubic;
         });
 
-            $('#setAppointmentModal').modal({
-                show: true,
-                backdrop: "static"
-            });
+        $('#setAppointmentModal form').validate();
 
-            $('#setAppointmentModal form').validate();
+        $('#setAppointmentModal').modal({
+            show: true,
+            backdrop: "static"
+        });
+
+           
 
      }
 
@@ -812,6 +821,8 @@
                 model.Shippingdate = $("#ShippingDate").val();
                 model.ShippingTime = $("#ShippingTime").val();
                 model.ScacCode = $("#ShippingCompanyId").val();
+                model.ShippingTimeLimit = $('#ShippingTimeLimit').val();
+
                 model.Orders = orders;
 
                 $.ajax({

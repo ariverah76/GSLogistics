@@ -37,6 +37,9 @@ namespace GSLogistics.Entities
         [Column("ShippTime", Order = 6)]
         public DateTime ShipTime { get; set; }
 
+        [Column("ShippingTimeLimit", Order =12)]
+        public DateTime? ShippingTimeLimit { get; set; }
+
         [Column("ScaccCode", Order = 7)]
         public string ScacCode { get; set; }
 

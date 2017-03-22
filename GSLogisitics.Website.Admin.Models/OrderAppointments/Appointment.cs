@@ -24,6 +24,11 @@ namespace GSLogistics.Website.Admin.Models
         [UIHint("Time")]
         public DateTime ShipTime { get; set; }
 
+        [Display(Name = "Shipping Time Limit")]
+        [DataType(DataType.DateTime)]
+        [UIHint("Time")]
+        public DateTime? ShipTimeLimit { get; set; }
+
         public string ShippingTimeFriendly
         {
             get { return ShipTime.ToShortTimeString(); }

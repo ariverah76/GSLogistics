@@ -18,5 +18,7 @@ namespace GSLogistics.Model
         public string PickTicket { get; set; }
         public string PtBulk { get; set; }
         public DateTime DateAdded { get; set; }
+
+        public DateTime? ShippingTimeLimit { get; set; }
     }
 }

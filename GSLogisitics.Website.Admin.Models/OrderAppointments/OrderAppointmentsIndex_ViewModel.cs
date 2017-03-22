@@ -27,7 +27,7 @@ namespace GSLogistics.Website.Admin.Models
         [Display(Name = "Shipping Date Start")]
         public DateTime? ShippingDateStart { get; set; }
 
-        [Display(Name = "ShippingDate End")]
+        [Display(Name = "Shipping Date End")]
         public DateTime? ShippingDateEnd { get; set; }
 
         [Display(Name ="Appointment #")]
@@ -98,6 +98,11 @@ namespace GSLogistics.Website.Admin.Models
         [Required]
         public string ShippingCompanyId { get; set; }
         public int ShippingCompanyName { get; set; }
+
+        [DataType(DataType.Time)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
+        [Display(Name = "Shipping Time Limit")]
+        public DateTime? ShippingTimeLimit { get; set; }
 
         #endregion
     }

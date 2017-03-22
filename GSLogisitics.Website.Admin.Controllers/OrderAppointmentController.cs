@@ -135,8 +135,13 @@ namespace GSLogistics.Website.Admin.Controllers
                 
                 appointment.ScacCode = model.ScacCode;
                 appointment.ShipDate = model.ShippingDate;
-                appointment.ShipTime = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTime.Hour, model.ShippingDate.Minute,0);
+                appointment.ShipTime = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTime.Hour, model.ShippingTime.Minute,0);
                 appointment.AppointmentNumber = model.AppointmentNumber;
+
+                if (model.ShippingTimeLimit.HasValue)
+                {
+                    appointment.ShippingTimeLimit = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTimeLimit.Value.Hour, model.ShippingTimeLimit.Value.Minute, 0);
+                }
 
                 appointment.PtBulk = string.Empty;
                 if (!string.IsNullOrEmpty(order.PtBulk))
@@ -215,12 +220,16 @@ namespace GSLogistics.Website.Admin.Controllers
                     PickTicket = appt.PickTicketId,
                     PtBulk = appt.PtBulk,
                     ShippingDate = model.ShippingDate,
-                    ShippingTime = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTime.Hour, model.ShippingDate.Minute, 0),//model.ShippingTime,
+                    ShippingTime = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTime.Hour, model.ShippingDate.Minute, 0),
                     ScacCode = model.ScacCode,
-                    DateAdded = appt.DateAdded
-
+                    DateAdded = appt.DateAdded,
                 };
-            
+
+                if (model.ShippingTimeLimit.HasValue)
+                {
+                    appointment.ShippingTimeLimit = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTimeLimit.Value.Hour, model.ShippingTimeLimit.Value.Minute, 0);
+                }
+
                 repository.UpdateAppointment(appointment);
             }
 
@@ -335,7 +344,8 @@ namespace GSLogistics.Website.Admin.Controllers
                     ShipDate = appt.ShipDate,
                     ShipTime = appt.ShipTime, 
                     Posted = appt.Posted.ToString(),
-                    DateAdded = appt.DateAdd
+                    DateAdded = appt.DateAdd,
+                    ShipTimeLimit = appt.ShippingTimeLimit
                     
                 };
 
