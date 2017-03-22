@@ -321,7 +321,8 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dissmiss="modal" aria-hidden="true"></button>
                     <h3 class="modal-title">Set appointment</h3>
-                    <h4 class="pull-right"><span id="totalOrdersLabel"></span></h4>
+                    <h4 class="pull-left"><span id="totalOrdersLabel"></span></h4>
+                   
                 </div>
                 <div class="modal-body">
                     <form role="form" class="validate">
@@ -352,6 +353,23 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    <ul class="list-group">
+                        <li class="list-group-item"><span class="badge" id="totalPieces"></span>Total Pieces:&nbsp;</li>
+                        <li class="list-group-item"><span class="badge" id="totalCtns"></span>Total Ctns:&nbsp;</li>
+                        <li class="list-group-item"><span class="badge" id="totalLbs"></span>Total Weight:&nbsp;</li>
+                        <li class="list-group-item"><span class="badge" id="totalCubic"></span>Total Cubic:&nbsp;</li>
+                        
+                    </ul>
+                    @*<div class="info">
+                        <div class="panel-body">
+                            <div class="panel-group">
+                                <div> <h5 class="pull-left"></span></h5></div>
+                                <h5 class="pull-left"><span id="totalCtns"></span></h5>
+                                <h5 class="pull-left"><span id="totalLbs"></span></h5>
+                                <h5 class="pull-left"><span id="totalCubic"></span></h5>
+                            </div>
+                        </div>
+                    </div>*@
                     <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                     <button type="button" id="btnSave" onclick="setNewAppointment()" class="btn btn-info">Set Appointment</button>
                 </div>
@@ -733,6 +751,29 @@
         }
         $('#totalOrdersLabel').html(function(n, c) { 
             return selected.length + ' order(s) to assign'
+        });
+        var totalPieces = 0;
+        var totalCtns = 0;
+        var totalLbs = 0;
+        var totalCubic = 0;
+        for (var i = 0; i < selected.length; i++) {
+            totalPieces += Number(selected[i][6]);
+            totalLbs += Number(selected[i][7]);
+            totalCtns += Number(selected[i][8]);
+            totalCubic += Number(selected[i][9]);
+
+        }
+        $('#totalPieces').html(function (n, c) {
+            return   totalPieces ;
+        });
+        $('#totalCtns').html(function (n, c) {
+            return totalCtns ;
+        });
+        $('#totalCubic').html(function (n, c) {
+            return totalLbs;
+        });
+        $('#totalLbs').html(function (n, c) {
+            return totalCubic;
         });
 
             $('#setAppointmentModal').modal({
