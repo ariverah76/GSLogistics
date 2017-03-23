@@ -106,6 +106,11 @@ namespace GSLogistics.Website.Admin.Models
         [Display(Name = "Shipping Time Limit")]
         public DateTime? ShippingTimeLimit { get; set; }
 
+        [Display(Name = "Delivery Type")]
+        
+        [Required( ErrorMessage = "Please specify type of Delivery")]
+        public int? DeliveryTypeId { get; set; }
+
         #endregion
     }
 }

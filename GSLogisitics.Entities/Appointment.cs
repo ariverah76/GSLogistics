@@ -55,6 +55,9 @@ namespace GSLogistics.Entities
         [Column("DivisionId", Order = 11)]
         public int DivisionId { get; set; }
 
+        [Column("DeliveryTypeId", Order = 13)]
+        public short? DeliveryTypeId { get; set; }
+
         [ForeignKey("ScacCode")]
         public virtual ScacCode CatScacCode { get; set; }
 

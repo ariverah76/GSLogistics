@@ -336,6 +336,16 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
+                                    @Html.LabelFor(m => m.DeliveryTypeId)
+                                    <div class="radio-inline" >
+                                        @Html.RadioButtonFor(m => m.DeliveryTypeId, 1, new { id = "IsPickup"})
+                                        <span style="padding-right:20px">Pickup</span> 
+                                        @Html.RadioButtonFor(m => m.DeliveryTypeId, 2, new { id = "IsDelivery" })
+                                        <span>Delivery</span>
+                                        @Html.ValidationMessageFor(m => m.DeliveryTypeId)
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     @Html.LabelFor(m => m.AppointmentNumber)
                                     @Html.TextBoxFor(m => m.AppointmentNumber, new { @class = "form-control" })
                                     @Html.ValidationMessageFor(m => m.AppointmentNumber)
@@ -607,6 +617,10 @@
 
             });
 
+            $('#DeliveryTypeId').change(function () {
+                alert($('#DeliveryTypeId').val());
+            });
+
             $("#SelectedClientId").change(function () {
                 var selectedItem = $(this).val();
                 var ddDivisions = $("#SelectedDivisionId");
@@ -856,6 +870,7 @@
                 model.ShippingTime = $("#ShippingTime").val();
                 model.ScacCode = $("#ShippingCompanyId").val();
                 model.ShippingTimeLimit = $('#ShippingTimeLimit').val();
+                model.DeliveryTypeId = $('input[name = DeliveryTypeId]:checked').val();
 
                 model.Orders = orders;
 

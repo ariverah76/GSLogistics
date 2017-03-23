@@ -155,6 +155,7 @@ namespace GSLogistics.Website.Admin.Controllers
                 appointment.ShipDate = model.ShippingDate;
                 appointment.ShipTime = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTime.Hour, model.ShippingTime.Minute,0);
                 appointment.AppointmentNumber = model.AppointmentNumber;
+                appointment.DeliveryTypeId = model.DeliveryTypeId;
 
                 if (model.ShippingTimeLimit.HasValue)
                 {
