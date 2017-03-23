@@ -58,6 +58,19 @@ namespace GSLogistics.Website.Admin.Controllers
             }
             ViewBag.Customers = new SelectList(result, "Key", "Value", null);
 
+            if (!string.IsNullOrEmpty(model.SelectedClientId))
+            {
+                var divs = repository.GetDivisionByClient(model.SelectedClientId).Select(d => new { Id = d.DivisionId, Name = d.Description }).ToList();
+                Dictionary<int, string> result3 = new Dictionary<int, string>();
+                divs.ForEach(x => result3.Add(x.Id, x.Name));
+                ViewBag.Divisions = new SelectList(result3, "Key", "Value", null);
+            }
+            else
+            {
+                ViewBag.Divisions = new SelectList(new Dictionary<int, string>(), "Key", "Value", null);
+            }
+
+            
 
             var shippingCompanies = repository.ScacCodes.Select(x => new { Id = x.ScacCodeId, Name = x.ScacCodeName }).ToList();
 
@@ -88,6 +101,11 @@ namespace GSLogistics.Website.Admin.Controllers
             {
                 ordersforAppt = ordersforAppt.Where(x => x.CustomerId == model.SelectedClientId);
                 
+            }
+
+            if (model.SelectedDivisionId.HasValue && model.SelectedDivisionId.Value != 0)
+            {
+                ordersforAppt = ordersforAppt.Where(x => x.DivisionId == model.SelectedDivisionId);
             }
 
             if (model.CancelDateStartDate.HasValue)
@@ -472,13 +490,12 @@ namespace GSLogistics.Website.Admin.Controllers
             {
                 throw new ArgumentNullException("countryId");
             }
-
-            //Dictionary<int, string> result2 = new Dictionary<int, string>();
-
+            
             var divisions = repository.GetDivisionByClient(customerId).Select(d => new { Id = d.DivisionId, Name = d.Description }).ToList();
+            
+            divisions.Insert(0,new { Id = 0, Name = "Select" });
 
-            //divisions.ForEach(x => result2.Add(x.Id, x.Name));
-
+            
             return Json(divisions, JsonRequestBehavior.AllowGet);
         }
 

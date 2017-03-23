@@ -45,6 +45,8 @@
                 <th>
                     Carrier
                 </th>
+                <th style="visibility:hidden"></th>
+                <th style="visibility:hidden"></th>
 
             </tr>
         </thead>
@@ -62,7 +64,8 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th></th>
+                <th style="visibility:hidden"></th>
+                <th> style="visibility:hidden"</th>
             </tr>
         </tfoot>
         <tbody>
@@ -109,6 +112,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.DateAdded)
                     </td>
+                    
                 </tr>
             }
         </tbody>
@@ -119,7 +123,8 @@
     $(document).ready(function () {
 
         $("#tableappt").DataTable({
-            dom: 'Bfrtip',
+            dom: 'lfTrtip',
+            "displayLength": 25,
             columnDefs: [{
                 orderable: false,
                 className: 'select-checkbox',
@@ -201,7 +206,7 @@
         $('#tableappt tfoot th').each(function () {
 
             var title = $(this).text();
-            if (title == "APPT#" || title == "ORDER#" || title == "PO#") {
+            if (title == "PO#" || title == "ORDER#" || title == "APPT#") {
 
 
                 $(this).html('<input type="text" style="width:100px" placeholder="Search ' + title + '" />');
@@ -209,19 +214,32 @@
         });
 
 
-        var table = $("#tableappt").DataTable();
+        var tableappt1 = $("#tableappt").DataTable();
 
-        table.columns().every(function () {
-            var that = this;
+        //table.columns().every(function () {
+        //    var that = this;
+
+        //    $('input', this.footer()).on('keyup change', function () {
+        //        if (that.search() !== this.value) {
+        //            that
+        //                .search(this.value)
+        //                .draw();
+        //        }
+        //    });
+        //});
+        // Apply the search
+        tableappt1.columns().every( function () {
+            var column = this;
 
             $('input', this.footer()).on('keyup change', function () {
-                if (that.search() !== this.value) {
-                    that
-                        .search(this.value)
-                        .draw();
-                }
-            });
+                column
+                    .search(this.value)
+                    .draw();
+            } );
         });
+        
+
+        
 
        
         

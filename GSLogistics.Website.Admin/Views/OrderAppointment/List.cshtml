@@ -12,6 +12,7 @@
 }
 @{
     var customers = this.ViewBag.Customers as SelectList;
+    var divisions = this.ViewBag.Divisions as SelectList;
     var scacCodes = this.ViewBag.ScacCodes as SelectList;
     var appointmentStatus = this.ViewBag.AppointmentStatus as SelectList;
 }
@@ -49,6 +50,12 @@
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.SelectedClientId)
                                         @Html.DropDownListFor(m => m.SelectedClientId, customers, "Select", new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.SelectedDivisionId)
+                                        @Html.DropDownListFor(m => m.SelectedDivisionId, divisions, "Select", new { @class = "form-control" })
                                     </div>
                                 </div>
                             </div>
@@ -395,8 +402,10 @@
     var editor;
     $(document).ready(function () {
         $("#ShippingCompanyId").select2();
+        $("#SelectedClientId").select2();
+        $("#SelectedDivisionId").select2();
 
-        $(".select2-container").width(200);
+        $(".select2-container").width(300);
 
         $("#tableAppointments").DataTable({
             dom: 'Bfrtip',
@@ -595,6 +604,31 @@
             $("#btnRefreshAppt").click(function () {
                 $(this).closest("form").submit();
                 $("#appointments").tab('show');
+
+            });
+
+            $("#SelectedClientId").change(function () {
+                var selectedItem = $(this).val();
+                var ddDivisions = $("#SelectedDivisionId");
+                $.ajax({
+                    cache: false,
+                    type: 'GET',
+                    url: '@Url.Action("GetDivisionByClient","OrderAppointment")',
+                    data: { "customerId": selectedItem },
+                    success: function (data) {
+                        ddDivisions.html('');
+                        $.each(data, function (id, option) {
+                            ddDivisions.append($('<option></option>').val(option.Id).html(option.Name));
+
+                        });
+
+
+                    }
+                    , error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Failed to get Divisions');
+                    }
+                });
+
 
             });
             
