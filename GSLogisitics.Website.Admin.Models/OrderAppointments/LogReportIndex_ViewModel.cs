@@ -37,6 +37,8 @@ namespace GSLogistics.Website.Admin.Models
                 _appointments = value;
             }
         }
+        [Display(Name = "Delivery Type")]
+        public short? DeliveryTypeId { get; set; }
 
     }
 }
