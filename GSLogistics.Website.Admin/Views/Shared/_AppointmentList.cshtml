@@ -45,6 +45,9 @@
                 <th>
                     Carrier
                 </th>
+                <th>
+                    Ship To
+                </th>
                 <th style="visibility:hidden"></th>
                 <th style="visibility:hidden"></th>
 
@@ -58,14 +61,15 @@
                 <th>PO#</th>
                 <th>ORDER#</th>
                 <th>APPT#</th>
-                <th></th>
+                <th>TotalPieces</th>
+                <th>TotalBoxes</th>
                 <th></th>
                 <th></th>
                 <th></th>
                 <th></th>
                 <th></th>
                 <th style="visibility:hidden"></th>
-                <th> style="visibility:hidden"</th>
+                <th style="visibility:hidden"></th>
             </tr>
         </tfoot>
         <tbody>
@@ -107,6 +111,9 @@
                         @Html.DisplayFor(modelItem => item.Carrier)
                     </td>
                     <td>
+                        @Html.DisplayFor(modelItem => item.ShipTo)
+                    </td>
+                    <td>
                         @Html.DisplayFor(modelItem => item.Posted)
                     </td>
                     <td>
@@ -129,7 +136,11 @@
                 orderable: false,
                 className: 'select-checkbox',
                 targets: 0
-            }],
+            },
+             {
+                 "width" : "80px", "targets": 3
+             }
+            ],
             columns: [
                 {
                     
@@ -180,6 +191,10 @@
                 }
                 ,
                 {
+                    data: 'ShipTo'
+                }
+                ,
+                {
                     data: 'Posted',
                     visible: false
                 }
@@ -199,22 +214,63 @@
                     $(row).css("background-color", "#ffb3b3");
                 }
             }
+
            
 
         });
 
         $('#tableappt tfoot th').each(function () {
-
             var title = $(this).text();
             if (title == "PO#" || title == "ORDER#" || title == "APPT#") {
 
 
-                $(this).html('<input type="text" style="width:100px" placeholder="Search ' + title + '" />');
+                $(this).html('<input type="text" style="width:80px" placeholder="Search ' + title + '" />');
+            }
+            if (title == "TotalBoxes") {
+                $(this).html('<label id="totalBoxes">0</label>');
+            }
+            if (title == "TotalPieces") {
+                $(this).html('<label id="totalPieces">0</label>');
             }
         });
 
-
         var tableappt1 = $("#tableappt").DataTable();
+
+        tableappt1.on('select', function (e, dt, type, indexes) {
+            if (type === 'row') {
+                //var data = tableappt1.rows(indexes).data().pluck('BoxesNumber');
+                //console.log(data);
+                var total = sumColumn('BoxesNumber');
+                console.log(total);
+                $('#totalBoxes').html(total);
+                var totalp = sumColumn('Pieces');
+                $('#totalPieces').html(totalp);
+            }
+        });
+
+        tableappt1.on('deselect', function (e, dt, type, indexes) {
+            if (type === 'row') {
+                var total = sumColumn('BoxesNumber');
+                console.log(total);
+                $('#totalBoxes').html(total);
+                var totalp = sumColumn('Pieces');
+                $('#totalPieces').html(totalp);
+            }
+        });
+
+        function sumColumn(columnName) {
+            var selected = tableappt1.rows('.selected').data();
+            var totalBoxes = 0;
+            for (var i = 0; i < selected.length; i++) {
+
+                totalBoxes = totalBoxes + Number(selected[i][columnName]);
+            }
+            return totalBoxes;
+        }
+
+
+
+        
 
         //table.columns().every(function () {
         //    var that = this;
@@ -237,11 +293,6 @@
                     .draw();
             } );
         });
-        
 
-        
-
-       
-        
     });
 </script>

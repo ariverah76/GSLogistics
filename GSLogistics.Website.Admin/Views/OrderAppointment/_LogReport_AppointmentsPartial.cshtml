@@ -12,7 +12,7 @@
                 CustID
             </th>
             <th>
-                Customer
+                Ship To
             </th>
             <th>
                 Div ID
@@ -58,7 +58,7 @@
                     @Html.DisplayFor(modelItem => item.CustomerId)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CustomerName)
+                    @Html.DisplayFor(modelItem => item.ShipTo)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DivisionId)
@@ -93,6 +93,13 @@
             </tr>
         }
     </tbody>
+    <tfoot>
+        <tr>
+            <td>
+                Something to put
+            </td>
+        </tr>
+    </tfoot>
 </table>
 
 <script type="text/javascript">
@@ -110,8 +117,9 @@
                 {
                     data: 'CustomerId'
                 }
-                , {
-                    data: 'CustomerName'
+                ,
+                {
+                    data: 'ShipTo'
                 }
                 ,
                 {

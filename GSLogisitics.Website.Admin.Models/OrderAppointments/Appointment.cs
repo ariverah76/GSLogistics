@@ -44,6 +44,7 @@ namespace GSLogistics.Website.Admin.Models
 
         public int DivisionId { get; set; }
         public string DivisionName { get; set; }
+        public string ShipTo { get; set; }
 
 
 

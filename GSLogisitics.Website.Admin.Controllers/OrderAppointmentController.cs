@@ -374,6 +374,7 @@ namespace GSLogistics.Website.Admin.Controllers
                     thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
                     thisAppointment.Pieces = orderAppt.Pieces.Value;
                     thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
+                    thisAppointment.ShipTo = orderAppt.ShipTo;
                 }
 
                 appointments.Add(thisAppointment);
@@ -399,6 +400,11 @@ namespace GSLogistics.Website.Admin.Controllers
             if (model.SelectedDay.HasValue)
             {
                 appointmentList = appointmentList.Where(x => x.ShipDate.Year == model.SelectedDay.Value.Year && x.ShipDate.Month == model.SelectedDay.Value.Month && x.ShipDate.Day == model.SelectedDay.Value.Day);
+            }
+
+            if (model.DeliveryTypeId.HasValue)
+            {
+                appointmentList = appointmentList.Where(x => x.DeliveryTypeId == model.DeliveryTypeId.Value);
             }
 
             if (!string.IsNullOrEmpty(model.SelectedClientId))
@@ -431,7 +437,6 @@ namespace GSLogistics.Website.Admin.Controllers
                     ShipDate = appt.ShipDate,
                     ShipTime = appt.ShipTime,
                     Posted = appt.Posted.ToString(),
-
                     DateAdded = appt.DateAdd
 
                 };
@@ -442,6 +447,7 @@ namespace GSLogistics.Website.Admin.Controllers
                     thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
                     thisAppointment.Pieces = orderAppt.Pieces.Value;
                     thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
+                    thisAppointment.ShipTo = orderAppt.ShipTo;
                 }
 
                 appointments.Add(thisAppointment);
