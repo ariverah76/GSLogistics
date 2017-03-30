@@ -124,10 +124,10 @@ namespace GSLogistics.Entities.Concrete
                         entity.Status = appointment.Status;
                     }
 
-                    if (!string.IsNullOrEmpty(appointment.AppointmentNumber))
-                    {
-                        entity.AppointmentNumber = appointment.AppointmentNumber;
-                    }
+                    //if (!string.IsNullOrEmpty(appointment.AppointmentNumber))
+                    //{
+                    //    entity.AppointmentNumber = appointment.AppointmentNumber;
+                    //}
                     if(!string.IsNullOrEmpty(appointment.ScacCode))
                     {
                         entity.ScacCode = appointment.ScacCode;

@@ -241,7 +241,7 @@
                             <a href="#" class="btn btn-info" onclick="postAppointment()">Post Appointments</a>
                             <a href="#" class="btn btn-info" onclick="deleteAppointment()">Cancel Appointments</a>
                             <a href="#" class="btn btn-info" onclick="editAppointment()">Edit Appointments</a>
-                            <a href="@Url.Action("LogReport", "OrderAppointment")" target="_blank" class="btn btn-info">Log Report</a>
+                            <a href="@Url.Action("LogReport", "OrderAppointment")" class="btn btn-info">Log Report</a>
                             <a href="#" class="btn btn-info" id="btnRefreshAppt">Refresh</a>
 
                         </div>
@@ -375,22 +375,13 @@
                 </div>
                 <div class="modal-footer">
                     <ul class="list-group">
-                        <li class="list-group-item"><span class="badge" id="totalPieces"></span>Total Pieces:&nbsp;</li>
+                        <li class="list-group-item"><span class="badge" id="totPcs"></span>Total Pieces:&nbsp;</li>
                         <li class="list-group-item"><span class="badge" id="totalCtns"></span>Total Ctns:&nbsp;</li>
                         <li class="list-group-item"><span class="badge" id="totalLbs"></span>Total Weight:&nbsp;</li>
                         <li class="list-group-item"><span class="badge" id="totalCubic"></span>Total Cubic:&nbsp;</li>
                         
+                        
                     </ul>
-                    @*<div class="info">
-                        <div class="panel-body">
-                            <div class="panel-group">
-                                <div> <h5 class="pull-left"></span></h5></div>
-                                <h5 class="pull-left"><span id="totalCtns"></span></h5>
-                                <h5 class="pull-left"><span id="totalLbs"></span></h5>
-                                <h5 class="pull-left"><span id="totalCubic"></span></h5>
-                            </div>
-                        </div>
-                    </div>*@
                     <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                     <button type="button" id="btnSave" onclick="setNewAppointment()" class="btn btn-info">Set Appointment</button>
                 </div>
@@ -405,12 +396,26 @@
 <script src="~/Scripts/DataTables/dataTables.select.min.js"></script>
 
 <script type="text/javascript">
-    setTimeout(function () {
-        window.location.reload(1);
-    }, 300000);
-
+    
     var editor;
     $(document).ready(function () {
+        (function (seconds) {
+            var refresh,
+                intvrefresh = function () {
+                    clearInterval(refresh);
+                    console.log('hey');
+                    refresh = setTimeout(function () {
+                        // location.href = location.href;
+                        window.location.reload(1);
+                    }, seconds * 1000);
+                };
+
+            $(document).on('keypress click', function () { intvrefresh() });
+            intvrefresh();
+
+        }(300));
+
+
         $("#ShippingCompanyId").select2();
         $("#SelectedClientId").select2();
         $("#SelectedDivisionId").select2();
@@ -724,9 +729,7 @@
                 }
             });
             $('#setAppointmentModal').modal("hide");
-            $('#ShippingDate').val('');
-            $('#ShippingTime').val('');
-            $("#ShippingCompanyId").val(selected[0]["ScaccCode"]);
+           
             
         }
     }
@@ -798,6 +801,7 @@
     }
 
     function setAppointment() {
+        clearAppointmentForm();
         var table = $("#tableAppointments").DataTable();
         var selected = table.rows('.selected').data();
         if (selected.length == 0) {
@@ -818,8 +822,8 @@
             totalCubic += Number(selected[i][9]);
 
         }
-        $('#totalPieces').html(function (n, c) {
-            return   totalPieces ;
+        $('#totPcs').html(function (n, c) {
+            return totalPieces;
         });
         $('#totalCtns').html(function (n, c) {
             return totalCtns ;
@@ -840,10 +844,29 @@
 
            
 
-     }
+    }
+
+    function clearAppointmentForm() {
+        $('#ShippingDate').val('');
+        $('#ShippingTime').val('');
+        //$("#ShippingCompanyId").val(0);
+        $("#ShippingCompanyId")[0].selectedIndex = 0;
+        $("#AppointmentNumber").val('');
+        $("#DeliveryTypeId").val('');
+        $("#ShippingTimeLimit").val('');
+        //$("#ShippingCompanyId option:selected").removeAttr("selected");
+    }
+
 
         function setNewAppointment() {
             var table = $("#tableAppointments").DataTable();
+            $('#ShippingDate').val('');
+            $('#ShippingTime').val('');
+            $("#ShippingCompanyId").val('');
+            $("#AppointmentNumber").val('');
+            $("#DeliveryTypeId").val('');
+            $("#ShippingTimeLimit").val('');
+
             if ($('#setAppointmentModal form').valid()) {
 
                 var selected  = table.rows('.selected').data();
@@ -887,10 +910,13 @@
                     }
                 });
                 $('#setAppointmentModal').modal("hide");
-                $('#setAppointmentModal').modal("hide");
                 $('#ShippingDate').val('');
                 $('#ShippingTime').val('');
-                $("#ShippingCompanyId").val(selected[0]["ScaccCode"]);
+                $("#ShippingCompanyId").val('');
+                $("#AppointmentNumber").val('');
+                $("#DeliveryTypeId").val('');
+                $("#ShippingTimeLimit").val('');
+
             }
         }
 

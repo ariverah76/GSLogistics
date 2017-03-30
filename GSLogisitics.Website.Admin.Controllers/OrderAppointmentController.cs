@@ -428,7 +428,7 @@ namespace GSLogistics.Website.Admin.Controllers
                     AppointmentNo = appt.AppointmentNumber,
                     CustomerName = appt.Customer.CompanyName,
                     CustomerId = appt.CustomerId,
-                    DivisionId = appt.DivisionId,
+                    DivisionId = appt.Division.NameId,
                     DivisionName = appt.Division.Description,
                     Carrier = appt.CatScacCode.ScacCodeName,
                     PickTicket = appt.PickTicket,
@@ -498,7 +498,7 @@ namespace GSLogistics.Website.Admin.Controllers
                 throw new ArgumentNullException("countryId");
             }
             
-            var divisions = repository.GetDivisionByClient(customerId).Select(d => new { Id = d.DivisionId, Name = d.Description }).ToList();
+            var divisions = repository.GetDivisionByClient(customerId).Select(d => new { Id = d.DivisionId, Name = $"{d.NameId} {d.Description}" }).ToList();
             
             divisions.Insert(0,new { Id = 0, Name = "Select" });
 

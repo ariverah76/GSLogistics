@@ -20,5 +20,8 @@ namespace GSLogistics.Entities
 
         [Column(Order = 4)]
         public string CustomerId { get; set; }
+
+        [Column(Order = 5)]
+        public string NameId { get; set; }
     }
 }
