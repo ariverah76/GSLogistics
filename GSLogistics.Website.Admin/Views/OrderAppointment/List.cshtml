@@ -7,7 +7,7 @@
 
 @{
     ViewBag.Title = "List";
-    AjaxOptions ajaxOptions = new AjaxOptions { UpdateTargetId = "panelBody", LoadingElementId = "loading", LoadingElementDuration = 1000  };
+    AjaxOptions ajaxOptions = new AjaxOptions { UpdateTargetId = "panelBody", LoadingElementId = "loading", LoadingElementDuration = 1000 };
 
 }
 @{
@@ -29,7 +29,7 @@
 </div>
 <div class="tab-content">
     <div id="orders" class="tab-pane fade in active">
-        
+
         <h2>Orders</h2>
         @using (Html.BeginForm())
         {
@@ -78,6 +78,31 @@
                 </div>
             </div>
         }
+        <div class="row">
+            <div class="panel panel-default" id="selectedPanel">
+                <div class="panel-heading">
+                    Selected Orders For Appointment
+                </div>
+                <div class="panel panel-body">
+                    <table class="table table-hover" id="tableSelectedOrders">
+                        <thead>
+                            <tr>
+                                <th>Ship To</th>
+                                <th>Start Date</th>
+                                <th>Cancel Date</th>
+                                <th>PO#</th>
+                                <th>PT#</th>
+                                <th>Pcs</th>
+                                <th>Lbs</th>
+                                <th>Ctns.</th>
+                                <th>Cubic</th>
+                                <th>Ctn Size</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -227,7 +252,7 @@
             </div>
 
         </div>
-    </div> 
+    </div>
     <div id="appointments" class="tab-pane fade">
         <h2>Appointments</h2>
         <div class="row">
@@ -237,14 +262,14 @@
                 @using (Ajax.BeginForm("GetAppointments", ajaxOptions))
                 {
 
-                        <div class="btn-group btn-group-justified">
-                            <a href="#" class="btn btn-info" onclick="postAppointment()">Post Appointments</a>
-                            <a href="#" class="btn btn-info" onclick="deleteAppointment()">Cancel Appointments</a>
-                            <a href="#" class="btn btn-info" onclick="editAppointment()">Edit Appointments</a>
-                            <a href="@Url.Action("LogReport", "OrderAppointment")" class="btn btn-info">Log Report</a>
-                            <a href="#" class="btn btn-info" id="btnRefreshAppt">Refresh</a>
+                    <div class="btn-group btn-group-justified">
+                        <a href="#" class="btn btn-info" onclick="postAppointment()">Post Appointments</a>
+                        <a href="#" class="btn btn-info" onclick="deleteAppointment()">Cancel Appointments</a>
+                        <a href="#" class="btn btn-info" onclick="editAppointment()">Edit Appointments</a>
+                        <a href="@Url.Action("LogReport", "OrderAppointment")" class="btn btn-info">Log Report</a>
+                        <a href="#" class="btn btn-info" id="btnRefreshAppt">Refresh</a>
 
-                        </div>
+                    </div>
                         <div class="panel panel-default">
                             <div class="panel-heading">Search</div>
                             <div class="panel-body">
@@ -293,22 +318,22 @@
     </div>
 </div>
 
-    <div class="modal fade" id="setConfirmationNumberModal" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dissmiss="modal" aria-hidden="true"></button>
-                    <h3 class="modal-title">Set Confirmation Number</h3>
-                    <h4 class="pull-right"><span id="totalOrdersSelectedLabel"></span></h4>
-                </div>
-                <div class="modal-body">
-                    <form role="form" class="validate">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    @Html.LabelFor(m => m.ConfirmationNumber)
-                                    @Html.TextBoxFor(m => m.ConfirmationNumber, new { @class = "form-control" })
-                                    @Html.ValidationMessageFor(m => m.ConfirmationNumber)
+<div class="modal fade" id="setConfirmationNumberModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dissmiss="modal" aria-hidden="true"></button>
+                <h3 class="modal-title">Set Confirmation Number</h3>
+                <h4 class="pull-right"><span id="totalOrdersSelectedLabel"></span></h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" class="validate">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.ConfirmationNumber)
+                                @Html.TextBoxFor(m => m.ConfirmationNumber, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.ConfirmationNumber)
                             </div>
                         </div>
                     </div>
@@ -319,75 +344,75 @@
                 <button type="button" id="btnSaveConfNumber" onclick="setNewConfirmationNumber()" class="btn btn-info">Save</button>
             </div>
         </div>
-      </div>
     </div>
+</div>
 
-    <div class="modal fade" id="setAppointmentModal" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dissmiss="modal" aria-hidden="true"></button>
-                    <h3 class="modal-title">Set appointment</h3>
-                    <h4 class="pull-left"><span id="totalOrdersLabel"></span></h4>
-                   
-                </div>
-                <div class="modal-body">
-                    <form role="form" class="validate">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    @Html.LabelFor(m => m.DeliveryTypeId)
-                                    <div class="radio-inline" >
-                                        @Html.RadioButtonFor(m => m.DeliveryTypeId, 1, new { id = "IsPickup"})
-                                        <span style="padding-right:20px">Pickup</span> 
-                                        @Html.RadioButtonFor(m => m.DeliveryTypeId, 2, new { id = "IsDelivery" })
-                                        <span>Delivery</span>
-                                        @Html.ValidationMessageFor(m => m.DeliveryTypeId)
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    @Html.LabelFor(m => m.AppointmentNumber)
-                                    @Html.TextBoxFor(m => m.AppointmentNumber, new { @class = "form-control" })
-                                    @Html.ValidationMessageFor(m => m.AppointmentNumber)
-                                </div>
-                                <div class="form-group">
-                                    @Html.LabelFor(m => m.ShippingDate)
-                                    @Html.DatePicker(m => m.ShippingDate, new { @class = "form-control"} )
-                                    @Html.ValidationMessageFor(m => m.ShippingDate)
-                                </div>
-                                <div class="form-group">
-                                    @Html.LabelFor(m => m.ShippingTime)
-                                    @Html.DateTimePicker(model => model.ShippingTime, null, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight:false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
-                                    @Html.ValidationMessageFor(m => m.ShippingTime)
-                                </div>
-                                <div class="form-group">
-                                    @Html.LabelFor(m => m.ShippingTimeLimit)
-                                    @Html.DateTimePicker(model => model.ShippingTimeLimit, null, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight: false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
-                                </div>
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.ShippingCompanyId)
-                                    @Html.DropDownListFor(m => m.ShippingCompanyId, scacCodes, "Select", new { @class = "form-control" })
-                                    @Html.ValidationMessageFor(m => m.ShippingCompanyId)
+<div class="modal fade" id="setAppointmentModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dissmiss="modal" aria-hidden="true"></button>
+                <h3 class="modal-title">Set appointment</h3>
+                <h4 class="pull-left"><span id="totalOrdersLabel"></span></h4>
+
+            </div>
+            <div class="modal-body">
+                <form role="form" class="validate">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.DeliveryTypeId)
+                                <div class="radio-inline">
+                                    @Html.RadioButtonFor(m => m.DeliveryTypeId, 1, new { id = "IsPickup" })
+                                    <span style="padding-right:20px">Pickup</span>
+                                    @Html.RadioButtonFor(m => m.DeliveryTypeId, 2, new { id = "IsDelivery" })
+                                    <span>Delivery</span>
+                                    @Html.ValidationMessageFor(m => m.DeliveryTypeId)
                                 </div>
                             </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.AppointmentNumber)
+                                @Html.TextBoxFor(m => m.AppointmentNumber, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.AppointmentNumber)
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.ShippingDate)
+                                @Html.DatePicker(m => m.ShippingDate, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.ShippingDate)
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.ShippingTime)
+                                @Html.DateTimePicker(model => model.ShippingTime, null, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight: false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
+                                @Html.ValidationMessageFor(m => m.ShippingTime)
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.ShippingTimeLimit)
+                                @Html.DateTimePicker(model => model.ShippingTimeLimit, null, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight: false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ShippingCompanyId)
+                                @Html.DropDownListFor(m => m.ShippingCompanyId, scacCodes, null, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.ShippingCompanyId)
+                            </div>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <ul class="list-group">
-                        <li class="list-group-item"><span class="badge" id="totPcs"></span>Total Pieces:&nbsp;</li>
-                        <li class="list-group-item"><span class="badge" id="totalCtns"></span>Total Ctns:&nbsp;</li>
-                        <li class="list-group-item"><span class="badge" id="totalLbs"></span>Total Weight:&nbsp;</li>
-                        <li class="list-group-item"><span class="badge" id="totalCubic"></span>Total Cubic:&nbsp;</li>
-                        
-                        
-                    </ul>
-                    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-                    <button type="button" id="btnSave" onclick="setNewAppointment()" class="btn btn-info">Set Appointment</button>
-                </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <ul class="list-group">
+                    <li class="list-group-item"><span class="badge" id="totPcs"></span>Total Pieces:&nbsp;</li>
+                    <li class="list-group-item"><span class="badge" id="totalCtns"></span>Total Ctns:&nbsp;</li>
+                    <li class="list-group-item"><span class="badge" id="totalLbs"></span>Total Weight:&nbsp;</li>
+                    <li class="list-group-item"><span class="badge" id="totalCubic"></span>Total Cubic:&nbsp;</li>
+
+
+                </ul>
+                <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSave" onclick="setNewAppointment()" class="btn btn-info">Set Appointment</button>
             </div>
         </div>
     </div>
+</div>
 
 
 @Scripts.Render("~/bundles/datetimepicker")
@@ -396,7 +421,7 @@
 <script src="~/Scripts/DataTables/dataTables.select.min.js"></script>
 
 <script type="text/javascript">
-    
+
     var editor;
     $(document).ready(function () {
         (function (seconds) {
@@ -415,16 +440,20 @@
 
         }(300));
 
-
+        $("#selectedPanel").hide();
         $("#ShippingCompanyId").select2();
         $("#SelectedClientId").select2();
         $("#SelectedDivisionId").select2();
 
         $(".select2-container").width(300);
 
+        var tableSelectedOrders = $("tableSelectedOrders").DataTable({
+        });
+
         $("#tableAppointments").DataTable({
             dom: 'Bfrtip',
             responsive: true,
+            "displayLength": 25,
                 columnDefs: [{
                     orderable: false,
                     className: 'select-checkbox',
@@ -432,7 +461,7 @@
                 }],
                 columns: [
                     {
-                       
+
                     },
                     {
                         data: 'StoreName'
@@ -497,7 +526,7 @@
                     {
                         data: 'ConfirmationNumber'
                     }
-                    , 
+                    ,
                     {
                         data: 'DivisionId', visible :false
                     }
@@ -530,10 +559,22 @@
                     }
                 }
 
-            });
+        });
+
+        var tableorders = $("#tableAppointments").DataTable();
+
+        tableorders.on('select', function (e, dt, type, indexes) {
+            var row = tableorders.row($(this).parents('tr'));
+            var rowNode = dt.node();
+           // row.remove();
+
+            tableSelectedOrders
+                .row.add(rowNode)
+                .draw();
+        });
 
             $('#tableAppointments tfoot th').each(function () {
-                
+
                 var title = $(this).text();
                 if (title == "PO#" || title == "PT#") {
 
@@ -567,12 +608,51 @@
                     }
                 });
             });
-             
+
+            var tableSelected = $("#tableSelectedOrders").DataTable();
+
+            table.on('select', function (e, dt, type, indexes) {
+                $("#selectedPanel").show(100);
+                var data = table.rows(indexes).data();
+                tableSelected.row.add([
+                    data[0]["StoreName"],
+                    data[0][2],
+                    data[0][3],
+                    data[0]["PurchaseOrderId"],
+                    data[0]["PickTicketId"],
+                    data[0][6],
+                    data[0][7],
+                    data[0][8],
+                    data[0][9],
+                    data[0][10]
+                ]).draw(false);
+            });
+            table.on('deselect', function (e, dt, type, indexes) {
+                if (type === 'row') {
+                    var unselected = table.rows(indexes).data();
+
+                    var existingRow = tableSelected
+                            .rows(function (idx, data, node) {
+                                return data[0] == unselected[0]["StoreName"] && data[3] == unselected[0]["PurchaseOrderId"] && data[4] == unselected[0]["PickTicketId"] ?
+                                true : false;
+                            });
+                    if (existingRow) {
+                        tableSelected.row(existingRow).remove().draw();
+                        if (tableSelected.data().count() == 0) {
+                            $("#selectedPanel").hide(500);
+                        }
+
+                    }
+
+
+                }
+            });
+
             function myCallbackFunction(updatedCell, updatedRow, oldValue) {
                 console.log("The new value for the cell is: " + updatedCell.data());
                 console.log("The values for each cell in that row are: " + updatedRow.data());
 
-                
+
 
                 var model = {
                     PurchaseOrderId: updatedRow.data()["PurchaseOrderId"],
@@ -602,9 +682,9 @@
                 "confirmationButton" : true,
                 "inputTypes": [
                     {
-                        "column":0, 
-                        "type":"text", 
-                        "options":null 
+                        "column":0,
+                        "type":"text",
+                        "options":null
                     }]
 
             });
@@ -650,7 +730,7 @@
 
 
             });
-            
+
     });
 
     function editAppointment() {
@@ -666,7 +746,7 @@
 
         for (var i = 0; i < selected.length; i++) {
             appts.push(selected[i]["AppointmentNo"]);
-           
+
         }
 
         var allSameAppointmentNumber = appts.allValuesSame();
@@ -691,7 +771,7 @@
 
 
     }
-    
+
     function saveEditedAppointments() {
         var table = $("#tableappt").DataTable();
         if ($('#setAppointmentModal form').valid()) {
@@ -729,8 +809,8 @@
                 }
             });
             $('#setAppointmentModal').modal("hide");
-           
-            
+
+
         }
     }
 
@@ -808,7 +888,7 @@
             alert("Please select at least an Order");
             return false;
         }
-        $('#totalOrdersLabel').html(function(n, c) { 
+        $('#totalOrdersLabel').html(function(n, c) {
             return selected.length + ' order(s) to assign'
         });
         var totalPieces = 0;
@@ -842,30 +922,25 @@
             backdrop: "static"
         });
 
-           
+
 
     }
 
     function clearAppointmentForm() {
         $('#ShippingDate').val('');
         $('#ShippingTime').val('');
-        //$("#ShippingCompanyId").val(0);
         $("#ShippingCompanyId")[0].selectedIndex = 0;
         $("#AppointmentNumber").val('');
-        $("#DeliveryTypeId").val('');
         $("#ShippingTimeLimit").val('');
-        //$("#ShippingCompanyId option:selected").removeAttr("selected");
+        $("#ShippingCompanyId").val('').trigger('change');
+        $('input[name = DeliveryTypeId]').attr('checked', false);
+
     }
 
 
         function setNewAppointment() {
             var table = $("#tableAppointments").DataTable();
-            $('#ShippingDate').val('');
-            $('#ShippingTime').val('');
-            $("#ShippingCompanyId").val('');
-            $("#AppointmentNumber").val('');
-            $("#DeliveryTypeId").val('');
-            $("#ShippingTimeLimit").val('');
+
 
             if ($('#setAppointmentModal form').valid()) {
 
@@ -910,12 +985,6 @@
                     }
                 });
                 $('#setAppointmentModal').modal("hide");
-                $('#ShippingDate').val('');
-                $('#ShippingTime').val('');
-                $("#ShippingCompanyId").val('');
-                $("#AppointmentNumber").val('');
-                $("#DeliveryTypeId").val('');
-                $("#ShippingTimeLimit").val('');
 
             }
         }
@@ -964,7 +1033,7 @@
                 });
 
             }
-           
+
         }
 
     function deleteAppointment() {
