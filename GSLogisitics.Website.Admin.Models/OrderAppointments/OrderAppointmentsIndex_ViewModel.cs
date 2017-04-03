@@ -42,6 +42,11 @@ namespace GSLogistics.Website.Admin.Models
         [Required]
         public string ConfirmationNumber { get; set; }
 
+        [Display(Name = "Ship For")]
+        public DateTime? ShipFor { get; set; }
+
+        public bool EnableShipForFilter { get; set; }
+
 
 
         private List<OrderAppointment> _orderAppointments;

@@ -62,32 +62,14 @@ namespace GSLogistics.Entities
         [ForeignKey("DivisionId")]
         public virtual CustomerDivision Division { get; set; }
 
-        //[Column(Order = 3)]
-        //public int CustomerId { get; set; }
-        //[Column(Order = 4)]
-        //public string CustomerName { get; set; }
-        //[Column(Order = 5)]
-        //public int StoreId { get; set; }
-        //public string StoreName { get; set; }
-
-
-
-
-
-
-
-
-
-
-        //public DateTime ShippingTime { get; set; }
-        //public DateTime ShippingDate { get; set; }
-        //public string AppointmentNumber { get; set; }
-
         [Column(Order = 16)]
         public int Status { get; set; }
 
         [Column(Order = 18)]
         public string Notes { get; set; }
+
+        [Column(Order = 20)]
+        public DateTime? ShipFor { get; set; }
         
 
     }

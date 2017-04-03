@@ -74,6 +74,24 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    @*<input type="checkbox" id="chkShipForSearch" />*@
+
+                                    @Html.CheckBoxFor(m => m.EnableShipForFilter, new { @id = "chkShipForSearch" })
+                                    @Html.LabelFor(model => model.ShipFor)
+                                    @if (!Model.EnableShipForFilter)
+                                    {
+                                        @Html.DatePicker(x => x.ShipFor, new { @class = "form-control", @disabled = "disabled" })
+                                    }
+                                    else
+                                    {
+                                        @Html.DatePicker(x => x.ShipFor, new { @class = "form-control" })
+                                    }
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -301,6 +319,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                
                             </div>
                         </div>
                 }
@@ -444,11 +463,12 @@
         $("#ShippingCompanyId").select2();
         $("#SelectedClientId").select2();
         $("#SelectedDivisionId").select2();
+       // $("#ShipFor").attr('disabled', 'disabled');
 
         $(".select2-container").width(300);
 
-        var tableSelectedOrders = $("tableSelectedOrders").DataTable({
-        });
+        //var tableSelectedOrders = $("tableSelectedOrders").DataTable({
+        //});
 
         $("#tableAppointments").DataTable({
             dom: 'Bfrtip',
@@ -561,17 +581,17 @@
 
         });
 
-        var tableorders = $("#tableAppointments").DataTable();
+        //var tableorders = $("#tableAppointments").DataTable();
 
-        tableorders.on('select', function (e, dt, type, indexes) {
-            var row = tableorders.row($(this).parents('tr'));
-            var rowNode = dt.node();
-           // row.remove();
+        //tableorders.on('select', function (e, dt, type, indexes) {
+        //    var row = tableorders.row($(this).parents('tr'));
+        //    var rowNode = dt.node();
+        //   // row.remove();
 
-            tableSelectedOrders
-                .row.add(rowNode)
-                .draw();
-        });
+        //    tableSelectedOrders
+        //        .row.add(rowNode)
+        //        .draw();
+        //});
 
             $('#tableAppointments tfoot th').each(function () {
 
@@ -705,7 +725,22 @@
             $('#DeliveryTypeId').change(function () {
                 alert($('#DeliveryTypeId').val());
             });
+            $('#chkShipForSearch').change(function () {
+                if ($('#chkShipForSearch').prop('checked') == true) {
+                    $('#ShipFor').removeAttr('disabled');
+                    $('#CancelDateStartDate').attr('disabled', 'disabled');
+                    $('#CancelDateEndDate').attr('disabled', 'disabled');
+                    
+                } else {
+                    $('#ShipFor').attr('disabled', 'disabled');
+                    $('#CancelDateStartDate').removeAttr('disabled');
+                    $('#CancelDateEndDate').removeAttr('disabled');
+                }
 
+
+            });
+
+        
             $("#SelectedClientId").change(function () {
                 var selectedItem = $(this).val();
                 var ddDivisions = $("#SelectedDivisionId");

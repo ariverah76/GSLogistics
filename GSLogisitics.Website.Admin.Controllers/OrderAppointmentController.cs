@@ -116,12 +116,17 @@ namespace GSLogistics.Website.Admin.Controllers
             {
                 ordersforAppt = ordersforAppt.Where(x => x.StartDate <= model.CancelDateEndDate.Value);
             }
+
+            if (model.ShipFor.HasValue)
+            {
+                ordersforAppt = ordersforAppt.Where(x => x.ShipFor.HasValue && (x.ShipFor.Value.Year == model.ShipFor.Value.Year && x.ShipFor.Value.Month == model.ShipFor.Value.Month && x.ShipFor.Value.Day == model.ShipFor.Value.Day));
+            }
             
             foreach (var o in ordersforAppt.Where(x => x.Status == 0).ToList())
             {
                 try
                 {
-                    orders.Add(new Models.OrderAppointment() { BoxesNumber = o.BoxesCount.Value, BoxSize = o.BoxSize, CustomerId = o.CustomerId, CustomerName = o.CompanyName, EndDate = o.EndDate.Value, EstimatedShippingDate = o.ScheduledShippingDate, PickTicketId = o.PickTicketId, Pieces = o.Pieces.Value, PurchaseOrderId = o.PurchaseOrderId, StartDate = o.StartDate.Value, Volume = o.Size.Value, Weight = o.Weigth, StoreName = o.ShipTo, DivisionName = o.Division.Description, PtBulk = o.PtBulk, Notes = o.Notes , ConfirmationNumber = o.ConfirmationNumber, DivisionId = o.DivisionId });
+                    orders.Add(new Models.OrderAppointment() { BoxesNumber = o.BoxesCount.Value, BoxSize = o.BoxSize, CustomerId = o.CustomerId, CustomerName = o.CompanyName, EndDate = o.EndDate.Value, EstimatedShippingDate = o.ScheduledShippingDate, PickTicketId = o.PickTicketId, Pieces = o.Pieces.Value, PurchaseOrderId = o.PurchaseOrderId, StartDate = o.StartDate.Value, Volume = o.Size.Value, Weight = o.Weigth, StoreName = o.ShipTo, DivisionName = o.Division.Description, PtBulk = o.PtBulk, Notes = o.Notes , ConfirmationNumber = o.ConfirmationNumber, DivisionId = o.DivisionId, ShipFor = o.ShipFor });
                 }
                 catch (Exception exc)
                 {
@@ -130,7 +135,7 @@ namespace GSLogistics.Website.Admin.Controllers
 
             }
           
-            var orderAppts = repository.OrderAppointments.ToList();
+           // var orderAppts = repository.OrderAppointments.Where(x => x.ShipFor >= new DateTime(2017,04,18)).ToList();
 
             model.OrderAppointments = orders;
 
