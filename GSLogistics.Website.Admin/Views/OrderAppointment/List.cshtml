@@ -632,20 +632,22 @@
             var tableSelected = $("#tableSelectedOrders").DataTable();
 
             table.on('select', function (e, dt, type, indexes) {
-                $("#selectedPanel").show(100);
-                var data = table.rows(indexes).data();
-                tableSelected.row.add([
-                    data[0]["StoreName"],
-                    data[0][2],
-                    data[0][3],
-                    data[0]["PurchaseOrderId"],
-                    data[0]["PickTicketId"],
-                    data[0][6],
-                    data[0][7],
-                    data[0][8],
-                    data[0][9],
-                    data[0][10]
-                ]).draw(false);
+                if (type == "row") {
+                    $("#selectedPanel").show(100);
+                    var data = table.rows(indexes).data();
+                    tableSelected.row.add([
+                        data[0]["StoreName"],
+                        data[0][2],
+                        data[0][3],
+                        data[0]["PurchaseOrderId"],
+                        data[0]["PickTicketId"],
+                        data[0][6],
+                        data[0][7],
+                        data[0][8],
+                        data[0][9],
+                        data[0][10]
+                    ]).draw(false);
+                }
             });
             table.on('deselect', function (e, dt, type, indexes) {
                 if (type === 'row') {

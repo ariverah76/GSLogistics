@@ -95,6 +95,7 @@
     <Compile Include="Concrete\GSLogisticsRepository_ScacCode.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="CustomerDivision.cs" />
+    <Compile Include="GSExternalContext.cs" />
     <Compile Include="GSLogisticsContext.cs" />
     <Compile Include="OrderAppointment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
