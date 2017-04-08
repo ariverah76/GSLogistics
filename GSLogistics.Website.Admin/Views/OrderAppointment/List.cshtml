@@ -418,11 +418,12 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <ul class="list-group">
+                <ul class="list-group" id="summary">
                     <li class="list-group-item"><span class="badge" id="totPcs"></span>Total Pieces:&nbsp;</li>
                     <li class="list-group-item"><span class="badge" id="totalCtns"></span>Total Ctns:&nbsp;</li>
                     <li class="list-group-item"><span class="badge" id="totalLbs"></span>Total Weight:&nbsp;</li>
                     <li class="list-group-item"><span class="badge" id="totalCubic"></span>Total Cubic:&nbsp;</li>
+                    <li class="list-group-item"><span class="badge" id="totalgohs"></span>Total GOH's:&nbsp;</li>
 
 
                 </ul>
@@ -564,13 +565,17 @@
                     var last = null;
 
                     api.column(14, { page: 'current' }).data().each(function (group, i) {
+                        val = api.row(api.row($(rows).eq(i)).index()).data();
+                        var client = val[13];
                         if (last !== group) {
+                            api.column
                             $(rows).eq(i).before(
-                                '<tr class="group"><td colspan="14">' + group + '</td></tr>'
+                                '<tr class="group"><td colspan="14">' + client + ' - ' + group + '</td></tr>'
                             );
 
                             last = group;
                         }
+
                     });
                 },
                 "createdRow": function (row, data, dataIndex) {
@@ -932,11 +937,17 @@
         var totalCtns = 0;
         var totalLbs = 0;
         var totalCubic = 0;
+        var gohs = 0;
         for (var i = 0; i < selected.length; i++) {
             totalPieces += Number(selected[i][6]);
             totalLbs += Number(selected[i][7]);
             totalCtns += Number(selected[i][8]);
             totalCubic += Number(selected[i][9]);
+            if (selected[i][10] == "GOH") {
+                gohs += Number(selected[i][6]);
+               // ('#totalgohs').show();
+
+            }
 
         }
         $('#totPcs').html(function (n, c) {
@@ -951,6 +962,20 @@
         $('#totalLbs').html(function (n, c) {
             return totalCubic;
         });
+        if (gohs > 0) {
+            $('#totalgohs').html(function (n, c) {
+                return gohs;
+            });
+        }
+        else {
+            $('#summary li:last').remove();
+            //$("#summary li").each(function () {
+            //    var liText = $(this).text();
+            //    console.log(liText);
+            //    if (liText == '0')
+            //        $(this).hide();
+            //});
+        }
 
         $('#setAppointmentModal form').validate();
 

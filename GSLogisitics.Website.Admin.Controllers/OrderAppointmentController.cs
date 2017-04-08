@@ -33,10 +33,10 @@ namespace GSLogistics.Website.Admin.Controllers
         public ActionResult List()
         {
             var model = new OrderAppointmentsIndex_ViewModel();
-            model.CancelDateStartDate = DateTime.Today.AddDays(-60);
-            model.CancelDateEndDate = DateTime.Today;
-            model.ShippingDateStart = DateTime.Today.AddDays(-60);
-            model.ShippingDateEnd = DateTime.Today.AddDays(15);
+            //model.CancelDateStartDate = DateTime.Today.AddDays(-60);
+            //model.CancelDateEndDate = DateTime.Today;
+            //model.ShippingDateStart = DateTime.Today.AddDays(-60);
+            //model.ShippingDateEnd = DateTime.Today.AddDays(15);
 
             return this.List(model);
 
@@ -500,7 +500,8 @@ namespace GSLogistics.Website.Admin.Controllers
         {
             if (String.IsNullOrEmpty(customerId))
             {
-                throw new ArgumentNullException("countryId");
+                //throw new ArgumentNullException("countryId");
+                return new EmptyResult();
             }
             
             var divisions = repository.GetDivisionByClient(customerId).Select(d => new { Id = d.DivisionId, Name = $"{d.NameId} {d.Description}" }).ToList();
