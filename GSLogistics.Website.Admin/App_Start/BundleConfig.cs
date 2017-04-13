@@ -40,6 +40,9 @@ namespace GSLogistics.Website.Admin.App_Start
             bundles.Add(new ScriptBundle("~/bundles/datetimepicker").Include(
                        "~/Scripts/smalot-datetimepicker/bootstrap-datetimepicker.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/toastr").Include(
+                       "~/Scripts/toastr.min.js"));
+
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
@@ -65,6 +68,9 @@ namespace GSLogistics.Website.Admin.App_Start
             bundles.Add(new StyleBundle("~/Content/select2").Include(
                         "~/Content/css/select2.css", // NUGET
                         "~/Content/select2-bootstrap.css"));
+
+            bundles.Add(new StyleBundle("~/Content/toastr").Include(
+                       "~/Content/toastr.css"));
         }
     }
 }

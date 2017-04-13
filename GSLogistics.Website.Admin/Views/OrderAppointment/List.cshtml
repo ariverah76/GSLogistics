@@ -696,7 +696,7 @@
                     data: JSON.stringify(model),
                     dataType: "json",
                     success: function (result) {
-                        alert('Notes updated');
+                        toastr.success('Notes updated!')
                         //window.location.href = result.url;
                     }
                 });
@@ -729,9 +729,7 @@
 
             });
 
-            $('#DeliveryTypeId').change(function () {
-                alert($('#DeliveryTypeId').val());
-            });
+            
             $('#chkShipForSearch').change(function () {
                 if ($('#chkShipForSearch').prop('checked') == true) {
                     $('#ShipFor').removeAttr('disabled');
@@ -766,7 +764,7 @@
 
                     }
                     , error: function (xhr, ajaxOptions, thrownError) {
-                        alert('Failed to get Divisions');
+                        toastr.error('Failed to get Divisions');
                     }
                 });
 
@@ -779,7 +777,7 @@
         var table = $("#tableappt").DataTable();
         var selected = table.rows('.selected').data();
         if (selected.length == 0) {
-            alert("Please select at least an Order");
+            toastr.warning("Please select at least an Order");
             return false;
         }
         var appts = new Array();
@@ -845,7 +843,7 @@
                 data:  JSON.stringify(model),
                 dataType: "json",
                 success: function (result) {
-                    alert('Appointment set successfully');
+                    toastr.success('Appointment set successfully');
                     $("#btnRefreshAppt").trigger("click");
                     //window.location.href = "GetAppointments";
                 }
@@ -869,7 +867,8 @@
         var table = $("#tableAppointments").DataTable();
         var selected = table.rows('.selected').data();
         if (selected.length == 0) {
-            alert("Please select at least an Order");
+            toastr.warning("Please select at least an Order");
+            
             return false;
         }
         $('#totalOrdersSelectedLabel').html(function (n, c) {
@@ -912,7 +911,7 @@
                 data: JSON.stringify(model),
                 dataType: "json",
                 success: function (result) {
-                    alert('Confirmation Number set successfully');
+                    toastr.success('Confirmation Number set successfully');
                     $("#btnRefresh").trigger("click");
                    // window.location.href = "List";
                 }
@@ -927,7 +926,7 @@
         var table = $("#tableAppointments").DataTable();
         var selected = table.rows('.selected').data();
         if (selected.length == 0) {
-            alert("Please select at least an Order");
+            toastr.warning("Please select at least an Order");
             return false;
         }
         $('#totalOrdersLabel').html(function(n, c) {
@@ -1041,9 +1040,12 @@
                     data:  JSON.stringify(model),
                     dataType: "json",
                     success: function (result) {
-                        alert('Appointment set successfully');
+                        toastr.info('Appointment set successfully');
                         $("#btnRefresh").trigger("click");
                         //window.location.href = "List";
+                    },
+                    error: function (result) {
+                        toastr.error('something went wrong');
                     }
                 });
                 $('#setAppointmentModal').modal("hide");
@@ -1055,7 +1057,7 @@
             var table = $("#tableappt").DataTable();
             var selected = table.rows('.selected').data();
             if (selected.length == 0) {
-                alert("Please select at least one Appointment");
+                toastr.warning("Please select at least one Appointment");
                 return false;
             }
 
@@ -1088,7 +1090,8 @@
                     data: JSON.stringify(model),
                     dataType: "json",
                     success: function (result) {
-                        alert('Appointment(s) posted successfully');
+                        toastr.success('Appointment(s) posted successfully');
+                        alert();
                         table.rows('.selected').remove().draw(false);
                     }
 
@@ -1102,7 +1105,8 @@
         var table = $("#tableappt").DataTable();
         var selected = table.rows('.selected').data();
         if (selected.length == 0) {
-            alert("Please select at least one Appointment");
+            
+            toastr.warning("Please select at least one Appointment");
             return false;
         }
 
@@ -1135,7 +1139,8 @@
                 data: JSON.stringify(model),
                 dataType: "json",
                 success: function (result) {
-                    alert('Appointment(s) cancelled succesfully');
+                    
+                    toastr.success('Appointment(s) cancelled successfully');
                     table.rows('.selected').remove().draw(false);
                 }
 

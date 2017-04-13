@@ -33,7 +33,7 @@ namespace GSLogistics.Website.Admin.Models
         {
             get { return ShipTime.ToShortTimeString(); }
         }
-        public string SaccCode { get; set; }
+        public string ScaccCode { get; set; }
         public string Carrier { get; set; }
 
         public string PurchaseOrder { get; set; }
@@ -45,6 +45,7 @@ namespace GSLogistics.Website.Admin.Models
         public string DivisionId { get; set; }
         public string DivisionName { get; set; }
         public string ShipTo { get; set; }
+        public short? DeliveryTypeId { get; set; }
 
 
 

@@ -159,6 +159,14 @@
       <Project>{d8dd60d0-a0c4-4533-aa8f-f98aed3de7d1}</Project>
       <Name>GSLogistics.Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GSLogistics.Reporting\GSLogistics.Reporting.csproj">
+      <Project>{55436367-194b-4627-bc65-92caf6853028}</Project>
+      <Name>GSLogistics.Reporting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GSLogistics.Website.Admin.Resources\GSLogistics.Website.Admin.Resources.csproj">
+      <Project>{19a5b306-3358-4cce-be7c-db9f4910e1c9}</Project>
+      <Name>GSLogistics.Website.Admin.Resources</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GSLogistics.Website.Common.Controllers\GSLogistics.Website.Common.Controllers.csproj">
       <Project>{5A4BC5AB-1B01-4EC7-B38F-4124661D1496}</Project>
       <Name>GSLogistics.Website.Common.Controllers</Name>

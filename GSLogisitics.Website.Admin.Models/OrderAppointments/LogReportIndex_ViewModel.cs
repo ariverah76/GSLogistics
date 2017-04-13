@@ -40,5 +40,7 @@ namespace GSLogistics.Website.Admin.Models
         [Display(Name = "Delivery Type")]
         public short? DeliveryTypeId { get; set; }
 
+        public string ReportFormat { get; set; }
+
     }
 }

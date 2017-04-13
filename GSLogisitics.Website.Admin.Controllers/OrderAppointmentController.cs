@@ -6,8 +6,12 @@ using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using GSLogistics.Website.Admin.Resources;
+
 namespace GSLogistics.Website.Admin.Controllers
 {
     [Authorize]
@@ -148,40 +152,61 @@ namespace GSLogistics.Website.Admin.Controllers
         [HttpPost]
         public ActionResult SetAppointment(NewAppointment_ViewModel model)
         {
+            //No needed for now!!!
+            
+            //using (var woContext = new GSLogistics.Entities.GSExternalContext())
+            //{
+
+            //    var scriptToRun = Resources.Scripts.OrderStatusByPickTicket;
+
+            //    var clientId = model.Orders.FirstOrDefault().CustomerId;
+            //    var picktickets = model.Orders.Select(x => x.PickTicketId).ToList();
+
+            //    string pts = string.Empty;
+            //    picktickets.ForEach(x => pts += string.Format("'{0}',", x));
+            //    pts = pts.Substring(0,pts.Length - 1);
+
+            //    scriptToRun = string.Format(scriptToRun, clientId, pts);
+
+            //    var result = woContext.Database.SqlQuery<OrderStatus>(scriptToRun).ToList();
+
+            //    return Json(new { result = "Error" });
+            //}
+
             foreach (var order in model.Orders)
-            {
-                Entities.Appointment appointment = new Entities.Appointment();
-                appointment.CustomerId = order.CustomerId;
-                appointment.DateAdd = DateTime.Now;
-                appointment.PickTicket = order.PickTicketId;
-                appointment.DivisionId = order.DivisionId;
-                
-                appointment.ScacCode = model.ScacCode;
-                appointment.ShipDate = model.ShippingDate;
-                appointment.ShipTime = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTime.Hour, model.ShippingTime.Minute,0);
-                appointment.AppointmentNumber = model.AppointmentNumber;
-                appointment.DeliveryTypeId = model.DeliveryTypeId;
-
-                if (model.ShippingTimeLimit.HasValue)
                 {
-                    appointment.ShippingTimeLimit = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTimeLimit.Value.Hour, model.ShippingTimeLimit.Value.Minute, 0);
+                    Entities.Appointment appointment = new Entities.Appointment();
+                    appointment.CustomerId = order.CustomerId;
+                    appointment.DateAdd = DateTime.Now;
+                    appointment.PickTicket = order.PickTicketId;
+                    appointment.DivisionId = order.DivisionId;
+
+                    appointment.ScacCode = model.ScacCode;
+                    appointment.ShipDate = model.ShippingDate;
+                    appointment.ShipTime = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTime.Hour, model.ShippingTime.Minute, 0);
+                    appointment.AppointmentNumber = model.AppointmentNumber;
+                    appointment.DeliveryTypeId = model.DeliveryTypeId;
+
+                    if (model.ShippingTimeLimit.HasValue)
+                    {
+                        appointment.ShippingTimeLimit = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTimeLimit.Value.Hour, model.ShippingTimeLimit.Value.Minute, 0);
+                    }
+
+                    appointment.PtBulk = string.Empty;
+                    if (!string.IsNullOrEmpty(order.PtBulk))
+                    {
+                        appointment.PtBulk = order.PtBulk;
+                        appointment.PickTicket = order.PtBulk;
+                    }
+                    repository.SaveAppointment(appointment);
+
+                    Entities.OrderAppointment oappt = new Entities.OrderAppointment() { PurchaseOrderId = order.PurchaseOrderId, PickTicketId = order.PickTicketId, PtBulk = order.PtBulk, CustomerId = order.CustomerId, Status = 1 };
+
+                    repository.UpdateOrderAppointment(oappt);
+
                 }
 
-                appointment.PtBulk = string.Empty;
-                if (!string.IsNullOrEmpty(order.PtBulk))
-                {
-                    appointment.PtBulk = order.PtBulk;
-                    appointment.PickTicket = order.PtBulk;
-                }
-                repository.SaveAppointment(appointment);
-
-                Entities.OrderAppointment oappt = new Entities.OrderAppointment() { PurchaseOrderId = order.PurchaseOrderId, PickTicketId = order.PickTicketId, PtBulk = order.PtBulk, CustomerId = order.CustomerId, Status = 1 };
-
-                repository.UpdateOrderAppointment(oappt);
-                    
-            }
-
-            return Json(new { url = "OrderAppointment/List" });
+            return Json(new { result = "Success", url = "OrderAppointment/List" });
         }
 
         [HttpPost]
@@ -364,7 +389,7 @@ namespace GSLogistics.Website.Admin.Controllers
                     Carrier = appt.CatScacCode.ScacCodeName,
                     PickTicket = appt.PickTicket,
                     PtBulk = appt.PtBulk,
-                    SaccCode = appt.ScacCode,
+                    ScaccCode = appt.ScacCode,
                     ShipDate = appt.ShipDate,
                     ShipTime = appt.ShipTime, 
                     Posted = appt.Posted.ToString(),
@@ -394,6 +419,132 @@ namespace GSLogistics.Website.Admin.Controllers
 
 
         #region LogReport
+
+        private List<Models.Appointment> GetAppointments(LogReportIndex_ViewModel model)
+        {
+            List<Models.Appointment> appointments = new List<Models.Appointment>();
+
+            var appointmentList = repository.Appointments.AsQueryable();
+
+            appointmentList = appointmentList.Where(x => x.Posted == true);
+            if (model.SelectedDay.HasValue)
+            {
+                appointmentList = appointmentList.Where(x => x.ShipDate.Year == model.SelectedDay.Value.Year && x.ShipDate.Month == model.SelectedDay.Value.Month && x.ShipDate.Day == model.SelectedDay.Value.Day);
+            }
+
+            if (model.DeliveryTypeId.HasValue)
+            {
+                appointmentList = appointmentList.Where(x => x.DeliveryTypeId == model.DeliveryTypeId.Value);
+            }
+
+            if (!string.IsNullOrEmpty(model.SelectedClientId))
+            {
+                appointmentList = appointmentList.Where(x => x.CustomerId == model.SelectedClientId);
+            }
+
+            if (model.SelectedDivisionId.HasValue)
+            {
+                appointmentList = appointmentList.Where(x => x.DivisionId == model.SelectedDivisionId.Value);
+            }
+
+            var orderAppts = repository.OrderAppointments.ToList();
+
+            var list = appointmentList.ToList();
+
+            foreach (var appt in appointmentList.ToList())
+            {
+                var thisAppointment = new Models.Appointment()
+                {
+                    AppointmentNo = appt.AppointmentNumber,
+                    CustomerName = appt.Customer.CompanyName,
+                    CustomerId = appt.CustomerId,
+                    DivisionId = appt.Division.NameId,
+                    DivisionName = appt.Division.Description,
+                    Carrier = appt.CatScacCode.ScacCodeName,
+                    PickTicket = appt.PickTicket,
+                    PtBulk = appt.PtBulk,
+                    ScaccCode = appt.ScacCode,
+                    ShipDate = appt.ShipDate,
+                    ShipTime = appt.ShipTime,
+                    Posted = appt.Posted.ToString(),
+                    DateAdded = appt.DateAdd,
+                    DeliveryTypeId = appt.DeliveryTypeId
+
+                };
+
+                var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
+                if (orderAppt != null)
+                {
+                    thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
+                    thisAppointment.Pieces = orderAppt.Pieces.Value;
+                    thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
+                    thisAppointment.ShipTo = orderAppt.ShipTo;
+                }
+
+                appointments.Add(thisAppointment);
+            }
+            return appointments;
+        }
+
+
+        public ActionResult GenerateLogReport(LogReportIndex_ViewModel model)
+        {
+            //var model = new LogReportIndex_ViewModel()
+            //{
+            //    DeliveryTypeId = deliveryTypeId,
+            //    SelectedClientId = customerId,
+            //    SelectedDivisionId = divisionId,
+            //    SelectedDay = selectedDay
+                
+            //};
+            // TODO: is possible get the appointments from client?
+            
+            var appointments = this.GetAppointments(model);
+
+            var reportingService = new Reporting.ReportingService();
+
+            string mimeType = null;
+            var result = reportingService.RenderReport(appointments, "LogReport.rdlc", "DataSet1", model.ReportFormat, out mimeType);
+
+            var fName = string.Format("LogReport_{0}", DateTime.Now.ToShortDateString().Replace("/", "").Replace(":", ""));
+            Session[fName] = result;
+
+            return Json(new { success = true, fName, mimeType, model.ReportFormat }, JsonRequestBehavior.AllowGet);
+
+
+        }
+
+        [HttpGet]
+        public ActionResult DownloadReport(string reportName, string format, string fileExtension)
+        {
+            
+            var reportingService = new Reporting.ReportingService();
+
+            var reportBytes = Session[reportName];
+            if (reportBytes == null)
+            {
+                return new EmptyResult();
+            }
+
+            Session[reportName] = null;
+
+            FileResult fileResult = new FileContentResult(reportBytes as byte[], format);
+            fileResult.FileDownloadName = reportingService.GetReportName("LogReport", fileExtension);
+            return fileResult;
+        }
+
+
+        public ActionResult TestDownload(LogReportIndex_ViewModel model)
+        {
+            var reportingService = new Reporting.ReportingService();
+
+            string mimeType = null;
+            var result = reportingService.RenderReport(model.Appointments, "LogReport.rdlc", "DataSet1", "excel", out mimeType);
+
+            FileResult fileResult = new FileContentResult(result, mimeType);
+            fileResult.FileDownloadName = reportingService.GetReportName("LogReport", "excel");
+            return fileResult;
+        }
 
         public PartialViewResult GetLogReport(LogReportIndex_ViewModel model)
         {
@@ -438,11 +589,12 @@ namespace GSLogistics.Website.Admin.Controllers
                     Carrier = appt.CatScacCode.ScacCodeName,
                     PickTicket = appt.PickTicket,
                     PtBulk = appt.PtBulk,
-                    SaccCode = appt.ScacCode,
+                    ScaccCode = appt.ScacCode,
                     ShipDate = appt.ShipDate,
                     ShipTime = appt.ShipTime,
                     Posted = appt.Posted.ToString(),
-                    DateAdded = appt.DateAdd
+                    DateAdded = appt.DateAdd,
+                    DeliveryTypeId = appt.DeliveryTypeId
 
                 };
 
@@ -473,6 +625,7 @@ namespace GSLogistics.Website.Admin.Controllers
         [HttpPost]
         public ActionResult LogReport(LogReportIndex_ViewModel model)
         {
+
             var clients = repository.Customers.OrderBy(x=> x.CompanyName).Select(x => new { Id = x.CustomerId, Name = x.CompanyName }).ToList();
 
             Dictionary<string, string> result = new Dictionary<string, string>();

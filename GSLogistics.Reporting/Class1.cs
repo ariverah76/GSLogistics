@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GSLogistics.Website.Admin.Resources
+namespace GSLogistics.Reporting
 {
     public class Class1
     {
