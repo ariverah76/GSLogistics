@@ -545,8 +545,8 @@ namespace GSLogistics.Reporting.Reports {
                         string ScaccCode, 
                         string Carrier, 
                         string PurchaseOrder, 
-                        string Pieces, 
-                        string BoxesNumber, 
+                        int Pieces, 
+                        int BoxesNumber, 
                         string ShipTo) {
                 DataTable1Row rowDataTable1Row = ((DataTable1Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
@@ -643,9 +643,9 @@ namespace GSLogistics.Reporting.Reports {
                 base.Columns.Add(this.columnCarrier);
                 this.columnPurchaseOrder = new global::System.Data.DataColumn("PurchaseOrder", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPurchaseOrder);
-                this.columnPieces = new global::System.Data.DataColumn("Pieces", typeof(string), null, global::System.Data.MappingType.Element);
+                this.columnPieces = new global::System.Data.DataColumn("Pieces", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPieces);
-                this.columnBoxesNumber = new global::System.Data.DataColumn("BoxesNumber", typeof(string), null, global::System.Data.MappingType.Element);
+                this.columnBoxesNumber = new global::System.Data.DataColumn("BoxesNumber", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnBoxesNumber);
                 this.columnShipTo = new global::System.Data.DataColumn("ShipTo", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnShipTo);
@@ -1031,10 +1031,10 @@ namespace GSLogistics.Reporting.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string Pieces {
+            public int Pieces {
                 get {
                     try {
-                        return ((string)(this[this.tableDataTable1.PiecesColumn]));
+                        return ((int)(this[this.tableDataTable1.PiecesColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'Pieces\' in table \'DataTable1\' is DBNull.", e);
@@ -1047,10 +1047,10 @@ namespace GSLogistics.Reporting.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string BoxesNumber {
+            public int BoxesNumber {
                 get {
                     try {
-                        return ((string)(this[this.tableDataTable1.BoxesNumberColumn]));
+                        return ((int)(this[this.tableDataTable1.BoxesNumberColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'BoxesNumber\' in table \'DataTable1\' is DBNull.", e);
