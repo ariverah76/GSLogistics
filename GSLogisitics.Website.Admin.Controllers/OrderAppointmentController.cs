@@ -147,7 +147,18 @@ namespace GSLogistics.Website.Admin.Controllers
 
         }
 
-       
+       [HttpGet]
+       public ActionResult SearchPickTicket(string pickTicketId)
+        {
+            var pt = repository.Appointments.Where(x => x.PickTicket == pickTicketId).FirstOrDefault();
+
+            if (pt !=null)
+            {
+                return Json(new { result = "Success", appointmentNumber = pt.AppointmentNumber, IsPosted = pt.Posted, shippingDate = pt.ShipDate, carrier = pt.CatScacCode.ScacCodeName, pickTicketId = pickTicketId }, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(new { result = "NotFound" , pickTicketId = pickTicketId } , JsonRequestBehavior.AllowGet);
+        }
 
         [HttpPost]
         public ActionResult SetAppointment(NewAppointment_ViewModel model)
