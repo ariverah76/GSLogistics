@@ -22,9 +22,9 @@ namespace GSLogistics.Website.Common
 
     public static class DateTimeEditorExtensions
     {
-        public static MvcHtmlString DatePicker<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, object htmlAttributes = null)
+        public static MvcHtmlString DatePicker<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, int minDateDays = 0, object htmlAttributes = null)
         {
-            return DateTimePicker(htmlHelper, expression, HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes), minView: DateTimePickerView.Month);
+            return DateTimePicker(htmlHelper, expression, HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes), minView: DateTimePickerView.Month, minDateDays: minDateDays);
         }
 
         public static MvcHtmlString TimePicker<TModel>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, DateTime?>> expression, IDictionary<string, object> htmlAttributes = null)
@@ -43,12 +43,12 @@ namespace GSLogistics.Website.Common
         /// This works with this:
         /// http://www.malot.fr/bootstrap-datetimepicker/
         /// </remarks>
-        public static MvcHtmlString DateTimePicker<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, IDictionary<string, object> htmlAttributes, string jsFormat = "mm/dd/yyyy", string cFormat = "d", bool? autoClose = true, bool? todayHighlight = true, DateTimePickerView? minView = DateTimePickerView.Hour, DateTimePickerView? startView = DateTimePickerView.Month)
+        public static MvcHtmlString DateTimePicker<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, IDictionary<string, object> htmlAttributes, string jsFormat = "mm/dd/yyyy", string cFormat = "d", bool? autoClose = true, bool? todayHighlight = true, DateTimePickerView? minView = DateTimePickerView.Hour, DateTimePickerView? startView = DateTimePickerView.Month, int minDateDays = 0 )
         {
             ModelMetadata metadata = HtmlExtensionsHelper.GetModelMetadata(htmlHelper, expression);
             string propertyNameVar = metadata.PropertyName;
 
-            var parameters = new { PropertyName = propertyNameVar, JsFormat = jsFormat, CFormat = cFormat, AutoClose = autoClose, TodayHighlight = todayHighlight, MinView = minView, StartView = startView, HtmlAttributes = htmlAttributes };
+            var parameters = new { PropertyName = propertyNameVar, JsFormat = jsFormat, CFormat = cFormat, AutoClose = autoClose, TodayHighlight = todayHighlight, MinView = minView, StartView = startView, HtmlAttributes = htmlAttributes, MinDateDays = minDateDays };
 
             return htmlHelper.EditorFor(expression, ViewNames.DateTimePicker, parameters);
         }

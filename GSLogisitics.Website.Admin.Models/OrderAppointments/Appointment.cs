@@ -47,6 +47,8 @@ namespace GSLogistics.Website.Admin.Models
         public string ShipTo { get; set; }
         public short? DeliveryTypeId { get; set; }
 
+        public string BillOfLading { get; set; }
+
 
 
     }

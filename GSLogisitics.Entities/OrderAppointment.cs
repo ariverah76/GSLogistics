@@ -70,7 +70,10 @@ namespace GSLogistics.Entities
 
         [Column(Order = 20)]
         public DateTime? ShipFor { get; set; }
-        
+
+        [Column("BOL", Order = 21)]
+        public string BillOfLading { get; set; }
+
 
     }
 }

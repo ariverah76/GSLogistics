@@ -44,6 +44,7 @@
             <th>
                 Carrier
             </th>
+            <th></th>
 
         </tr>
     </thead>
@@ -89,6 +90,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Carrier)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BillOfLading)
                 </td>
             </tr>
         }
@@ -156,6 +160,11 @@
                 {
                     data: 'Carrier'
                 }
+                ,
+                {
+                    data: 'BillOfLading',
+                    visible: false
+                }
             ]
             ,
             "drawCallback": function (settings) {
@@ -171,8 +180,10 @@
                 api.column(0, { page: 'current' }).data().each(function (group, i) {
                     if (last !== group) {
                         groupid++;
+                        val = api.row(api.row($(rows).eq(i)).index()).data();
+                        var bol =  val['BillOfLading'];
                         $(rows).eq(i).before(
-                            '<tr class="group"><td colspan=7> Appointment #: ' + group + '</td></tr>'
+                            '<tr class="group"><td colspan=7> Appointment #: ' + group + ' - BOL: ' + bol +'</td></tr>'
                         );
                        // $(rows).eq(i).after(
                        //    '<tr class="footer"><td> Totals:</td></tr>'

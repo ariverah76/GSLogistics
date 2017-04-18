@@ -64,13 +64,13 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.CancelDateStartDate)
-                                    @Html.DatePicker(x => x.CancelDateStartDate, new { @class = "form-control" })
+                                    @Html.DatePicker(x => x.CancelDateStartDate, 0, new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.CancelDateEndDate)
-                                    @Html.DatePicker(x => x.CancelDateEndDate, new { @class = "form-control" })
+                                    @Html.DatePicker(x => x.CancelDateEndDate,0, new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
@@ -83,11 +83,11 @@
                                     @Html.LabelFor(model => model.ShipFor)
                                     @if (!Model.EnableShipForFilter)
                                     {
-                                        @Html.DatePicker(x => x.ShipFor, new { @class = "form-control", @disabled = "disabled" })
+                                        @Html.DatePicker(x => x.ShipFor, 0, new { @class = "form-control", @disabled = "disabled" })
                                     }
                                     else
                                     {
-                                        @Html.DatePicker(x => x.ShipFor, new { @class = "form-control" })
+                                        @Html.DatePicker(x => x.ShipFor,0, new { @class = "form-control" })
                                     }
                                 </div>
                             </div>
@@ -309,13 +309,13 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.ShippingDateStart)
-                                            @Html.DatePicker(x => x.ShippingDateStart, new { @class = "form-control" })
+                                            @Html.DatePicker(x => x.ShippingDateStart,-2, new { @class = "form-control" })
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.ShippingDateEnd)
-                                            @Html.DatePicker(x => x.ShippingDateEnd, new { @class = "form-control" })
+                                            @Html.DatePicker(x => x.ShippingDateEnd,0, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -396,7 +396,7 @@
                             </div>
                             <div class="form-group">
                                 @Html.LabelFor(m => m.ShippingDate)
-                                @Html.DatePicker(m => m.ShippingDate, new { @class = "form-control" })
+                                @Html.DatePicker(m => m.ShippingDate, minDateDays: -2, htmlAttributes:  new { @class = "form-control" })
                                 @Html.ValidationMessageFor(m => m.ShippingDate)
                             </div>
                             <div class="form-group">
@@ -629,7 +629,6 @@
                         that
                             .search(this.value)
                             .draw();
-                        console.log(this.placeholder);
                         var str = this.placeholder;
                         if (str.includes("PT#")) {
                             console.log('search by pt');
@@ -696,6 +695,16 @@
                         data[0][9],
                         data[0][10]
                     ]).draw(false);
+                    $('#tableAppointments tfoot th input').each(function () {
+
+                        $(this).val('');
+                        $(this).trigger('change');
+                        //if (title == "PO#" || title == "PT#") {
+
+
+                        //    $(this).html('<input type="text" style="width:80px" placeholder="Search ' + title + '" />');
+                        //}
+                    });
                 }
             });
             table.on('deselect', function (e, dt, type, indexes) {

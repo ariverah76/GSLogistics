@@ -58,6 +58,9 @@ namespace GSLogistics.Entities
         [Column("DeliveryTypeId", Order = 13)]
         public short? DeliveryTypeId { get; set; }
 
+        [Column("UserName", Order = 14)]
+        public string UserName { get; set; }
+
         [ForeignKey("ScacCode")]
         public virtual ScacCode CatScacCode { get; set; }
 

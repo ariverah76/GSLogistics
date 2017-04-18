@@ -197,7 +197,8 @@ namespace GSLogistics.Website.Admin.Controllers
                     appointment.ShipTime = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTime.Hour, model.ShippingTime.Minute, 0);
                     appointment.AppointmentNumber = model.AppointmentNumber;
                     appointment.DeliveryTypeId = model.DeliveryTypeId;
-
+                appointment.UserName = User.Identity.Name;
+                
                     if (model.ShippingTimeLimit.HasValue)
                     {
                         appointment.ShippingTimeLimit = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTimeLimit.Value.Hour, model.ShippingTimeLimit.Value.Minute, 0);
@@ -605,7 +606,9 @@ namespace GSLogistics.Website.Admin.Controllers
                     ShipTime = appt.ShipTime,
                     Posted = appt.Posted.ToString(),
                     DateAdded = appt.DateAdd,
-                    DeliveryTypeId = appt.DeliveryTypeId
+                    DeliveryTypeId = appt.DeliveryTypeId,
+
+                    
 
                 };
 
@@ -616,6 +619,7 @@ namespace GSLogistics.Website.Admin.Controllers
                     thisAppointment.Pieces = orderAppt.Pieces.Value;
                     thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
                     thisAppointment.ShipTo = orderAppt.ShipTo;
+                    thisAppointment.BillOfLading = orderAppt.BillOfLading;
                 }
 
                 appointments.Add(thisAppointment);

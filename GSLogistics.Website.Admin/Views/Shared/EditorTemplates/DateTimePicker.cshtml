@@ -7,7 +7,8 @@
     var minView = (int)ViewData["MinView"];
     var startView = (int)ViewData["StartView"];
     var htmlAttributes = ViewData["HtmlAttributes"] as IDictionary<string, object>;
-
+    var minDateDays = (int)ViewData["MinDateDays"];
+    DateTime minDate = DateTime.Today;
     if (htmlAttributes == null)
     {
         htmlAttributes = new Dictionary<string, object>();
@@ -19,6 +20,10 @@
     }
 
     var value = Model == null ? string.Empty : Model is DateTime ? (Model as DateTime?).Value.ToString(cFormat) : (Model as DateTimeOffset?).Value.DateTime.ToString(cFormat);
+    if (minDateDays != 0)
+    {
+        minDate =  minDate.AddDays(minDateDays);
+    }
 }
 
 @Html.TextBox(string.Empty, value, htmlAttributes)
@@ -26,8 +31,14 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
+        var today =  new Date(2000,1,1);
+        if (@(minDateDays) != 0){
+            today = new Date("@(minDate.ToString(cFormat))");
+        }
+        console.log(today);
         $("#" + "@(propertyName)").datetimepicker({
             format: "@(jsFormat)"
+            , startDate: today
             , autoclose: @(autoClose.ToString().ToLower())
             , todayHighlight: @(todayHighlight.ToString().ToLower())
             , minView: @(minView)
