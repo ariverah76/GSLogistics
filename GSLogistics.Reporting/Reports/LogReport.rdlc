@@ -1056,7 +1056,7 @@
             <FilterExpression>=Fields!DeliveryTypeId.Value</FilterExpression>
             <Operator>Equal</Operator>
             <FilterValues>
-              <FilterValue>1</FilterValue>
+              <FilterValue>=CInt(1)</FilterValue>
             </FilterValues>
           </Filter>
         </Filters>
@@ -1342,7 +1342,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Fields!ShipDate.Value</Value>
+                              <Value>="Shipping Date: " + Fields!ShipDate.Value</Value>
                               <Style>
                                 <FontSize>7pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
@@ -1806,13 +1806,13 @@
             <FilterExpression>=Fields!DeliveryTypeId.Value</FilterExpression>
             <Operator>Equal</Operator>
             <FilterValues>
-              <FilterValue>2</FilterValue>
+              <FilterValue>=CInt(2)</FilterValue>
             </FilterValues>
           </Filter>
         </Filters>
         <Top>2.83in</Top>
         <Left>0.45361in</Left>
-        <Height>0.9375in</Height>
+        <Height>0.93749in</Height>
         <Width>4.72153in</Width>
         <ZIndex>3</ZIndex>
         <Style>
@@ -1857,7 +1857,7 @@
     <Height>5.4675in</Height>
     <Style />
   </Body>
-  <Width>7.33278in</Width>
+  <Width>8.04039in</Width>
   <Page>
     <LeftMargin>0.19685in</LeftMargin>
     <RightMargin>0.19685in</RightMargin>
