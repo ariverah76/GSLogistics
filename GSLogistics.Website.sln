@@ -47,6 +47,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{82
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSLogistics.Reporting", "GSLogistics.Reporting\GSLogistics.Reporting.csproj", "{55436367-194B-4627-BC65-92CAF6853028}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSLogistics.Model.Query", "GSLogistics.Model.Query\GSLogistics.Model.Query.csproj", "{64DDDA9B-D0B0-467A-86A9-5E398A1C6330}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,6 +115,10 @@ Global
 		{55436367-194B-4627-BC65-92CAF6853028}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55436367-194B-4627-BC65-92CAF6853028}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55436367-194B-4627-BC65-92CAF6853028}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64DDDA9B-D0B0-467A-86A9-5E398A1C6330}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64DDDA9B-D0B0-467A-86A9-5E398A1C6330}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64DDDA9B-D0B0-467A-86A9-5E398A1C6330}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64DDDA9B-D0B0-467A-86A9-5E398A1C6330}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -135,5 +141,6 @@ Global
 		{5A4BC5AB-1B01-4EC7-B38F-4124661D1496} = {4921FCF2-E3E8-4B6C-8FA0-3A17E3E8C474}
 		{D8DD60D0-A0C4-4533-AA8F-F98AED3DE7D1} = {83E0C2C7-C0AE-45FF-A7BF-123DEEFD02F3}
 		{55436367-194B-4627-BC65-92CAF6853028} = {82556931-2CD8-4E64-A63E-00AB991F5EB4}
+		{64DDDA9B-D0B0-467A-86A9-5E398A1C6330} = {83E0C2C7-C0AE-45FF-A7BF-123DEEFD02F3}
 	EndGlobalSection
 EndGlobal

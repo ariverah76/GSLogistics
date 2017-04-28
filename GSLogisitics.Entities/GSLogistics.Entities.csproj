@@ -92,6 +92,7 @@
     <Compile Include="Abstract\IRepository.cs" />
     <Compile Include="Appointment.cs" />
     <Compile Include="Concrete\GSLogisticsRepository.cs" />
+    <Compile Include="Concrete\GSLogisticsRepository_OrderAppointment.cs" />
     <Compile Include="Concrete\GSLogisticsRepository_ScacCode.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="CustomerDivision.cs" />
@@ -106,6 +107,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GSLogistics.Model.Query\GSLogistics.Model.Query.csproj">
+      <Project>{64DDDA9B-D0B0-467A-86A9-5E398A1C6330}</Project>
+      <Name>GSLogistics.Model.Query</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GSLogistics.Model\GSLogistics.Model.csproj">
       <Project>{d8dd60d0-a0c4-4533-aa8f-f98aed3de7d1}</Project>
       <Name>GSLogistics.Model</Name>

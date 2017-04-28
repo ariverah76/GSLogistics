@@ -1,6 +1,8 @@
 ﻿using GSLogistics.Entities;
 using GSLogistics.Entities.Concrete;
+using GSLogistics.Logic.Interface;
 using Ninject;
+using Ninject.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace GSLogistics.Logic
 {
-    public class LogicBase : IDisposable
+    public class LogicBase : IGSLogisticsLogic, IDisposable
     {
 
         private IKernel _Kernel;
@@ -41,10 +43,7 @@ namespace GSLogistics.Logic
             }
         }
 
-        //protected Task<int> SaveChangesAsync()
-        //{
-        //    return 
-        //}
+       
 
         internal LogicBase(IKernel kernel)
         {
@@ -59,6 +58,12 @@ namespace GSLogistics.Logic
             _Repository = Kernel.Get<GSLogisticsRepository>();
         }
 
+        public T_Logic GetLogic<T_Logic>()
+           where T_Logic : IGSLogisticsLogic
+        {
+            return Kernel.Get<T_Logic>(
+                new ConstructorArgument("kernel", Kernel));
+        }
 
         bool disposed = false;
         public void Dispose()
