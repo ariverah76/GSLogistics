@@ -23,7 +23,7 @@ namespace GSLogistics.Entities.Concrete
                 q = q.Where(x => x.CustomerId == query.CustomerId);
             }
 
-            if (query.DivisionId.HasValue )
+            if (query.DivisionId.HasValue && query.DivisionId != 0 )
             {
                 q = q.Where(x => x.DivisionId == query.DivisionId);
             }
@@ -77,7 +77,7 @@ namespace GSLogistics.Entities.Concrete
                 StartDate = x.StartDate,
                 Status = x.Status,
                 Weigth = x.Weigth,
-                CustomerName = x.CompanyName,
+                CustomerName = x.Customer.CompanyName,
                 DivisionName = x.Division.Description
             });
 

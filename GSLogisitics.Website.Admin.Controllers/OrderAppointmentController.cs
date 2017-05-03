@@ -11,18 +11,21 @@ using System.Resources;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using GSLogistics.Website.Admin.Resources;
+using GSLogistics.Logic.Interface;
+using GSLogistics.Model.Query;
 
 namespace GSLogistics.Website.Admin.Controllers
 {
     [Authorize]
-    public class OrderAppointmentController : Controller // : BaseController
+    public class OrderAppointmentController :  BaseController
     {
 
         //TOOD: Implement ninject kernel on the constructor
         //TODO: Implement ViewModel to pass through the view
         private IRepository repository;
 
-        public OrderAppointmentController(IRepository orderApptRepository)
+        public OrderAppointmentController(IKernel kernel, IRepository orderApptRepository)
+            :base(kernel)
         {
             this.repository = orderApptRepository;
         }
@@ -34,7 +37,7 @@ namespace GSLogistics.Website.Admin.Controllers
         //}
 
         [HttpGet]
-        public ActionResult List()
+        public async  Task<ActionResult> List()
         {
             var model = new OrderAppointmentsIndex_ViewModel();
             //model.CancelDateStartDate = DateTime.Today.AddDays(-60);
@@ -42,112 +45,197 @@ namespace GSLogistics.Website.Admin.Controllers
             //model.ShippingDateStart = DateTime.Today.AddDays(-60);
             //model.ShippingDateEnd = DateTime.Today.AddDays(15);
 
-            return this.List(model);
+            return await this.List(model);
 
         }
-
         [HttpPost]
-        public ActionResult List(OrderAppointmentsIndex_ViewModel model)
+        public async Task<ActionResult> List(OrderAppointmentsIndex_ViewModel model)
         {
-            
-            var clients = repository.OrderAppointments.Select(x => new { Id = x.CustomerId, Name = x.Customer.CompanyName }).ToList();
 
-            Dictionary<string, string> result = new Dictionary<string, string>();
-            foreach (var c in clients)
+            List<Models.OrderAppointment> orders = new List<Models.OrderAppointment>();
+
+            using (var scacLogic = Kernel.Get<IScacCodeLogic>())
             {
-                if (!result.ContainsKey(c.Id.ToString()))
+                var shippingCompanies = await scacLogic.GetScacCodes();
+
+                Dictionary<string, string> result2 = new Dictionary<string, string>();
+                foreach (var sc in shippingCompanies)
                 {
-                    result.Add(c.Id.ToString(), c.Name);
+                    if (!result2.ContainsKey(sc.ScacCodeId.ToString()))
+                    {
+                        result2.Add(sc.ScacCodeId.ToString(), $"{sc.ScacCodeId.ToString()} {sc.Carrier}");
+                    }
                 }
+
+                ViewBag.ScacCodes = new SelectList(result2, "Key", "Value", null);
             }
-            ViewBag.Customers = new SelectList(result, "Key", "Value", null);
-
-            if (!string.IsNullOrEmpty(model.SelectedClientId))
-            {
-                var divs = repository.GetDivisionByClient(model.SelectedClientId).Select(d => new { Id = d.DivisionId, Name = d.Description }).ToList();
-                Dictionary<int, string> result3 = new Dictionary<int, string>();
-                divs.ForEach(x => result3.Add(x.Id, x.Name));
-                ViewBag.Divisions = new SelectList(result3, "Key", "Value", null);
-            }
-            else
-            {
-                ViewBag.Divisions = new SelectList(new Dictionary<int, string>(), "Key", "Value", null);
-            }
-
-            
-
-            var shippingCompanies = repository.ScacCodes.Select(x => new { Id = x.ScacCodeId, Name = x.ScacCodeName }).ToList();
-
-            Dictionary<string, string> result2 = new Dictionary<string, string>();
-            foreach (var sc in shippingCompanies)
-            {
-                if (!result2.ContainsKey(sc.Id.ToString()))
-                {
-                    result2.Add(sc.Id.ToString(), $"{sc.Id.ToString()} {sc.Name}");
-                }
-            }
-
-            ViewBag.ScacCodes = new SelectList(result2, "Key", "Value", null);
 
             var status = new Dictionary<string, string>();
             status.Add("1", "Posted");
             status.Add("2", "Pending");
 
             ViewBag.AppointmentStatus = new SelectList(status, "Key", "Value", null);
-
-            List<Models.OrderAppointment> orders = new List<Models.OrderAppointment>();
-
-            var ordersforAppt = repository.OrderAppointments.AsQueryable();
-
-            //ordersforAppt = ordersforAppt.Where(x => x.Status == 0);
-
-            if (!string.IsNullOrEmpty(model.SelectedClientId))
+            using (var orderLogic = Kernel.Get<IOrderAppointmentLogic>())
+            using (var divLogic = orderLogic.GetLogic<IDivisionLogic>())
             {
-                ordersforAppt = ordersforAppt.Where(x => x.CustomerId == model.SelectedClientId);
-                
-            }
 
-            if (model.SelectedDivisionId.HasValue && model.SelectedDivisionId.Value != 0)
-            {
-                ordersforAppt = ordersforAppt.Where(x => x.DivisionId == model.SelectedDivisionId);
-            }
+                var ordersforAppt = await orderLogic.ToListAsync(
+                    new OrderAppointmentQuery()
+                    {
+                        CancelDateEndDate = model.CancelDateEndDate,
+                        CancelDateStartDate = model.CancelDateStartDate,
+                        CustomerId = model.SelectedClientId,
+                        DivisionId = model.SelectedDivisionId,
+                        ShipFor = model.ShipFor,
+                        Status = 0
+                    });
 
-            if (model.CancelDateStartDate.HasValue)
-            {
-                ordersforAppt = ordersforAppt.Where(x => x.StartDate >= model.CancelDateStartDate.Value);
-            }
-            if (model.CancelDateEndDate.HasValue)
-            {
-                ordersforAppt = ordersforAppt.Where(x => x.StartDate <= model.CancelDateEndDate.Value);
-            }
-
-            if (model.ShipFor.HasValue)
-            {
-                ordersforAppt = ordersforAppt.Where(x => x.ShipFor.HasValue && (x.ShipFor.Value.Year == model.ShipFor.Value.Year && x.ShipFor.Value.Month == model.ShipFor.Value.Month && x.ShipFor.Value.Day == model.ShipFor.Value.Day));
-            }
-            
-            foreach (var o in ordersforAppt.Where(x => x.Status == 0).ToList())
-            {
-                try
+                foreach (var o in ordersforAppt)
                 {
-                    orders.Add(new Models.OrderAppointment() { BoxesNumber = o.BoxesCount.Value, BoxSize = o.BoxSize, CustomerId = o.CustomerId, CustomerName = o.CompanyName, EndDate = o.EndDate.Value, EstimatedShippingDate = o.ScheduledShippingDate, PickTicketId = o.PickTicketId, Pieces = o.Pieces.Value, PurchaseOrderId = o.PurchaseOrderId, StartDate = o.StartDate.Value, Volume = o.Size.Value, Weight = o.Weigth, StoreName = o.ShipTo, DivisionName = o.Division.Description, PtBulk = o.PtBulk, Notes = o.Notes , ConfirmationNumber = o.ConfirmationNumber, DivisionId = o.DivisionId, ShipFor = o.ShipFor });
-                }
-                catch (Exception exc)
-                {
-                    throw exc;
+                    try
+                    {
+                        orders.Add(new Models.OrderAppointment() { BoxesNumber = o.BoxesCount.Value, BoxSize = o.BoxSize, CustomerId = o.CustomerId, CustomerName = o.CustomerName, EndDate = o.EndDate.Value, PickTicketId = o.PickTicketId, Pieces = o.Pieces.Value, PurchaseOrderId = o.PurchaseOrderId, StartDate = o.StartDate.Value, Volume = o.Size.Value, Weight = o.Weigth, StoreName = o.ShipTo, DivisionName = o.DivisionName, PtBulk = o.PtBulk, Notes = o.Notes, ConfirmationNumber = o.ConfirmationNumber, DivisionId = o.DivisionId, ShipFor = o.ShipFor });
+                    }
+                    catch (Exception exc)
+                    {
+                        throw exc;
+                    }
+
                 }
 
-            }
-          
-           // var orderAppts = repository.OrderAppointments.Where(x => x.ShipFor >= new DateTime(2017,04,18)).ToList();
+                model.OrderAppointments = orders;
 
-            model.OrderAppointments = orders;
+                var clients = ordersforAppt.Select(x => new { Id = x.CustomerId, Name = x.CustomerName }).ToList();
+
+                Dictionary<string, string> result = new Dictionary<string, string>();
+                foreach (var c in clients)
+                {
+                    if (!result.ContainsKey(c.Id.ToString()))
+                    {
+                        result.Add(c.Id.ToString(), c.Name);
+                    }
+                }
+                ViewBag.Customers = new SelectList(result, "Key", "Value", null);
+
+                if (!string.IsNullOrEmpty(model.SelectedClientId))
+                {
+                    var divisions = await divLogic.GetDivisionByCustomerId(model.SelectedClientId);
+                    var divs = divisions.Select(d => new { Id = d.DivisionId, Name = d.DivisionName }).ToList();
+
+                    Dictionary<int, string> result3 = new Dictionary<int, string>();
+                    divs.ForEach(x => result3.Add(x.Id, x.Name));
+                    ViewBag.Divisions = new SelectList(result3, "Key", "Value", null);
+                }
+                else
+                {
+                    ViewBag.Divisions = new SelectList(new Dictionary<int, string>(), "Key", "Value", null);
+                }
+            }
 
             return View("List", model);
-
         }
+        //[HttpPost]
+        //public ActionResult List(OrderAppointmentsIndex_ViewModel model)
+        //{
 
-       [HttpGet]
+        //    var clients = repository.OrderAppointments.Select(x => new { Id = x.CustomerId, Name = x.Customer.CompanyName }).ToList();
+
+        //    Dictionary<string, string> result = new Dictionary<string, string>();
+        //    foreach (var c in clients)
+        //    {
+        //        if (!result.ContainsKey(c.Id.ToString()))
+        //        {
+        //            result.Add(c.Id.ToString(), c.Name);
+        //        }
+        //    }
+        //    ViewBag.Customers = new SelectList(result, "Key", "Value", null);
+
+        //    if (!string.IsNullOrEmpty(model.SelectedClientId))
+        //    {
+        //        var divs = repository.GetDivisionByClient(model.SelectedClientId).Select(d => new { Id = d.DivisionId, Name = d.Description }).ToList();
+        //        Dictionary<int, string> result3 = new Dictionary<int, string>();
+        //        divs.ForEach(x => result3.Add(x.Id, x.Name));
+        //        ViewBag.Divisions = new SelectList(result3, "Key", "Value", null);
+        //    }
+        //    else
+        //    {
+        //        ViewBag.Divisions = new SelectList(new Dictionary<int, string>(), "Key", "Value", null);
+        //    }
+
+
+
+        //    var shippingCompanies = repository.ScacCodes.Select(x => new { Id = x.ScacCodeId, Name = x.ScacCodeName }).ToList();
+
+        //    Dictionary<string, string> result2 = new Dictionary<string, string>();
+        //    foreach (var sc in shippingCompanies)
+        //    {
+        //        if (!result2.ContainsKey(sc.Id.ToString()))
+        //        {
+        //            result2.Add(sc.Id.ToString(), $"{sc.Id.ToString()} {sc.Name}");
+        //        }
+        //    }
+
+        //    ViewBag.ScacCodes = new SelectList(result2, "Key", "Value", null);
+
+        //    var status = new Dictionary<string, string>();
+        //    status.Add("1", "Posted");
+        //    status.Add("2", "Pending");
+
+        //    ViewBag.AppointmentStatus = new SelectList(status, "Key", "Value", null);
+
+        //    List<Models.OrderAppointment> orders = new List<Models.OrderAppointment>();
+
+        //    var ordersforAppt = repository.OrderAppointments.AsQueryable();
+
+        //    //ordersforAppt = ordersforAppt.Where(x => x.Status == 0);
+
+        //    if (!string.IsNullOrEmpty(model.SelectedClientId))
+        //    {
+        //        ordersforAppt = ordersforAppt.Where(x => x.CustomerId == model.SelectedClientId);
+
+        //    }
+
+        //    if (model.SelectedDivisionId.HasValue && model.SelectedDivisionId.Value != 0)
+        //    {
+        //        ordersforAppt = ordersforAppt.Where(x => x.DivisionId == model.SelectedDivisionId);
+        //    }
+
+        //    if (model.CancelDateStartDate.HasValue)
+        //    {
+        //        ordersforAppt = ordersforAppt.Where(x => x.StartDate >= model.CancelDateStartDate.Value);
+        //    }
+        //    if (model.CancelDateEndDate.HasValue)
+        //    {
+        //        ordersforAppt = ordersforAppt.Where(x => x.StartDate <= model.CancelDateEndDate.Value);
+        //    }
+
+        //    if (model.ShipFor.HasValue)
+        //    {
+        //        ordersforAppt = ordersforAppt.Where(x => x.ShipFor.HasValue && (x.ShipFor.Value.Year == model.ShipFor.Value.Year && x.ShipFor.Value.Month == model.ShipFor.Value.Month && x.ShipFor.Value.Day == model.ShipFor.Value.Day));
+        //    }
+
+        //    foreach (var o in ordersforAppt.Where(x => x.Status == 0).ToList())
+        //    {
+        //        try
+        //        {
+        //            orders.Add(new Models.OrderAppointment() { BoxesNumber = o.BoxesCount.Value, BoxSize = o.BoxSize, CustomerId = o.CustomerId, CustomerName = o.CompanyName, EndDate = o.EndDate.Value, EstimatedShippingDate = o.ScheduledShippingDate, PickTicketId = o.PickTicketId, Pieces = o.Pieces.Value, PurchaseOrderId = o.PurchaseOrderId, StartDate = o.StartDate.Value, Volume = o.Size.Value, Weight = o.Weigth, StoreName = o.ShipTo, DivisionName = o.Division.Description, PtBulk = o.PtBulk, Notes = o.Notes, ConfirmationNumber = o.ConfirmationNumber, DivisionId = o.DivisionId, ShipFor = o.ShipFor });
+        //        }
+        //        catch (Exception exc)
+        //        {
+        //            throw exc;
+        //        }
+
+        //    }
+
+        //    // var orderAppts = repository.OrderAppointments.Where(x => x.ShipFor >= new DateTime(2017,04,18)).ToList();
+
+        //    model.OrderAppointments = orders;
+
+        //    return View("List", model);
+
+        //}
+
+        [HttpGet]
        public ActionResult SearchPickTicket(string pickTicketId)
         {
             var pt = repository.Appointments.Where(x => x.PickTicket == pickTicketId).FirstOrDefault();
