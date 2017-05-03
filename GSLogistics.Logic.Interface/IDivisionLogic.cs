@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace GSLogistics.Logic.Interface
 {
-    public interface IGSLogisticsLogic : IDisposable
+    public interface IDivisionLogic : IGSLogisticsLogic
     {
-        T GetLogic<T>()
-           where T : IGSLogisticsLogic;
+        Task<List<Model.Division>> GetDivisionByCustomerId(string customerId);
     }
 }

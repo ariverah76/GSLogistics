@@ -15,7 +15,8 @@ namespace GSLogistics.Entities.Concrete
         private IQueryable<GSLogistics.Entities.OrderAppointment> OrderAppointment_BuildQuery(OrderAppointmentQuery query)
         {
             var q = context.OrderAppointments.Where(x => true)
-              .Include("Customer");
+              .Include("Customer")
+              .Include("Division");
 
             if (!string.IsNullOrEmpty(query.CustomerId))
             {
@@ -49,14 +50,39 @@ namespace GSLogistics.Entities.Concrete
             return q;
 
         }
-        //public async Task<IList<OrderAppointment>> ToListAsync(OrderAppointmentQuery query)
-        //{
-        //    var l = await OrderAppointment_BuildQuery(query)
-        //        .AsNoTracking()
-        //        .ToListAsync();
+        public async Task<List<Model.OrderAppointment>> ToListAsync(OrderAppointmentQuery query)
+        {
+            var l = await OrderAppointment_BuildQuery(query)
+                .AsNoTracking()
+                .ToListAsync();
 
-        //    var result = l.Select( x => new Model.OrderAppointment )
+            var result = l.Select(x => new Model.OrderAppointment
+            {
+                BillOfLading = x.BillOfLading,
+                BoxesCount = x.BoxesCount,
+                BoxSize = x.BoxSize,
+                ConfirmationNumber = x.ConfirmationNumber,
+                CustomerId = x.CustomerId,
+                DivisionId = x.DivisionId,
+                EndDate = x.EndDate,
+                Notes = x.Notes,
+                PickTicketId = x.PickTicketId,
+                Pieces = x.Pieces,
+                PtBulk = x.PtBulk,
+                PurchaseOrderId = x.PurchaseOrderId,
+                ScacCode = x.ScacCode,
+                ShipFor = x.ShipFor,
+                ShipTo = x.ShipTo,
+                Size = x.Size,
+                StartDate = x.StartDate,
+                Status = x.Status,
+                Weigth = x.Weigth,
+                CustomerName = x.CompanyName,
+                DivisionName = x.Division.Description
+            });
 
-        //} 
+            return result.ToList();
+
+        }
     }
 }

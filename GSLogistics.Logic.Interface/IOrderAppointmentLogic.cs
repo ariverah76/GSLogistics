@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GSLogistics.Model.Query;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace GSLogistics.Logic.Interface
 {
     public interface IOrderAppointmentLogic : IGSLogisticsLogic
     {
-
+        Task<IList<Model.OrderAppointment>> ToListAsync(OrderAppointmentQuery query);
     }
 }

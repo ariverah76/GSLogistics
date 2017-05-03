@@ -9,6 +9,7 @@ using GSLogistics.Entities.Abstract;
 using GSLogistics.Entities.Concrete;
 using GSLogistics.Logic.Interface;
 using GSLogisitics.Logic;
+using GSLogistics.Logic;
 
 namespace GSLogistics.Website.Admin.Infrastructure
 {
@@ -38,6 +39,10 @@ namespace GSLogistics.Website.Admin.Infrastructure
             _kernel.Bind<IRepository>().To<GSLogisticsRepository>();
 
             _kernel.Bind<IAuthProvider>().To<AccountLogic>();
+            _kernel.Bind<IScacCodeLogic>().To<ScacCodeLogic>();
+            _kernel.Bind<IOrderAppointmentLogic>().To<OrderAppointmentLogic>();
+            _kernel.Bind<IDivisionLogic>().To<DivisionLogic>();
+            _kernel.Bind<ICustomerLogic>().To<CustomerLogic>();
         }
     }
 }

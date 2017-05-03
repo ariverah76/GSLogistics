@@ -41,12 +41,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IAuthProvider.cs" />
+    <Compile Include="ICustomerLogic.cs" />
+    <Compile Include="IDivisionLogic.cs" />
     <Compile Include="IGSLogisticsLogic.cs" />
     <Compile Include="IOrderAppointmentLogic.cs" />
     <Compile Include="IScacCodeLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GSLogistics.Model.Query\GSLogistics.Model.Query.csproj">
+      <Project>{64DDDA9B-D0B0-467A-86A9-5E398A1C6330}</Project>
+      <Name>GSLogistics.Model.Query</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GSLogistics.Model\GSLogistics.Model.csproj">
       <Project>{D8DD60D0-A0C4-4533-AA8F-F98AED3DE7D1}</Project>
       <Name>GSLogistics.Model</Name>

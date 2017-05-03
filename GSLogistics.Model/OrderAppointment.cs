@@ -21,12 +21,14 @@ namespace GSLogistics.Model
         public string BoxSize { get; set; } // CTN Size
         public string CustomerId { get; set; }
         public int? DivisionId { get; set; }
-        //public string DivisionName { get; set; }
+        public string DivisionName { get; set; }
         public string ScacCode { get; set; }
         public string ConfirmationNumber { get; set; }
         public int Status { get; set; }
         public string Notes { get; set; }
         public DateTime? ShipFor { get; set; }
         public string BillOfLading { get; set; }
+        public string CustomerName { get; set; }
+
     }
 }

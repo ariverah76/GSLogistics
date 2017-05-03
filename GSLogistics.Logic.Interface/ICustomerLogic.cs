@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace GSLogistics.Logic.Interface
 {
-    public interface IGSLogisticsLogic : IDisposable
+    public interface ICustomerLogic : IGSLogisticsLogic
     {
-        T GetLogic<T>()
-           where T : IGSLogisticsLogic;
     }
 }

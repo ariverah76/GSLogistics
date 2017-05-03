@@ -133,6 +133,7 @@
   <ItemGroup>
     <Compile Include="AccountController.cs" />
     <Compile Include="AdminController.cs" />
+    <Compile Include="OrderAppointment2Controller.cs" />
     <Compile Include="OrderAppointmentApiController.cs" />
     <Compile Include="OrderAppointmentController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -154,6 +155,10 @@
     <ProjectReference Include="..\GSLogistics.Logic.Interface\GSLogistics.Logic.Interface.csproj">
       <Project>{d7cce6ee-8c18-4d86-a449-4d90401f632f}</Project>
       <Name>GSLogistics.Logic.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GSLogistics.Model.Query\GSLogistics.Model.Query.csproj">
+      <Project>{64DDDA9B-D0B0-467A-86A9-5E398A1C6330}</Project>
+      <Name>GSLogistics.Model.Query</Name>
     </ProjectReference>
     <ProjectReference Include="..\GSLogistics.Model\GSLogistics.Model.csproj">
       <Project>{d8dd60d0-a0c4-4533-aa8f-f98aed3de7d1}</Project>

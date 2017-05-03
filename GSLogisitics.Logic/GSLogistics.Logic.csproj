@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountLogic.cs" />
+    <Compile Include="CustomerLogic.cs" />
+    <Compile Include="DivisionLogic.cs" />
     <Compile Include="LogicBase.cs" />
     <Compile Include="OrderAppointmentLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -61,6 +63,10 @@
     <ProjectReference Include="..\GSLogistics.Logic.Interface\GSLogistics.Logic.Interface.csproj">
       <Project>{D7CCE6EE-8C18-4D86-A449-4D90401F632F}</Project>
       <Name>GSLogistics.Logic.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GSLogistics.Model.Query\GSLogistics.Model.Query.csproj">
+      <Project>{64DDDA9B-D0B0-467A-86A9-5E398A1C6330}</Project>
+      <Name>GSLogistics.Model.Query</Name>
     </ProjectReference>
     <ProjectReference Include="..\GSLogistics.Model\GSLogistics.Model.csproj">
       <Project>{d8dd60d0-a0c4-4533-aa8f-f98aed3de7d1}</Project>
