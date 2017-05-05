@@ -22,7 +22,8 @@ namespace GSLogistics.Website.Admin
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "OrderAppointment", action = "List", id = UrlParameter.Optional }
+                defaults: new { controller = "OrderAppointment", action = "List", id = UrlParameter.Optional },
+                namespaces: new string[] {"GSLogistics.Website.Admin.Controllers"}
             );
         }
     }

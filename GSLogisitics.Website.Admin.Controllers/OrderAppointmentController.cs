@@ -236,16 +236,25 @@ namespace GSLogistics.Website.Admin.Controllers
         //}
 
         [HttpGet]
-       public ActionResult SearchPickTicket(string pickTicketId)
+       public async Task<ActionResult> SearchPickTicket(string pickTicketId)
         {
-            var pt = repository.Appointments.Where(x => x.PickTicket == pickTicketId).FirstOrDefault();
-
-            if (pt !=null)
+            using (var appointmentLogic = Kernel.Get<IAppointmentLogic>())
             {
-                return Json(new { result = "Success", appointmentNumber = pt.AppointmentNumber, IsPosted = pt.Posted, shippingDate = pt.ShipDate, carrier = pt.CatScacCode.ScacCodeName, pickTicketId = pickTicketId }, JsonRequestBehavior.AllowGet);
-            }
 
-            return Json(new { result = "NotFound" , pickTicketId = pickTicketId } , JsonRequestBehavior.AllowGet);
+                var pts = await appointmentLogic.ToListAsync(new AppointmentQuery()
+                {
+                    PickTicketId = pickTicketId
+                });
+                var pt = pts.FirstOrDefault(); 
+               // var pt = repository.Appointments.Where(x => x.PickTicket == pickTicketId).FirstOrDefault();
+
+                if (pt != null)
+                {
+                    return Json(new { result = "Success", appointmentNumber = pt.AppointmentNumber, IsPosted = pt.Posted, shippingDate = pt.ShippingDate, carrier = pt.Carrier, pickTicketId = pickTicketId }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new { result = "NotFound", pickTicketId = pickTicketId }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]
@@ -326,33 +335,36 @@ namespace GSLogistics.Website.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> ActionAppointments(ActionAppointment model)
         {
-            foreach (var appt in model.Appointments)
+            using (var appointmentLogic = Kernel.Get<IAppointmentLogic>())
             {
-                Model.Appointment appointment = new Model.Appointment()
+                foreach (var appt in model.Appointments)
                 {
-                    CustomerId = appt.CustomerId,
-                    PickTicket = appt.PickTicket,
-                    AppointmentNumber = appt.AppointmentNo,
-                    Posted = appt.Posted.Value,
-                    Status = appt.Status
-                };
-
-                await repository.UpdateAppointment(appointment);
-                if (model.Action == AppointmentAction.Cancel)
-                {
-                    Entities.OrderAppointment orderAppointment = new Entities.OrderAppointment()
+                    Model.Appointment appointment = new Model.Appointment()
                     {
                         CustomerId = appt.CustomerId,
-                        PickTicketId = appt.PickTicket,
-                        PurchaseOrderId = appt.PurchaseOrderId,
-                        Status = 0
+                        PickTicket = appt.PickTicket,
+                        AppointmentNumber = appt.AppointmentNo,
+                        Posted = appt.Posted.Value,
+                        Status = appt.Status
                     };
 
-                     repository.UpdateOrderAppointment(orderAppointment);
+                    await appointmentLogic.Update(appointment);
+                    //await repository.UpdateAppointment(appointment);
+                    if (model.Action == AppointmentAction.Cancel)
+                    {
+                        Entities.OrderAppointment orderAppointment = new Entities.OrderAppointment()
+                        {
+                            CustomerId = appt.CustomerId,
+                            PickTicketId = appt.PickTicket,
+                            PurchaseOrderId = appt.PurchaseOrderId,
+                            Status = 0
+                        };
 
+                        repository.UpdateOrderAppointment(orderAppointment);
+
+                    }
                 }
             }
-            
 
             return Json(new { url = "OrderAppointment/List" });
         }
@@ -423,8 +435,11 @@ namespace GSLogistics.Website.Admin.Controllers
         {
 
             Model.Appointment appt = new Model.Appointment() { CustomerId = update.CustomerId, PickTicket = update.PickTicket, AppointmentNumber = update.AppointmentNo, Posted = update.Posted ?? false, Status = update.Status};
-
-           await repository.UpdateAppointment(appt) ;
+            using (var logic = Kernel.Get<IAppointmentLogic>())
+            {
+                var x = await logic.Update(appt);
+            }
+                //await repository.UpdateAppointment(appt);
 
             return Json(new { url = "List" });
         }

@@ -10,6 +10,7 @@ namespace GSLogistics.Model
     {
         public string CustomerId { get; set; }
         public string ScacCode { get; set; }
+        public string Carrier { get; set; }
         public DateTime? ShippingDate { get; set; }
         public DateTime? ShippingTime { get; set; }
         public bool? Posted { get; set; }
@@ -20,5 +21,7 @@ namespace GSLogistics.Model
         public DateTime DateAdded { get; set; }
 
         public DateTime? ShippingTimeLimit { get; set; }
+        public bool? Transfered { get; set; }
+        public string UserName { get; set; }
     }
 }
