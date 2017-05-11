@@ -27,7 +27,15 @@ namespace GSLogistics.Logic
         {
             return await Repository.Update(appointment);
         }
+        public async Task<int> Create(Model.Appointment orderAppointment)
+        {
+            return await Repository.Create(orderAppointment);
+        }
 
+        public IList<Model.Appointment> ToList(AppointmentQuery query)
+        {
+            return Repository.ToList(query);
+        }
 
     }
 }

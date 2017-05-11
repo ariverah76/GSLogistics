@@ -84,5 +84,41 @@ namespace GSLogistics.Entities.Concrete
             return result.ToList();
 
         }
+
+
+        public async Task<int> Update(Model.OrderAppointment orderAppointment)
+        {
+
+            try
+            {
+                var ptBulk = string.IsNullOrEmpty(orderAppointment.PtBulk) ? "" : orderAppointment.PtBulk;
+                var entity = context.OrderAppointments.Where(x => x.PurchaseOrderId == orderAppointment.PurchaseOrderId && x.PickTicketId == orderAppointment.PickTicketId && x.CustomerId == orderAppointment.CustomerId && x.PtBulk == ptBulk).FirstOrDefault();
+
+                if (entity != null)
+                {
+
+                    entity.Status = orderAppointment.Status;
+
+                    if (!string.IsNullOrEmpty(orderAppointment.Notes))
+                    {
+                        entity.Notes = orderAppointment.Notes;
+                    }
+
+                    if (!string.IsNullOrEmpty(orderAppointment.ConfirmationNumber))
+                    {
+                        entity.ConfirmationNumber = orderAppointment.ConfirmationNumber;
+                    }
+
+                    return await context.SaveChangesAsync();
+                }
+            }
+            catch (Exception exc)
+            {
+                throw exc;
+            }
+
+            return 0;
+
+        }
     }
 }

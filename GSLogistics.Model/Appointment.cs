@@ -23,5 +23,7 @@ namespace GSLogistics.Model
         public DateTime? ShippingTimeLimit { get; set; }
         public bool? Transfered { get; set; }
         public string UserName { get; set; }
+        public int DivisionId { get; set; }
+        public short? DeliveryTypeId { get; set; }
     }
 }

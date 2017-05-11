@@ -29,6 +29,27 @@ namespace GSLogistics.Entities.Concrete
             {
                 q = q.Where(x => x.CustomerId == query.CustomerId);
             }
+
+            if (query.Posted.HasValue)
+            {
+                q = q.Where(x => x.Posted == query.Posted.Value);
+            }
+
+            if (query.ShippingDateStart.HasValue)
+            {
+                q = q.Where(x => x.ShipDate >= query.ShippingDateStart.Value);
+            }
+            if (query.ShippingDateEnd.HasValue)
+            {
+                q = q.Where(x => x.ShipDate >= query.ShippingDateEnd.Value);
+            }
+            if (!string.IsNullOrEmpty(query.Status))
+            {
+                q = q.Where(x => x.Status == query.Status);
+            }
+
+            
+
             return q;
 
         }
@@ -59,6 +80,75 @@ namespace GSLogistics.Entities.Concrete
             });
 
             return result.ToList();
+
+        }
+
+        public List<Model.Appointment> ToList(AppointmentQuery query)
+        {
+            var l =  Appointment_BuildQuery(query)
+                .AsNoTracking()
+                .ToList();
+
+            var result = l.Select(x => new Model.Appointment
+            {
+                AppointmentNumber = x.AppointmentNumber,
+                CustomerId = x.CustomerId,
+                DateAdded = x.DateAdd,
+                PickTicket = x.PickTicket,
+                Posted = x.Posted,
+                PtBulk = x.PtBulk,
+                ScacCode = x.ScacCode,
+                ShippingDate = x.ShipDate,
+                ShippingTime = x.ShipTime,
+                ShippingTimeLimit = x.ShippingTimeLimit,
+                Status = x.Status,
+                Transfered = x.Transferred,
+                UserName = x.UserName,
+                Carrier = x.CatScacCode.ScacCodeName
+
+            });
+
+            return result.ToList();
+
+        }
+        public async Task<int> Create(Model.Appointment appointmentModel)
+        {
+            Entities.Appointment appointment = new Entities.Appointment();
+            appointment.CustomerId = appointmentModel.CustomerId;
+            appointment.DateAdd = DateTime.Now;
+            appointment.PickTicket = appointmentModel.PickTicket;
+            appointment.DivisionId = appointmentModel.DivisionId;
+
+            appointment.ScacCode = appointmentModel.ScacCode;
+            appointment.ShipDate = appointmentModel.ShippingDate.Value;
+            appointment.ShipTime = new DateTime(appointmentModel.ShippingDate.Value.Year, appointmentModel.ShippingDate.Value.Month, appointmentModel.ShippingDate.Value.Day, appointmentModel.ShippingTime.Value.Hour, appointmentModel.ShippingTime.Value.Minute, 0);
+            appointment.AppointmentNumber = appointmentModel.AppointmentNumber;
+            appointment.DeliveryTypeId = appointmentModel.DeliveryTypeId.Value;
+            appointment.UserName = appointmentModel.UserName;
+
+            if (appointmentModel.ShippingTimeLimit.HasValue)
+            {
+                appointment.ShippingTimeLimit = new DateTime(appointmentModel.ShippingDate.Value.Year, appointmentModel.ShippingDate.Value.Month, appointmentModel.ShippingDate.Value.Day, appointmentModel.ShippingTimeLimit.Value.Hour, appointmentModel.ShippingTimeLimit.Value.Minute, 0);
+            }
+
+            appointment.PtBulk = string.Empty;
+            if (!string.IsNullOrEmpty(appointmentModel.PtBulk))
+            {
+                appointment.PtBulk = appointmentModel.PtBulk;
+                appointment.PickTicket = appointmentModel.PtBulk;
+            }
+
+            context.Appointments.Add(appointment);
+
+            try
+            {
+               return await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
 
         }
 

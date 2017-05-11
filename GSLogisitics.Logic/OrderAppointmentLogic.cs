@@ -22,6 +22,12 @@ namespace GSLogistics.Logic
             return await Repository.ToListAsync(query);
         }
 
+        public async Task<int> Update(Model.OrderAppointment orderAppointment)
+        {
+            return await  Repository.Update(orderAppointment);
+        }
+
+       
 
     }
 }

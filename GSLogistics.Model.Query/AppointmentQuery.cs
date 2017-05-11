@@ -13,5 +13,12 @@ namespace GSLogistics.Model.Query
 
         public string AppointmentNumber { get; set; }
         public string PtBulk { get; set; }
+
+        public bool? Posted { get; set; }
+
+        public DateTime? ShippingDateStart { get; set; }
+        public DateTime? ShippingDateEnd { get; set; }
+        public string Status { get; set; }
+
     }
 }
