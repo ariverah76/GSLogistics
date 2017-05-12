@@ -93,6 +93,7 @@ namespace GSLogistics.Entities.Concrete
             {
                 AppointmentNumber = x.AppointmentNumber,
                 CustomerId = x.CustomerId,
+                CustomerName = x.Customer.CompanyName,
                 DateAdded = x.DateAdd,
                 PickTicket = x.PickTicket,
                 Posted = x.Posted,

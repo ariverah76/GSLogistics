@@ -9,6 +9,7 @@ namespace GSLogistics.Model
     public class Appointment
     {
         public string CustomerId { get; set; }
+        public string CustomerName { get; set; }
         public string ScacCode { get; set; }
         public string Carrier { get; set; }
         public DateTime? ShippingDate { get; set; }
@@ -25,5 +26,6 @@ namespace GSLogistics.Model
         public string UserName { get; set; }
         public int DivisionId { get; set; }
         public short? DeliveryTypeId { get; set; }
+        
     }
 }

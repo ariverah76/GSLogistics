@@ -11,5 +11,6 @@ namespace GSLogistics.Logic.Interface
     {
         Task<IList<Model.OrderAppointment>> ToListAsync(OrderAppointmentQuery query);
         Task<int> Update(Model.OrderAppointment orderAppointment);
+        IList<Model.OrderAppointment> ToList(OrderAppointmentQuery query);
     }
 }

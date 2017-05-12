@@ -482,88 +482,65 @@ namespace GSLogistics.Website.Admin.Controllers
             return Json(new { url = "List" });
         }
 
-        public async Task<PartialViewResult> GetAppointments(OrderAppointmentsIndex_ViewModel model)
+        public PartialViewResult GetAppointments(OrderAppointmentsIndex_ViewModel model)
         {
             var query = new AppointmentQuery();
-
-
-
             List<Models.Appointment> appointments = new List<Models.Appointment>();
-
-            var appointmentList = repository.Appointments.AsQueryable();
 
             if (!string.IsNullOrEmpty(model.SelectedStatus))
             {
                 if (model.SelectedStatus == "1")
                 {
-                    appointmentList = appointmentList.Where(x => x.Posted);
                     query.Posted = true;
                 }
                 else
                 {
                     query.Posted = false;
-                    appointmentList = appointmentList.Where(x => !x.Posted);
                 }
             }
             else
             {
                 query.Posted = false;
-                appointmentList = appointmentList.Where(x => !x.Posted);
             }
 
             if (!string.IsNullOrEmpty(model.AppointmentNumberSearch))
             {
-                appointmentList = appointmentList.Where(x => x.AppointmentNumber == model.AppointmentNumberSearch);
                 query.AppointmentNumber = model.AppointmentNumber;
             }
 
             if (model.ShippingDateStart.HasValue)
             {
-                appointmentList = appointmentList.Where(x => x.ShipDate >= model.ShippingDateStart.Value);
                 query.ShippingDateStart = model.ShippingDateStart.Value;
             }
 
             if (model.ShippingDateEnd.HasValue)
             {
-                appointmentList = appointmentList.Where(x => x.ShipDate <= model.ShippingDateEnd.Value);
                 query.ShippingDateEnd = model.ShippingDateEnd.Value;
             }
 
-            //if (!string.IsNullOrEmpty(model.AppointmentPOSearch))
-            //{
-            //    appointmentList = appointmentList.Where(x => x.o)
-            //}
-
-
-            appointmentList = appointmentList.Where(x => x.Status == "A");
             query.Status = "A";
 
             using (var aLogic = Kernel.Get<IAppointmentLogic>())
             using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
             {
-
-
-
-                var orderAppts = repository.OrderAppointments.ToList();
-
-                var list = appointmentList.ToList();
+                var orderAppts = oLogic.ToList(new OrderAppointmentQuery());
                 var list2 = aLogic.ToList(query);
 
-                foreach (var appt in appointmentList.ToList())
+                foreach (var appt in list2)
                 {
                     var thisAppointment = new Models.Appointment()
                     {
                         AppointmentNo = appt.AppointmentNumber,
-                        CustomerName = appt.Customer.CompanyName,
+                        CustomerName = appt.CustomerName,
                         CustomerId = appt.CustomerId,
-                        Carrier = appt.CatScacCode.ScacCodeName,
+                        Carrier = appt.Carrier,
                         PickTicket = appt.PickTicket,
                         PtBulk = appt.PtBulk,
                         ScaccCode = appt.ScacCode,
-                        ShipDate = appt.ShipDate,
-                        ShipTime = appt.ShipTime,
+                        ShipDate = appt.ShippingDate.Value,
+                        ShipTime = appt.ShippingTime.Value,
                         Posted = appt.Posted.ToString(),
-                        DateAdded = appt.DateAdd,
+                        DateAdded = appt.DateAdded,
                         ShipTimeLimit = appt.ShippingTimeLimit
 
                     };

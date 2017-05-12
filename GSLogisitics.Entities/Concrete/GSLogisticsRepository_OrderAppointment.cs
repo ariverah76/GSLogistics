@@ -84,7 +84,40 @@ namespace GSLogistics.Entities.Concrete
             return result.ToList();
 
         }
+        public List<Model.OrderAppointment> ToList(OrderAppointmentQuery query)
+        {
+            var l =  OrderAppointment_BuildQuery(query)
+                .AsNoTracking()
+                .ToList();
 
+            var result = l.Select(x => new Model.OrderAppointment
+            {
+                BillOfLading = x.BillOfLading,
+                BoxesCount = x.BoxesCount,
+                BoxSize = x.BoxSize,
+                ConfirmationNumber = x.ConfirmationNumber,
+                CustomerId = x.CustomerId,
+                DivisionId = x.DivisionId,
+                EndDate = x.EndDate,
+                Notes = x.Notes,
+                PickTicketId = x.PickTicketId,
+                Pieces = x.Pieces,
+                PtBulk = x.PtBulk,
+                PurchaseOrderId = x.PurchaseOrderId,
+                ScacCode = x.ScacCode,
+                ShipFor = x.ShipFor,
+                ShipTo = x.ShipTo,
+                Size = x.Size,
+                StartDate = x.StartDate,
+                Status = x.Status,
+                Weigth = x.Weigth,
+                CustomerName = x.Customer !=null ? x.Customer.CompanyName : "",
+                DivisionName = x.Division !=null ? x.Division.Description : ""
+            });
+
+            return result.ToList();
+
+        }
 
         public async Task<int> Update(Model.OrderAppointment orderAppointment)
         {
