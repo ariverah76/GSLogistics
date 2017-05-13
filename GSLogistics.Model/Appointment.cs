@@ -25,6 +25,7 @@ namespace GSLogistics.Model
         public bool? Transfered { get; set; }
         public string UserName { get; set; }
         public int DivisionId { get; set; }
+        public string DivisionName { get; set; }
         public short? DeliveryTypeId { get; set; }
         
     }

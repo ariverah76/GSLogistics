@@ -13,7 +13,8 @@ namespace GSLogistics.Entities.Concrete
         private IQueryable<GSLogistics.Entities.Appointment> Appointment_BuildQuery(AppointmentQuery query)
         {
             var q = context.Appointments.Where(x => true)
-              .Include("Customer");
+              .Include("Customer")
+              .Include("Division");
 
             if (!string.IsNullOrEmpty(query.PickTicketId))
             {
@@ -43,9 +44,21 @@ namespace GSLogistics.Entities.Concrete
             {
                 q = q.Where(x => x.ShipDate >= query.ShippingDateEnd.Value);
             }
+            if (query.ShippingDate.HasValue)
+            {
+                q = q.Where(x => x.ShipDate.Year == query.ShippingDate.Value.Year && x.ShipDate.Month == query.ShippingDate.Value.Month && x.ShipDate.Day == query.ShippingDate.Value.Day);
+            }
             if (!string.IsNullOrEmpty(query.Status))
             {
                 q = q.Where(x => x.Status == query.Status);
+            }
+            if (query.DeliveryTypeId.HasValue)
+            {
+                q = q.Where(x => x.DeliveryTypeId == query.DeliveryTypeId.Value);
+            }
+            if (query.DivisionId.HasValue)
+            {
+                q = q.Where(x => x.DivisionId == query.DivisionId.Value);
             }
 
             
@@ -64,6 +77,7 @@ namespace GSLogistics.Entities.Concrete
             {
                 AppointmentNumber = x.AppointmentNumber,
                 CustomerId = x.CustomerId,
+                DivisionId = x.DivisionId,
                 DateAdded = x.DateAdd,
                 PickTicket = x.PickTicket,
                 Posted = x.Posted,
@@ -75,7 +89,10 @@ namespace GSLogistics.Entities.Concrete
                 Status = x.Status,
                 Transfered = x.Transferred,
                 UserName = x.UserName,
-                Carrier = x.CatScacCode.ScacCodeName
+                Carrier = x.CatScacCode.ScacCodeName,
+                CustomerName = x.Customer != null ? x.Customer.CompanyName: string.Empty,
+                DivisionName = x.Division != null ? x.Division.Description: string.Empty,
+                DeliveryTypeId = x.DeliveryTypeId
 
             });
 
@@ -93,7 +110,7 @@ namespace GSLogistics.Entities.Concrete
             {
                 AppointmentNumber = x.AppointmentNumber,
                 CustomerId = x.CustomerId,
-                CustomerName = x.Customer.CompanyName,
+                DivisionId = x.DivisionId,
                 DateAdded = x.DateAdd,
                 PickTicket = x.PickTicket,
                 Posted = x.Posted,
@@ -105,7 +122,10 @@ namespace GSLogistics.Entities.Concrete
                 Status = x.Status,
                 Transfered = x.Transferred,
                 UserName = x.UserName,
-                Carrier = x.CatScacCode.ScacCodeName
+                Carrier = x.CatScacCode.ScacCodeName,
+                CustomerName = x.Customer != null ? x.Customer.CompanyName : string.Empty,
+                DivisionName = x.Division != null ? x.Division.Description : string.Empty,
+                DeliveryTypeId = x.DeliveryTypeId
 
             });
 

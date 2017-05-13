@@ -77,8 +77,8 @@ namespace GSLogistics.Entities.Concrete
                 StartDate = x.StartDate,
                 Status = x.Status,
                 Weigth = x.Weigth,
-                CustomerName = x.Customer.CompanyName,
-                DivisionName = x.Division.Description
+                CustomerName = x.Customer != null ? x.Customer.CompanyName: string.Empty,
+                DivisionName = x.Division != null? x.Division.Description : string.Empty
             });
 
             return result.ToList();

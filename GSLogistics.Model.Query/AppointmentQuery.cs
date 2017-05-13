@@ -19,6 +19,9 @@ namespace GSLogistics.Model.Query
         public DateTime? ShippingDateStart { get; set; }
         public DateTime? ShippingDateEnd { get; set; }
         public string Status { get; set; }
+        public DateTime? ShippingDate { get; set; }
+        public short? DeliveryTypeId { get; set; }
 
+        public int? DivisionId { get; set; }
     }
 }

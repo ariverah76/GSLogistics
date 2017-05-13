@@ -567,74 +567,77 @@ namespace GSLogistics.Website.Admin.Controllers
 
         #region LogReport
 
-        private List<Models.Appointment> GetAppointments(LogReportIndex_ViewModel model)
+        private async Task<List<Models.Appointment>> GetAppointments(LogReportIndex_ViewModel model)
         {
             List<Models.Appointment> appointments = new List<Models.Appointment>();
-
-            var appointmentList = repository.Appointments.AsQueryable();
-
-            appointmentList = appointmentList.Where(x => x.Posted == true);
+            AppointmentQuery query = new AppointmentQuery()
+            {
+                Posted = true
+            };
             if (model.SelectedDay.HasValue)
             {
-                appointmentList = appointmentList.Where(x => x.ShipDate.Year == model.SelectedDay.Value.Year && x.ShipDate.Month == model.SelectedDay.Value.Month && x.ShipDate.Day == model.SelectedDay.Value.Day);
+                query.ShippingDate = model.SelectedDay;
             }
 
             if (model.DeliveryTypeId.HasValue)
             {
-                appointmentList = appointmentList.Where(x => x.DeliveryTypeId == model.DeliveryTypeId.Value);
+                query.DeliveryTypeId = model.DeliveryTypeId.Value;
             }
-
             if (!string.IsNullOrEmpty(model.SelectedClientId))
             {
-                appointmentList = appointmentList.Where(x => x.CustomerId == model.SelectedClientId);
+                query.CustomerId = model.SelectedClientId;
             }
 
             if (model.SelectedDivisionId.HasValue)
             {
-                appointmentList = appointmentList.Where(x => x.DivisionId == model.SelectedDivisionId.Value);
+                query.DivisionId = model.SelectedDivisionId.Value;
             }
 
-            var orderAppts = repository.OrderAppointments.ToList();
-
-            var list = appointmentList.ToList();
-
-            foreach (var appt in appointmentList.ToList())
+            using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
+            using (var aLogic = oLogic.GetLogic<IAppointmentLogic>())
             {
-                var thisAppointment = new Models.Appointment()
-                {
-                    AppointmentNo = appt.AppointmentNumber,
-                    CustomerName = appt.Customer.CompanyName,
-                    CustomerId = appt.CustomerId,
-                    DivisionId = appt.Division.NameId,
-                    DivisionName = appt.Division.Description,
-                    Carrier = appt.CatScacCode.ScacCodeName,
-                    PickTicket = appt.PickTicket,
-                    PtBulk = appt.PtBulk,
-                    ScaccCode = appt.ScacCode,
-                    ShipDate = appt.ShipDate,
-                    ShipTime = appt.ShipTime,
-                    Posted = appt.Posted.ToString(),
-                    DateAdded = appt.DateAdd,
-                    DeliveryTypeId = appt.DeliveryTypeId
+                var orderAppts = await oLogic.ToListAsync(new OrderAppointmentQuery());
 
-                };
+                var list = await aLogic.ToListAsync(query);
 
-                var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
-                if (orderAppt != null)
+                foreach (var appt in list)
                 {
-                    thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
-                    thisAppointment.Pieces = orderAppt.Pieces.Value;
-                    thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
-                    thisAppointment.ShipTo = orderAppt.ShipTo;
+                    var thisAppointment = new Models.Appointment()
+                    {
+                        AppointmentNo = appt.AppointmentNumber,
+                        CustomerName = appt.CustomerName,
+                        CustomerId = appt.CustomerId,
+                        DivisionId = appt.DivisionId,
+                        DivisionName = appt.DivisionName,
+                        Carrier = appt.Carrier,
+                        PickTicket = appt.PickTicket,
+                        PtBulk = appt.PtBulk,
+                        ScaccCode = appt.ScacCode,
+                        ShipDate = appt.ShippingDate.Value,
+                        ShipTime = appt.ShippingTime.Value,
+                        Posted = appt.Posted.ToString(),
+                        DateAdded = appt.DateAdded,
+                        DeliveryTypeId = appt.DeliveryTypeId
+
+                    };
+
+                    var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
+                    if (orderAppt != null)
+                    {
+                        thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
+                        thisAppointment.Pieces = orderAppt.Pieces.Value;
+                        thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
+                        thisAppointment.ShipTo = orderAppt.ShipTo;
+                    }
+
+                    appointments.Add(thisAppointment);
                 }
-
-                appointments.Add(thisAppointment);
             }
             return appointments;
         }
 
 
-        public ActionResult GenerateLogReport(LogReportIndex_ViewModel model)
+        public async Task<ActionResult> GenerateLogReport(LogReportIndex_ViewModel model)
         {
             //var model = new LogReportIndex_ViewModel()
             //{
@@ -646,7 +649,7 @@ namespace GSLogistics.Website.Admin.Controllers
             //};
             // TODO: is possible get the appointments from client?
             
-            var appointments = this.GetAppointments(model);
+            var appointments = await this.GetAppointments(model);
 
             var reportingService = new Reporting.ReportingService();
 
@@ -681,83 +684,86 @@ namespace GSLogistics.Website.Admin.Controllers
         }
 
 
-        public ActionResult TestDownload(LogReportIndex_ViewModel model)
-        {
-            var reportingService = new Reporting.ReportingService();
+        //public ActionResult TestDownload(LogReportIndex_ViewModel model)
+        //{
+        //    var reportingService = new Reporting.ReportingService();
 
-            string mimeType = null;
-            var result = reportingService.RenderReport(model.Appointments, "LogReport.rdlc", "DataSet1", "excel", out mimeType);
+        //    string mimeType = null;
+        //    var result = reportingService.RenderReport(model.Appointments, "LogReport.rdlc", "DataSet1", "excel", out mimeType);
 
-            FileResult fileResult = new FileContentResult(result, mimeType);
-            fileResult.FileDownloadName = reportingService.GetReportName("LogReport", "excel");
-            return fileResult;
-        }
+        //    FileResult fileResult = new FileContentResult(result, mimeType);
+        //    fileResult.FileDownloadName = reportingService.GetReportName("LogReport", "excel");
+        //    return fileResult;
+        //}
 
         public PartialViewResult GetLogReport(LogReportIndex_ViewModel model)
         {
             List<Models.Appointment> appointments = new List<Models.Appointment>();
 
-            var appointmentList = repository.Appointments.AsQueryable();
+            var query = new AppointmentQuery()
+            {
+                Posted = true
+            };
 
-            appointmentList = appointmentList.Where(x => x.Posted == true);
             if (model.SelectedDay.HasValue)
             {
-                appointmentList = appointmentList.Where(x => x.ShipDate.Year == model.SelectedDay.Value.Year && x.ShipDate.Month == model.SelectedDay.Value.Month && x.ShipDate.Day == model.SelectedDay.Value.Day);
+                query.ShippingDate = model.SelectedDay.Value;
             }
 
             if (model.DeliveryTypeId.HasValue)
             {
-                appointmentList = appointmentList.Where(x => x.DeliveryTypeId == model.DeliveryTypeId.Value);
+                query.DeliveryTypeId = model.DeliveryTypeId.Value;
             }
 
             if (!string.IsNullOrEmpty(model.SelectedClientId))
             {
-                appointmentList = appointmentList.Where(x => x.CustomerId == model.SelectedClientId);
+                query.CustomerId = model.SelectedClientId;
             }
 
             if (model.SelectedDivisionId.HasValue)
             {
-                appointmentList = appointmentList.Where(x => x.DivisionId == model.SelectedDivisionId.Value);
+                query.DivisionId = model.SelectedDivisionId.Value;
             }
 
-            var orderAppts = repository.OrderAppointments.ToList();
-
-            var list = appointmentList.ToList();
-
-            foreach (var appt in appointmentList.ToList())
+            using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
+            using (var aLogic = oLogic.GetLogic<IAppointmentLogic>())
             {
-                var thisAppointment = new Models.Appointment()
+
+                var orderAppts =  oLogic.ToList(new OrderAppointmentQuery());
+                var list = aLogic.ToList(query);
+
+                foreach (var appt in list)
                 {
-                    AppointmentNo = appt.AppointmentNumber,
-                    CustomerName = appt.Customer.CompanyName,
-                    CustomerId = appt.CustomerId,
-                    DivisionId = appt.Division.NameId,
-                    DivisionName = appt.Division.Description,
-                    Carrier = appt.CatScacCode.ScacCodeName,
-                    PickTicket = appt.PickTicket,
-                    PtBulk = appt.PtBulk,
-                    ScaccCode = appt.ScacCode,
-                    ShipDate = appt.ShipDate,
-                    ShipTime = appt.ShipTime,
-                    Posted = appt.Posted.ToString(),
-                    DateAdded = appt.DateAdd,
-                    DeliveryTypeId = appt.DeliveryTypeId,
+                    var thisAppointment = new Models.Appointment()
+                    {
+                        AppointmentNo = appt.AppointmentNumber,
+                        CustomerName = appt.CustomerName,
+                        CustomerId = appt.CustomerId,
+                        DivisionId = appt.DivisionId,
+                        DivisionName = appt.DivisionName,
+                        Carrier = appt.Carrier,
+                        PickTicket = appt.PickTicket,
+                        PtBulk = appt.PtBulk,
+                        ScaccCode = appt.ScacCode,
+                        ShipDate = appt.ShippingDate.Value,
+                        ShipTime = appt.ShippingTime.Value,
+                        Posted = appt.Posted.ToString(),
+                        DateAdded = appt.DateAdded,
+                        DeliveryTypeId = appt.DeliveryTypeId,
+                    };
 
-                    
+                    var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
+                    if (orderAppt != null)
+                    {
+                        thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
+                        thisAppointment.Pieces = orderAppt.Pieces.Value;
+                        thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
+                        thisAppointment.ShipTo = orderAppt.ShipTo;
+                        thisAppointment.BillOfLading = orderAppt.BillOfLading;
+                    }
 
-                };
-
-                var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
-                if (orderAppt != null)
-                {
-                    thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
-                    thisAppointment.Pieces = orderAppt.Pieces.Value;
-                    thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
-                    thisAppointment.ShipTo = orderAppt.ShipTo;
-                    thisAppointment.BillOfLading = orderAppt.BillOfLading;
+                    appointments.Add(thisAppointment);
                 }
-
-                appointments.Add(thisAppointment);
             }
 
 
