@@ -21,7 +21,7 @@ namespace GSLogistics.Entities.Concrete
 
             foreach(var d in result)
             {
-                returnValue.Add(new Model.Division() { CustomerId = d.CustomerId, DivisionId = d.DivisionId, DivisionName = d.Description });
+                returnValue.Add(new Model.Division() { CustomerId = d.CustomerId, DivisionId = d.DivisionId, Name = d.NameId, Description = d.Description });
             }
 
             return returnValue;

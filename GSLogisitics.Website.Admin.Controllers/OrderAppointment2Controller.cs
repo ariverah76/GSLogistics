@@ -99,7 +99,7 @@ namespace GSLogistics.Website.Admin.Controllers
                 if (!string.IsNullOrEmpty(model.SelectedClientId))
                 {
                     var divisions = await divLogic.GetDivisionByCustomerId(model.SelectedClientId); 
-                    var divs = divisions.Select(d => new { Id = d.DivisionId, Name = d.DivisionName }).ToList();
+                    var divs = divisions.Select(d => new { Id = d.DivisionId, Name = d.Description }).ToList();
                     //var divs = repository.GetDivisionByClient(model.SelectedClientId).Select(d => new { Id = d.DivisionId, Name = d.Description }).ToList();
                     Dictionary<int, string> result3 = new Dictionary<int, string>();
                     divs.ForEach(x => result3.Add(x.Id, x.Name));

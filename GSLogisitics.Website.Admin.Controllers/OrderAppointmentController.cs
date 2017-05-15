@@ -120,7 +120,7 @@ namespace GSLogistics.Website.Admin.Controllers
                 if (!string.IsNullOrEmpty(model.SelectedClientId))
                 {
                     var divisions = await divLogic.GetDivisionByCustomerId(model.SelectedClientId);
-                    var divs = divisions.Select(d => new { Id = d.DivisionId, Name = d.DivisionName }).ToList();
+                    var divs = divisions.Select(d => new { Id = d.DivisionId, Name = d.Description }).ToList();
 
                     Dictionary<int, string> result3 = new Dictionary<int, string>();
                     divs.ForEach(x => result3.Add(x.Id, x.Name));
@@ -805,20 +805,23 @@ namespace GSLogistics.Website.Admin.Controllers
         #endregion  
 
         [HttpGet]
-        public ActionResult GetDivisionByClient(string customerId)
+        public async Task<ActionResult> GetDivisionByClient(string customerId)
         {
             if (String.IsNullOrEmpty(customerId))
             {
-                //throw new ArgumentNullException("countryId");
                 return new EmptyResult();
             }
-            
-            var divisions = repository.GetDivisionByClient(customerId).Select(d => new { Id = d.DivisionId, Name = $"{d.NameId} {d.Description}" }).ToList();
-            
-            divisions.Insert(0,new { Id = 0, Name = "Select" });
+            using (var divLogic = Kernel.Get<IDivisionLogic>())
+            {
+               // var divisions = repository.GetDivisionByClient(customerId).Select(d => new { Id = d.DivisionId, Name = $"{d.NameId} {d.Description}" }).ToList();
+                var divisions2 = await divLogic.GetDivisionByCustomerId(customerId);// (d => new { Id = d.DivisionId, Name = $"{d.NameId} {d.Description}" }).ToList();
 
+                var divs = divisions2.Select(d => new { Id = d.DivisionId, Name = $"{d.Name} {d.Description}" }).ToList();
+                divs.Insert(0, new { Id = 0, Name = "Select" });
+
+                return Json(divs, JsonRequestBehavior.AllowGet);
+            }
             
-            return Json(divisions, JsonRequestBehavior.AllowGet);
         }
 
         private class data

@@ -10,6 +10,7 @@ namespace GSLogistics.Model
     {
         public string CustomerId { get; set; }
         public int DivisionId { get; set; }
-        public string DivisionName { get; set; }
+        public string Description { get; set; }
+        public string Name { get; set; }
     }
 }
