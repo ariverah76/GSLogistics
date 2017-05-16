@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GSLogistics.Model.Query;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -23,6 +24,20 @@ namespace GSLogistics.Entities.Concrete
             {
                 returnValue.Add(new Model.Division() { CustomerId = d.CustomerId, DivisionId = d.DivisionId, Name = d.NameId, Description = d.Description });
             }
+
+            return returnValue;
+        }
+
+        public async Task<List<Model.Customer>> ToListAsync()
+        {
+            List<Model.Customer> returnValue = new List<Model.Customer>();
+            var query = context.Customers.Where(x => true);
+
+            var result = await query
+                .AsNoTracking()
+                .ToListAsync();
+
+            result.ForEach(x => returnValue.Add(new Model.Customer() { CustomerId = x.CustomerId, CompanyName = x.CompanyName }));
 
             return returnValue;
         }

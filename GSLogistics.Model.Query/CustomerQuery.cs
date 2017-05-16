@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace GSLogistics.Model.Query
 {
-    public class Class1
+    public class CustomerQuery
     {
+        public string CustomerId { get; set; }
+        public string CustomerName { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GSLogistics.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,7 @@ namespace GSLogistics.Logic.Interface
 {
     public interface ICustomerLogic : IGSLogisticsLogic
     {
+
+        Task<List<Customer>> ToListAsync();
     }
 }

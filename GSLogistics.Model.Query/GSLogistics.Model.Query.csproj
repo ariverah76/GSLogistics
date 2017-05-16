@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppointmentQuery.cs" />
-    <Compile Include="Class1.cs" />
+    <Compile Include="CustomerQuery.cs" />
     <Compile Include="OrderAppointmentQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

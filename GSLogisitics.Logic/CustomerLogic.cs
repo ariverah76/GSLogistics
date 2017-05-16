@@ -1,5 +1,8 @@
 ﻿using GSLogistics.Logic.Interface;
+using GSLogistics.Model;
 using Ninject;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GSLogistics.Logic
 {
@@ -9,6 +12,12 @@ namespace GSLogistics.Logic
             : base(kernel)
         {
 
+
+        }
+
+        public async Task<List<Customer>> ToListAsync()
+        {
+            return await Repository.ToListAsync();
         }
 
         

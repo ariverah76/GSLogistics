@@ -20,14 +20,12 @@ namespace GSLogistics.Website.Admin.Controllers
     public class OrderAppointmentController :  BaseController
     {
 
-        //TOOD: Implement ninject kernel on the constructor
-        //TODO: Implement ViewModel to pass through the view
-        private IRepository repository;
+      //  private IRepository repository;
 
-        public OrderAppointmentController(IKernel kernel, IRepository orderApptRepository)
+        public OrderAppointmentController(IKernel kernel)
             :base(kernel)
         {
-            this.repository = orderApptRepository;
+            //this.repository = orderApptRepository;
         }
 
         //public OrderAppointmentController(IKernel kernel)
@@ -771,33 +769,38 @@ namespace GSLogistics.Website.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult LogReport()
+        public async Task<ActionResult> LogReport()
         {
             var model = new LogReportIndex_ViewModel();
             model.SelectedDay = DateTime.Today;
-            return this.LogReport(model);
+            return await this.LogReport(model);
         }
 
         [HttpPost]
-        public ActionResult LogReport(LogReportIndex_ViewModel model)
+        public async Task<ActionResult> LogReport(LogReportIndex_ViewModel model)
         {
 
-            var clients = repository.Customers.OrderBy(x=> x.CompanyName).Select(x => new { Id = x.CustomerId, Name = x.CompanyName }).ToList();
+            using (var logic = Kernel.Get<ICustomerLogic>())
+            {
+                var cust = await logic.ToListAsync();
+                var clients = cust.OrderBy(x => x.CompanyName).Select(x => new { Id = x.CustomerId, Name = x.CompanyName }).ToList();
+                //var clients = repository.Customers.OrderBy(x => x.CompanyName).Select(x => new { Id = x.CustomerId, Name = x.CompanyName }).ToList();
 
-            Dictionary<string, string> result = new Dictionary<string, string>();
-            clients.ForEach(x => result.Add(x.Id, x.Name));
+                Dictionary<string, string> result = new Dictionary<string, string>();
+                clients.ForEach(x => result.Add(x.Id, x.Name));
 
-            ViewBag.Customers = new SelectList(result, "Key", "Value", null);
+                ViewBag.Customers = new SelectList(result, "Key", "Value", null);
 
-            Dictionary<int, string> result2 = new Dictionary<int, string>();
-            result2.Add(7777, "Select a Customer");
+                Dictionary<int, string> result2 = new Dictionary<int, string>();
+                result2.Add(7777, "Select a Customer");
 
-            //var divisions = repository.Divisions.Select(d => new { Id = d.DivisionId, Name = d.Description }).ToList();
+                //var divisions = repository.Divisions.Select(d => new { Id = d.DivisionId, Name = d.Description }).ToList();
 
-            //divisions.ForEach(x => );
-            ViewBag.Divisions = new SelectList(result2, "Key", "Value", null);
+                //divisions.ForEach(x => );
+                ViewBag.Divisions = new SelectList(result2, "Key", "Value", null);
 
-            return this.View("LogReport", model);
+                return this.View("LogReport", model);
+            }
         }
 
 
