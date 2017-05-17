@@ -408,6 +408,7 @@ namespace GSLogistics.Website.Admin.Controllers
                         ShippingTime = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTime.Hour, model.ShippingTime.Minute, 0),
                         ScacCode = model.ScacCode,
                         DateAdded = appt.DateAdded,
+                        DeliveryTypeId = model.DeliveryTypeId
                     };
 
                     if (model.ShippingTimeLimit.HasValue)
@@ -539,7 +540,8 @@ namespace GSLogistics.Website.Admin.Controllers
                         ShipTime = appt.ShippingTime.Value,
                         Posted = appt.Posted.ToString(),
                         DateAdded = appt.DateAdded,
-                        ShipTimeLimit = appt.ShippingTimeLimit
+                        ShipTimeLimit = appt.ShippingTimeLimit,
+                        DeliveryTypeId = appt.DeliveryTypeId
 
                     };
 

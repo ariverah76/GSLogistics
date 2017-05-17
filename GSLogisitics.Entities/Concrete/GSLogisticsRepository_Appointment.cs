@@ -206,6 +206,14 @@ namespace GSLogistics.Entities.Concrete
                     {
                         entity.ShipTime = appointment.ShippingTime.Value;
                     }
+                    if (appointment.ShippingTimeLimit.HasValue)
+                    {
+                        entity.ShippingTimeLimit = appointment.ShippingTimeLimit;
+                    }
+                    if (appointment.DeliveryTypeId.HasValue)
+                    {
+                        entity.DeliveryTypeId = appointment.DeliveryTypeId;
+                    }
 
 
                     return await context.SaveChangesAsync();

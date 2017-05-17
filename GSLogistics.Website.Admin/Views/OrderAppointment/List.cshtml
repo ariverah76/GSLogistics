@@ -645,7 +645,7 @@
                                                 "positionClass": "toast-bottom-full-width",
                                                 "preventDuplicates": true
                                             };
-                                            toastr.warning("Pick Ticket # " + result.pickTicketId + " has not been transfered to the database");
+                                            toastr.warning("Pick Ticket # " + result.pickTicketId + " has not been transferred to the database");
                                         }
                                         else {
                                             var dateString = result.shippingDate.substr(6);
@@ -855,7 +855,17 @@
             $("#AppointmentNumber").val(selected[0]["AppointmentNo"]);
             $("#ShippingDate").val(selected[0]["ShipDate"]);
             $("#ShippingTime").val(selected[0]["ShipTime"]);
-            $("#ShippingCompanyId").val(selected[0]["ScaccCode"]);
+            $("#ShippingCompanyId").val(selected[0]["ScaccCode"]).change();
+
+            var dt = selected[0]["DeliveryTypeId"];
+            if (dt == "1") {
+                $("#IsPickup").prop("checked", true);
+            }
+            else if (dt == "2") {
+                $("#IsDelivery").prop("checked", true);
+            }
+
+            $("#summary").hide();
 
             $('#btnSave').html("Save");
             $('#btnSave').attr('onclick', 'saveEditedAppointments()')
@@ -887,6 +897,9 @@
             model.Shippingdate = $("#ShippingDate").val();
             model.ShippingTime = $("#ShippingTime").val();
             model.ScacCode = $("#ShippingCompanyId").val();
+            model.ShippingTimeLimit = $('#ShippingTimeLimit').val();
+            model.DeliveryTypeId = $('input[name = DeliveryTypeId]:checked').val();
+
             model.Orders = orders;
 
             $.ajax({
