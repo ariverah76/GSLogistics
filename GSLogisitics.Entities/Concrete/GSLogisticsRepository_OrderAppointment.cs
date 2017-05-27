@@ -47,6 +47,11 @@ namespace GSLogistics.Entities.Concrete
                 q = q.Where(x => x.Status == query.Status);
             }
 
+            if (!string.IsNullOrEmpty(query.PurchaseOrder))
+            {
+                q = q.Where(x => x.PurchaseOrderId == query.PurchaseOrder);
+            }
+
             return q;
 
         }

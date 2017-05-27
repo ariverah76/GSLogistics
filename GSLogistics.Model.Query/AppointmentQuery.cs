@@ -9,6 +9,7 @@ namespace GSLogistics.Model.Query
     public class AppointmentQuery
     {
         public string PickTicketId { get; set; }
+        public string[] PickTicketsIds { get; set; }
         public string CustomerId { get; set; }
 
         public string AppointmentNumber { get; set; }

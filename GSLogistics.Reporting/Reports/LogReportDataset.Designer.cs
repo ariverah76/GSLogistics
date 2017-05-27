@@ -315,6 +315,8 @@ namespace GSLogistics.Reporting.Reports {
             
             private global::System.Data.DataColumn columnShipTo;
             
+            private global::System.Data.DataColumn columnBillOfLading;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public DataTable1DataTable() {
@@ -494,6 +496,14 @@ namespace GSLogistics.Reporting.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn BillOfLadingColumn {
+                get {
+                    return this.columnBillOfLading;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -547,7 +557,8 @@ namespace GSLogistics.Reporting.Reports {
                         string PurchaseOrder, 
                         int Pieces, 
                         int BoxesNumber, 
-                        string ShipTo) {
+                        string ShipTo, 
+                        string BillOfLading) {
                 DataTable1Row rowDataTable1Row = ((DataTable1Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         CustomerId,
@@ -567,7 +578,8 @@ namespace GSLogistics.Reporting.Reports {
                         PurchaseOrder,
                         Pieces,
                         BoxesNumber,
-                        ShipTo};
+                        ShipTo,
+                        BillOfLading};
                 rowDataTable1Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowDataTable1Row);
                 return rowDataTable1Row;
@@ -608,6 +620,7 @@ namespace GSLogistics.Reporting.Reports {
                 this.columnPieces = base.Columns["Pieces"];
                 this.columnBoxesNumber = base.Columns["BoxesNumber"];
                 this.columnShipTo = base.Columns["ShipTo"];
+                this.columnBillOfLading = base.Columns["BillOfLading"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -649,6 +662,8 @@ namespace GSLogistics.Reporting.Reports {
                 base.Columns.Add(this.columnBoxesNumber);
                 this.columnShipTo = new global::System.Data.DataColumn("ShipTo", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnShipTo);
+                this.columnBillOfLading = new global::System.Data.DataColumn("BillOfLading", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnBillOfLading);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1079,6 +1094,22 @@ namespace GSLogistics.Reporting.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string BillOfLading {
+                get {
+                    try {
+                        return ((string)(this[this.tableDataTable1.BillOfLadingColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'BillOfLading\' in table \'DataTable1\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableDataTable1.BillOfLadingColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsCustomerIdNull() {
                 return this.IsNull(this.tableDataTable1.CustomerIdColumn);
             }
@@ -1291,6 +1322,18 @@ namespace GSLogistics.Reporting.Reports {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetShipToNull() {
                 this[this.tableDataTable1.ShipToColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsBillOfLadingNull() {
+                return this.IsNull(this.tableDataTable1.BillOfLadingColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetBillOfLadingNull() {
+                this[this.tableDataTable1.BillOfLadingColumn] = global::System.Convert.DBNull;
             }
         }
         

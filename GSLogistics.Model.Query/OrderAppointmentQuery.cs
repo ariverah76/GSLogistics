@@ -15,5 +15,6 @@ namespace GSLogistics.Model.Query
         public DateTime? ShipFor { get; set; }
 
         public int? Status { get; set; }
+        public string PurchaseOrder { get; set; }
     }
 }

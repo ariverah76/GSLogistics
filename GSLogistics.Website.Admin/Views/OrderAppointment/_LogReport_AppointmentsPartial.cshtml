@@ -177,13 +177,13 @@
                 var groupid = -1;
                 var subtotal = new Array();
 
-                api.column(0, { page: 'current' }).data().each(function (group, i) {
+                api.column(13, { page: 'current' }).data().each(function (group, i) {
                     if (last !== group) {
                         groupid++;
                         val = api.row(api.row($(rows).eq(i)).index()).data();
-                        var bol =  val['BillOfLading'];
+                        var bol = val['AppointmentNo'];
                         $(rows).eq(i).before(
-                            '<tr class="group"><td colspan=7> Appointment #: ' + group + ' - BOL: ' + bol +'</td></tr>'
+                            '<tr class="group"><td colspan=7> Appointment #: ' + bol + ' - BOL: ' + group +'</td></tr>'
                         );
                        // $(rows).eq(i).after(
                        //    '<tr class="footer"><td> Totals:</td></tr>'

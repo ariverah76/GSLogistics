@@ -27,6 +27,7 @@ namespace GSLogistics.Model
         public int DivisionId { get; set; }
         public string DivisionName { get; set; }
         public short? DeliveryTypeId { get; set; }
-        
+        public string BillOfLading { get; set; }
+
     }
 }

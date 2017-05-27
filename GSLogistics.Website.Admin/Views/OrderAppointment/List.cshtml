@@ -16,21 +16,17 @@
     var scacCodes = this.ViewBag.ScacCodes as SelectList;
     var appointmentStatus = this.ViewBag.AppointmentStatus as SelectList;
 }
-
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <div class="row">
-            <ul class="nav nav-pills nav-justified">
-                <li class="active" role="presentation"><a data-toggle="pill" href="#orders">Orders</a></li>
-                <li role="presentation"><a data-toggle="pill" href="#appointments">Appointments</a></li>
-            </ul>
-        </div>
-    </div>
+<div class="row">
+    <ul class="nav nav-pills nav-justified">
+        <li class="active" role="presentation"><a data-toggle="pill" href="#orders"><h3>Orders</h3></a></li>
+        <li role="presentation"><a data-toggle="pill" href="#appointments"><h3>Appointments</h3></a></li>
+    </ul>
 </div>
+
 <div class="tab-content">
     <div id="orders" class="tab-pane fade in active">
 
-        <h2>Orders</h2>
+        @*<h2>Orders</h2>*@
         @using (Html.BeginForm())
         {
             <div class="row">
@@ -129,6 +125,28 @@
 
                 <div class="panel-body">
                     <table class="table display-compact table-bordered table-striped" id="tableAppointments">
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th>PO#</th>
+                                <th>PT#</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th style="visibility:hidden"></th>
+                                <th style="visibility:hidden"></th>
+                                <th style="visibility:hidden"></th>
+                                <th></th>
+                                <th></th>
+                                <th style="visibility:hidden"></th>
+                            </tr>
+                        </tfoot>
                         <thead>
                             <tr>
                                 <th class="text-center">
@@ -142,14 +160,8 @@
                                     Start Date
                                 </th>
                                 <th>Cancel Date</th>
-                                <th>
-                                    PO#
-                                    @*@Html.DisplayNameFor(model => model.PurchaseOrderId)*@
-                                </th>
-                                <th>
-                                    PT#
-                                    @*@Html.DisplayNameFor(model => model.PickTicketId)*@
-                                </th>
+                                <th>PO#</th>
+                                <th>PT#</th>
                                 <th>
                                     Pcs
                                     @*@Html.DisplayNameFor(model => model.Pieces)*@
@@ -182,28 +194,7 @@
 
                             </tr>
                         </thead>
-                        <tfoot>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th>PO#</th>
-                                <th>PT#</th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th style="visibility:hidden"></th>
-                                <th style="visibility:hidden"></th>
-                                <th style="visibility:hidden"></th>
-                                <th></th>
-                                <th></th>
-                                <th style="visibility:hidden"></th>
-                            </tr>
-                        </tfoot>
+                        
                         <tbody>
                             @foreach (var item in Model.OrderAppointments)
             {
@@ -272,7 +263,7 @@
         </div>
     </div>
     <div id="appointments" class="tab-pane fade">
-        <h2>Appointments</h2>
+        @*<h2>Appointments</h2>*@
         <div class="row">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -473,7 +464,7 @@
         $("#tableAppointments").DataTable({
             dom: 'Bfrtip',
             responsive: true,
-            "displayLength": 25,
+            "displayLength": 15,
                 columnDefs: [{
                     orderable: false,
                     className: 'select-checkbox',
@@ -654,7 +645,7 @@
                                             var day = currentTime.getDate();
                                             var year = currentTime.getFullYear();
                                             var date = month + "/" + day + "/" + year;
-                                            var msg = "Picket has been set for ";
+                                            var msg = "Pick Ticket has been set for ";
                                             msg = msg + "</br>" + " Appointment #: " + result.appointmentNumber;
                                             msg = msg + "</br>" + " Carrier: " + result.carrier;
                                             msg = msg + "</br>" + " Shipping Date: " + date;
@@ -669,6 +660,46 @@
                             }
 
                         }
+                        if (str.includes("PO#")) {
+                            console.log('search by po');
+                            if (table.page.info().recordsDisplay == 0) {
+                                $.ajax({
+                                    type: "GET",
+                                    url: '@Url.Action("SearchPurchaseOrder", "OrderAppointment")',
+                                    contentType: "application/json; charset=utf-8",
+                                    data: { "purchaseOrder": this.value },
+                                    success: function (result) {
+                                        if (result.result == "NotFound") {
+                                            toastr.options = {
+                                                "closeButton": true,
+                                                "positionClass": "toast-bottom-full-width",
+                                                "preventDuplicates": true
+                                            };
+                                            toastr.warning("PO # " + result.purchaseOrder + " has not been transferred to the database");
+                                        }
+                                        else {
+                                            var dateString = result.shippingDate.substr(6);
+                                            var currentTime = new Date(parseInt(dateString));
+                                            var month = currentTime.getMonth() + 1;
+                                            var day = currentTime.getDate();
+                                            var year = currentTime.getFullYear();
+                                            var date = month + "/" + day + "/" + year;
+                                            var msg = "Purchase Order has been set for ";
+                                            msg = msg + "</br>" + " Appointment #: " + result.appointmentNumber;
+                                            msg = msg + "</br>" + " Carrier: " + result.carrier;
+                                            msg = msg + "</br>" + " Shipping Date: " + date;
+                                            toastr.info(msg, "Purchase Order found", {
+                                                "closeButton": true, "positionClass": "toast-bottom-full-width", "preventDuplicates": true, "showDuration": "300",
+                                                "hideDuration": "1000",
+                                                "timeOut": "25000"
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+
+                        }
+
                     }
                 });
             });
@@ -695,16 +726,16 @@
                         data[0][9],
                         data[0][10]
                     ]).draw(false);
-                    $('#tableAppointments tfoot th input').each(function () {
+                    //$('#tableAppointments tfoot th input').each(function () {
 
-                        $(this).val('');
-                        $(this).trigger('change');
-                        //if (title == "PO#" || title == "PT#") {
+                    //    $(this).val('');
+                    //    $(this).trigger('change');
+                    //    //if (title == "PO#" || title == "PT#") {
 
 
-                        //    $(this).html('<input type="text" style="width:80px" placeholder="Search ' + title + '" />');
-                        //}
-                    });
+                    //    //    $(this).html('<input type="text" style="width:80px" placeholder="Search ' + title + '" />');
+                    //    //}
+                    //});
                 }
             });
             table.on('deselect', function (e, dt, type, indexes) {
@@ -782,13 +813,13 @@
 
             });
 
-            
+
             $('#chkShipForSearch').change(function () {
                 if ($('#chkShipForSearch').prop('checked') == true) {
                     $('#ShipFor').removeAttr('disabled');
                     $('#CancelDateStartDate').attr('disabled', 'disabled');
                     $('#CancelDateEndDate').attr('disabled', 'disabled');
-                    
+
                 } else {
                     $('#ShipFor').attr('disabled', 'disabled');
                     $('#CancelDateStartDate').removeAttr('disabled');
@@ -798,7 +829,7 @@
 
             });
 
-        
+
             $("#SelectedClientId").change(function () {
                 var selectedItem = $(this).val();
                 var ddDivisions = $("#SelectedDivisionId");
@@ -934,7 +965,7 @@
         var selected = table.rows('.selected').data();
         if (selected.length == 0) {
             toastr.warning("Please select at least an Order");
-            
+
             return false;
         }
         $('#totalOrdersSelectedLabel').html(function (n, c) {
@@ -1171,7 +1202,7 @@
         var table = $("#tableappt").DataTable();
         var selected = table.rows('.selected').data();
         if (selected.length == 0) {
-            
+
             toastr.warning("Please select at least one Appointment");
             return false;
         }
@@ -1205,7 +1236,7 @@
                 data: JSON.stringify(model),
                 dataType: "json",
                 success: function (result) {
-                    
+
                     toastr.success('Appointment(s) cancelled successfully');
                     table.rows('.selected').remove().draw(false);
                 }

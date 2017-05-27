@@ -255,6 +255,38 @@ namespace GSLogistics.Website.Admin.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<ActionResult> SearchPurchaseOrder(string purchaseOrder)
+        {
+            using (var appointmentLogic = Kernel.Get<IAppointmentLogic>())
+            using (var orderLogic = appointmentLogic.GetLogic<IOrderAppointmentLogic>())
+            {
+                var orders = await orderLogic.ToListAsync(new OrderAppointmentQuery()
+                {
+                    PurchaseOrder = purchaseOrder
+                });
+
+                IList<string> pickticketIds = new List<string>();
+                foreach(var o  in orders)
+                {
+                    pickticketIds.Add(o.PickTicketId);
+                }
+
+                var appts = await appointmentLogic.ToListAsync(new AppointmentQuery()
+                {
+                    PickTicketsIds = pickticketIds.ToArray()
+                });
+                var pt = appts.FirstOrDefault();
+
+                if (pt != null)
+                {
+                    return Json(new { result = "Success", appointmentNumber = pt.AppointmentNumber, IsPosted = pt.Posted, shippingDate = pt.ShippingDate, carrier = pt.Carrier, pickTicketId = pt.PickTicket }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new { result = "NotFound", pickTicketId = purchaseOrder }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult> SetAppointment(NewAppointment_ViewModel model)
         {
@@ -588,7 +620,7 @@ namespace GSLogistics.Website.Admin.Controllers
                 query.CustomerId = model.SelectedClientId;
             }
 
-            if (model.SelectedDivisionId.HasValue)
+            if (model.SelectedDivisionId.HasValue && model.SelectedDivisionId.Value != 0)
             {
                 query.DivisionId = model.SelectedDivisionId.Value;
             }
@@ -628,6 +660,7 @@ namespace GSLogistics.Website.Admin.Controllers
                         thisAppointment.Pieces = orderAppt.Pieces.Value;
                         thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
                         thisAppointment.ShipTo = orderAppt.ShipTo;
+                        thisAppointment.BillOfLading = orderAppt.BillOfLading;
                     }
 
                     appointments.Add(thisAppointment);
@@ -720,7 +753,7 @@ namespace GSLogistics.Website.Admin.Controllers
                 query.CustomerId = model.SelectedClientId;
             }
 
-            if (model.SelectedDivisionId.HasValue)
+            if (model.SelectedDivisionId.HasValue && model.SelectedDivisionId.Value != 0)
             {
                 query.DivisionId = model.SelectedDivisionId.Value;
             }
@@ -749,7 +782,8 @@ namespace GSLogistics.Website.Admin.Controllers
                         ShipTime = appt.ShippingTime.Value,
                         Posted = appt.Posted.ToString(),
                         DateAdded = appt.DateAdded,
-                        DeliveryTypeId = appt.DeliveryTypeId,
+                        DeliveryTypeId = appt.DeliveryTypeId
+                        
                     };
 
                     var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();

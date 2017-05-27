@@ -20,6 +20,11 @@ namespace GSLogistics.Entities.Concrete
             {
                 q = q.Where(x => x.PickTicket == query.PickTicketId);
             }
+            else if (query.PickTicketsIds != null && query.PickTicketsIds.Any())
+            {
+                q = q.Where(x => query.PickTicketsIds.Contains(x.PickTicket));
+            }
+
 
             if (!string.IsNullOrEmpty(query.AppointmentNumber))
             {
