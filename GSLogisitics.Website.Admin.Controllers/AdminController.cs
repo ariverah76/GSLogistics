@@ -18,9 +18,9 @@ namespace GSLogistics.Website.Admin.Controllers
 
         public ActionResult Index()
         {
-            var x = UserManager.Users;
+            var users = UserManager.Users.OrderBy(x => x.UserName);
 
-            return View(UserManager.Users);
+            return View(users);
         }
 
         private ApplicationUserManager UserManager

@@ -31,9 +31,12 @@
         {
             <div class="row">
                 <div class="btn-group btn-group-justified">
-                    <a href="#" class="btn btn-info" onclick="setAppointment()">Set Appointment</a>
-                    <a href="#" class="btn btn-info" onclick="showConfirmationNumberModal()">Set Confirmation #</a>
-                    <a href="#" class="btn btn-info" id="btnReport">Download Report</a>
+
+                    @if (User.IsInRole("Administrators"))
+                    {
+                        <a href="#" class="btn btn-info" onclick="setAppointment()">Set Appointment</a>
+                        <a href="#" class="btn btn-info" onclick="showConfirmationNumberModal()">Set Confirmation #</a>
+                    }
                     <a href="#" class="btn btn-info" id="btnRefresh">Refresh</a>
 
                 </div>
@@ -273,9 +276,12 @@
                 {
 
                     <div class="btn-group btn-group-justified">
-                        <a href="#" class="btn btn-info" onclick="postAppointment()">Post Appointments</a>
-                        <a href="#" class="btn btn-info" onclick="deleteAppointment()">Cancel Appointments</a>
-                        <a href="#" class="btn btn-info" onclick="editAppointment()">Edit Appointments</a>
+                        @if (User.IsInRole("Administrators"))
+                        {
+                            <a href="#" class="btn btn-info" onclick="postAppointment()">Post Appointments</a>
+                            <a href="#" class="btn btn-info" onclick="deleteAppointment()">Cancel Appointments</a>
+                            <a href="#" class="btn btn-info" onclick="editAppointment()">Edit Appointments</a>
+                        }
                         <a href="@Url.Action("LogReport", "OrderAppointment")" class="btn btn-info">Log Report</a>
                         <a href="#" class="btn btn-info" id="btnRefreshAppt">Refresh</a>
 

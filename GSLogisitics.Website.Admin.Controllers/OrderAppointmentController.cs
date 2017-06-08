@@ -407,6 +407,7 @@ namespace GSLogistics.Website.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrators")]
         public async Task<ActionResult> SetAppointment(NewAppointment_ViewModel model)
         {
             //No needed for now!!!
@@ -479,6 +480,7 @@ namespace GSLogistics.Website.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrators")]
         public async Task<ActionResult> SetConfirmationNumber(NewAppointment_ViewModel model)
         {
             using (var logic = Kernel.Get<IOrderAppointmentLogic>())
@@ -503,6 +505,7 @@ namespace GSLogistics.Website.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrators")]
         public async Task<ActionResult> ActionAppointments(ActionAppointment model)
         {
             using (var appointmentLogic = Kernel.Get<IAppointmentLogic>())
@@ -543,6 +546,7 @@ namespace GSLogistics.Website.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrators")]
         public async Task<ActionResult> SaveEditedAppointment(NewAppointment_ViewModel model)
         {
             using (var logic = Kernel.Get<IAppointmentLogic>())

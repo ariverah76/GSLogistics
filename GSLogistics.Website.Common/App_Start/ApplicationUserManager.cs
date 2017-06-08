@@ -26,14 +26,14 @@ namespace GSLogistics.Website.Common
 
             //Activate when needed
 
-            //userManager.PasswordValidator = new PasswordValidator
-            //{
-            //    RequiredLength = 6,
-            //    RequireNonLetterOrDigit = true,
-            //    RequireDigit = false,
-            //    RequireLowercase = true,
-            //    RequireUppercase = true
-            //};
+            userManager.PasswordValidator = new PasswordValidator
+            {
+                RequiredLength = 4,
+                RequireNonLetterOrDigit = false,
+                RequireDigit = false,
+                RequireLowercase = false,
+                RequireUppercase = false
+            };
 
 
             //userManager.UserValidator = new UserValidator<ApplicationUser>(userManager)
