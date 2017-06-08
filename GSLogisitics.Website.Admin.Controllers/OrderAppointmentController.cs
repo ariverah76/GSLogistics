@@ -13,6 +13,7 @@ using System.Web.Mvc;
 using GSLogistics.Website.Admin.Resources;
 using GSLogistics.Logic.Interface;
 using GSLogistics.Model.Query;
+using System.Text;
 
 namespace GSLogistics.Website.Admin.Controllers
 {
@@ -77,33 +78,45 @@ namespace GSLogistics.Website.Admin.Controllers
             using (var divLogic = orderLogic.GetLogic<IDivisionLogic>())
             {
 
-                var ordersforAppt = await orderLogic.ToListAsync(
-                    new OrderAppointmentQuery()
-                    {
-                        CancelDateEndDate = model.CancelDateEndDate,
-                        CancelDateStartDate = model.CancelDateStartDate,
-                        CustomerId = model.SelectedClientId,
-                        DivisionId = model.SelectedDivisionId,
-                        ShipFor = model.ShipFor,
-                        Status = 0
-                    });
-
-                foreach (var o in ordersforAppt)
+                var query =  new OrderAppointmentQuery()
                 {
-                    try
-                    {
-                        orders.Add(new Models.OrderAppointment() { BoxesNumber = o.BoxesCount.Value, BoxSize = o.BoxSize, CustomerId = o.CustomerId, CustomerName = o.CustomerName, EndDate = o.EndDate.Value, PickTicketId = o.PickTicketId, Pieces = o.Pieces.Value, PurchaseOrderId = o.PurchaseOrderId, StartDate = o.StartDate.Value, Volume = o.Size.Value, Weight = o.Weigth, StoreName = o.ShipTo, DivisionName = o.DivisionName, PtBulk = o.PtBulk, Notes = o.Notes, ConfirmationNumber = o.ConfirmationNumber, DivisionId = o.DivisionId, ShipFor = o.ShipFor });
-                    }
-                    catch (Exception exc)
-                    {
-                        throw exc;
-                    }
+                    CancelDateEndDate = model.CancelDateEndDate,
+                    CancelDateStartDate = model.CancelDateStartDate,
+                    CustomerId = model.SelectedClientId,
+                    DivisionId = model.SelectedDivisionId,
+                    ShipFor = model.ShipFor,
+                    Status = 0
+                };
 
-                }
+                orders = await this.GetOrders(orderLogic, query);
+
+                //var ordersforAppt = await orderLogic.ToListAsync(
+                //    new OrderAppointmentQuery()
+                //    {
+                //        CancelDateEndDate = model.CancelDateEndDate,
+                //        CancelDateStartDate = model.CancelDateStartDate,
+                //        CustomerId = model.SelectedClientId,
+                //        DivisionId = model.SelectedDivisionId,
+                //        ShipFor = model.ShipFor,
+                //        Status = 0
+                //    });
+
+                //foreach (var o in ordersforAppt)
+                //{
+                //    try
+                //    {
+                //        orders.Add(new Models.OrderAppointment() { BoxesNumber = o.BoxesCount.Value, BoxSize = o.BoxSize, CustomerId = o.CustomerId, CustomerName = o.CustomerName, EndDate = o.EndDate.Value, PickTicketId = o.PickTicketId, Pieces = o.Pieces.Value, PurchaseOrderId = o.PurchaseOrderId, StartDate = o.StartDate.Value, Volume = o.Size.Value, Weight = o.Weigth, StoreName = o.ShipTo, DivisionName = o.DivisionName, PtBulk = o.PtBulk, Notes = o.Notes, ConfirmationNumber = o.ConfirmationNumber, DivisionId = o.DivisionId, ShipFor = o.ShipFor });
+                //    }
+                //    catch (Exception exc)
+                //    {
+                //        throw exc;
+                //    }
+
+                //}
 
                 model.OrderAppointments = orders;
 
-                var clients = ordersforAppt.Select(x => new { Id = x.CustomerId, Name = x.CustomerName }).ToList();
+                var clients = orders.Select(x => new { Id = x.CustomerId, Name = x.CustomerName }).ToList();
 
                 Dictionary<string, string> result = new Dictionary<string, string>();
                 foreach (var c in clients)
@@ -132,6 +145,112 @@ namespace GSLogistics.Website.Admin.Controllers
 
             return View("List", model);
         }
+
+        private async Task<List<OrderAppointment>> GetOrders(IOrderAppointmentLogic orderLogic, OrderAppointmentQuery query)
+        {
+            List<Models.OrderAppointment> orders = new List<Models.OrderAppointment>();
+
+            var ordersforAppt = await orderLogic.ToListAsync(query);
+
+            foreach (var o in ordersforAppt)
+            {
+                try
+                {
+                    orders.Add(new Models.OrderAppointment() { BoxesNumber = o.BoxesCount.Value, BoxSize = o.BoxSize, CustomerId = o.CustomerId, CustomerName = o.CustomerName, EndDate = o.EndDate.Value, PickTicketId = o.PickTicketId, Pieces = o.Pieces.Value, PurchaseOrderId = o.PurchaseOrderId, StartDate = o.StartDate.Value, Volume = o.Size.Value, Weight = o.Weigth, StoreName = o.ShipTo, DivisionName = o.DivisionName, PtBulk = o.PtBulk, Notes = o.Notes, ConfirmationNumber = o.ConfirmationNumber, DivisionId = o.DivisionId, ShipFor = o.ShipFor });
+                }
+                catch (Exception exc)
+                {
+                    throw exc;
+                }
+
+            }
+
+            return orders;
+
+        }
+        public async Task<ActionResult> GenerateOrdersReport(OrderAppointmentsIndex_ViewModel model)
+        {
+
+            var query = new OrderAppointmentQuery()
+            {
+                CancelDateEndDate = model.CancelDateEndDate,
+                CancelDateStartDate = model.CancelDateStartDate,
+                CustomerId = model.SelectedClientId,
+                DivisionId = model.SelectedDivisionId,
+                ShipFor = model.ShipFor,
+                Status = 0
+            };
+
+            var title = new StringBuilder();
+           
+
+            using (var orderLogic = Kernel.Get<IOrderAppointmentLogic>())
+            using (var customerLogic = orderLogic.GetLogic<ICustomerLogic>())
+            using (var divLogic = orderLogic.GetLogic<IDivisionLogic>())
+            {
+
+                var appointments = await this.GetOrders(orderLogic, query);
+
+
+
+                if (model.CancelDateStartDate.HasValue)
+                {
+                    title.AppendLine($"Start Date : {model.CancelDateStartDate.Value.ToShortDateString()}");
+                }
+                if (model.CancelDateEndDate.HasValue)
+                {
+                    title.AppendLine($"End Date : {model.CancelDateEndDate.Value.ToShortDateString()}");
+                }
+
+                if (!string.IsNullOrEmpty(model.SelectedClientId))
+                {
+                    var custNmae = await customerLogic.FirstOrDefaultAsync(model.SelectedClientId);
+                    title.AppendLine($"Customer : {custNmae.CompanyName ?? "" }");
+                }
+                if (model.SelectedDivisionId.HasValue)
+                {
+                    var div = await divLogic.GetFirstOrDefaultAsync(model.SelectedDivisionId.Value);
+                    title.AppendLine($"Division : {div.Name} {div.Description}");
+                }
+
+
+                var reportingService = new Reporting.ReportingService();
+
+                string mimeType = null;
+                Dictionary<string, string> reportParameters = new Dictionary<string, string>()
+                {
+                    { "Title", title.ToString() }
+                };
+
+                var result = reportingService.RenderReport(appointments, "OrderReport.rdlc", "DataSet1", "pdf", out mimeType, reportParameters);
+
+                var fName = string.Format("OrderReport_{0}", DateTime.Now.ToShortDateString().Replace("/", "").Replace(":", ""));
+                Session[fName] = result;
+
+                return Json(new { success = true, fName, mimeType, ReportFormat = "pdf" }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
+        //[HttpGet]
+        //public ActionResult DownloadOrdersReport(string reportName, string format, string fileExtension)
+        //{
+
+        //    var reportingService = new Reporting.ReportingService();
+
+        //    var reportBytes = Session[reportName];
+        //    if (reportBytes == null)
+        //    {
+        //        return new EmptyResult();
+        //    }
+
+        //    Session[reportName] = null;
+
+        //    FileResult fileResult = new FileContentResult(reportBytes as byte[], format);
+        //    fileResult.FileDownloadName = reportingService.GetReportName("OrderReport", fileExtension);
+        //    return fileResult;
+        //}
+
         //[HttpPost]
         //public ActionResult List(OrderAppointmentsIndex_ViewModel model)
         //{
@@ -712,22 +831,12 @@ namespace GSLogistics.Website.Admin.Controllers
             Session[reportName] = null;
 
             FileResult fileResult = new FileContentResult(reportBytes as byte[], format);
-            fileResult.FileDownloadName = reportingService.GetReportName("LogReport", fileExtension);
+            fileResult.FileDownloadName = reportingService.GetReportName(reportName.Replace(".rdlc", string.Empty), fileExtension);
             return fileResult;
         }
 
 
-        //public ActionResult TestDownload(LogReportIndex_ViewModel model)
-        //{
-        //    var reportingService = new Reporting.ReportingService();
-
-        //    string mimeType = null;
-        //    var result = reportingService.RenderReport(model.Appointments, "LogReport.rdlc", "DataSet1", "excel", out mimeType);
-
-        //    FileResult fileResult = new FileContentResult(result, mimeType);
-        //    fileResult.FileDownloadName = reportingService.GetReportName("LogReport", "excel");
-        //    return fileResult;
-        //}
+       
 
         public PartialViewResult GetLogReport(LogReportIndex_ViewModel model)
         {

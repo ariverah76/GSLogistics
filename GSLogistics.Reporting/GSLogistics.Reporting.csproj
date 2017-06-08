@@ -60,6 +60,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LogReportDataset.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Reports\OrderReportDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OrderReportDataSet.xsd</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -74,9 +79,23 @@
     <None Include="Reports\LogReportDataset.xss">
       <DependentUpon>LogReportDataset.xsd</DependentUpon>
     </None>
+    <None Include="Reports\OrderReportDataSet.xsc">
+      <DependentUpon>OrderReportDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="Reports\OrderReportDataSet.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>OrderReportDataSet.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Reports\OrderReportDataSet.xss">
+      <DependentUpon>OrderReportDataSet.xsd</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Reports\LogReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\OrderReport.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

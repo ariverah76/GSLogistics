@@ -11,5 +11,6 @@ namespace GSLogistics.Logic.Interface
     {
 
         Task<List<Customer>> ToListAsync();
+        Task<Customer> FirstOrDefaultAsync(string identifier);
     }
 }

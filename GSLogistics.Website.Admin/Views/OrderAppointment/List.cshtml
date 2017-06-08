@@ -33,6 +33,7 @@
                 <div class="btn-group btn-group-justified">
                     <a href="#" class="btn btn-info" onclick="setAppointment()">Set Appointment</a>
                     <a href="#" class="btn btn-info" onclick="showConfirmationNumberModal()">Set Confirmation #</a>
+                    <a href="#" class="btn btn-info" id="btnReport">Download Report</a>
                     <a href="#" class="btn btn-info" id="btnRefresh">Refresh</a>
 
                 </div>
@@ -1245,6 +1246,47 @@
 
         }
 
+    }
+
+    $("#btnReport").click(function () {
+        var model = getDataForReport();
+      
+        postReport(model);
+
+
+    });
+
+
+    function getDataForReport() {
+        var model = {
+            SelectedClientId: $("#SelectedClientId").val(),
+            SelectedDivisionId: $("#SelectedDivisionId").val(),
+            CancelDateStartDate: $("#CancelDateStartDate").val(),
+            CancelDateEndDate: $("#CancelDateEndDate").val(),
+            ShipFor: $('#ShipFor').val(),
+
+        };
+
+        return model;
+    }
+
+    function postReport(model) {
+        toastr.info("Downloading Report...");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GenerateOrdersReport", "OrderAppointment")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(model),
+            dataType: "json",
+
+        }).done(function (returnValue) {
+            if (returnValue.success) {
+                window.location.href = "/OrderAppointment/DownloadReport?reportName=" + returnValue.fName + "&format=" + returnValue.mimeType + "&fileExtension=" + returnValue.ReportFormat;
+                toastr.success("Report downloaded!");
+            }
+        }).fail(function () {
+            toastr.error("Error downloading the report");
+        });
     }
 
 

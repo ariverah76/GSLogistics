@@ -20,6 +20,11 @@ namespace GSLogistics.Logic
             return await Repository.ToListAsync();
         }
 
+        public async Task<Customer> FirstOrDefaultAsync(string identifier)
+        {
+            return await Repository.FirstOrDefaultAsync(identifier);
+        }
+
         
     }
 }

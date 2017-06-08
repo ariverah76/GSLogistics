@@ -22,5 +22,11 @@ namespace GSLogistics.Logic
             return await Repository.GetDivisionsByCustomerId(customerId);
         }
 
+
+        public async Task<Model.Division> GetFirstOrDefaultAsync(int divisionId)
+        {
+            return await Repository.FirstOrDefaultAsync(divisionId);
+        }
+
     }
 }

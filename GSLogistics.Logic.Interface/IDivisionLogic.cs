@@ -9,5 +9,6 @@ namespace GSLogistics.Logic.Interface
     public interface IDivisionLogic : IGSLogisticsLogic
     {
         Task<List<Model.Division>> GetDivisionByCustomerId(string customerId);
+        Task<Model.Division> GetFirstOrDefaultAsync(int divisionId);
     }
 }

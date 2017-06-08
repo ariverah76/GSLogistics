@@ -42,5 +42,31 @@ namespace GSLogistics.Entities.Concrete
             return returnValue;
         }
 
+        public async Task<Model.Customer> FirstOrDefaultAsync(string identifier)
+        {
+            var result = await context.Customers.Where(x => x.CustomerId == identifier).FirstOrDefaultAsync();
+
+            if (result != null)
+            {
+                return new Model.Customer() { CustomerId = result.CustomerId, CompanyName = result.CompanyName };
+            }
+
+            return null;
+
+        }
+
+        public async Task<Model.Division> FirstOrDefaultAsync(int divisionId)
+        {
+            var result = await context.CustomerDivisions.Where(x => x.DivisionId == divisionId).FirstOrDefaultAsync();
+
+            if (result != null)
+            {
+                return new Model.Division() { DivisionId = result.DivisionId, Description = result.Description, Name = result.NameId};
+            }
+
+            return null;
+
+        }
+
     }
 }
