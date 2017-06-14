@@ -50,5 +50,10 @@ namespace GSLogistics.Website.Admin.Models
 
         public DateTime? ShipFor { get; set; }
 
+        public string BillOfLading { get; set; }
+
+        public string ScacCode { get; set; }
+        public short? DeliveryTypeId { get; set; }
+
     }
 }

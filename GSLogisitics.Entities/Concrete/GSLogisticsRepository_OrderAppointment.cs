@@ -51,6 +51,10 @@ namespace GSLogistics.Entities.Concrete
             {
                 q = q.Where(x => x.PurchaseOrderId == query.PurchaseOrder);
             }
+            if (!string.IsNullOrEmpty(query.BillOfLading))
+            {
+                q = q.Where(x => x.BillOfLading == query.BillOfLading);
+            }
 
             return q;
 
@@ -82,8 +86,9 @@ namespace GSLogistics.Entities.Concrete
                 StartDate = x.StartDate,
                 Status = x.Status,
                 Weigth = x.Weigth,
-                CustomerName = x.Customer != null ? x.Customer.CompanyName: string.Empty,
-                DivisionName = x.Division != null? x.Division.Description : string.Empty
+                CustomerName = x.Customer != null ? x.Customer.CompanyName : string.Empty,
+                DivisionName = x.Division != null ? x.Division.Description : string.Empty,
+                DeliveryTypeId = string.IsNullOrEmpty(x.Delivery) ? default(short?) : x.Delivery == "P" ? (short)1 : (short)2
             });
 
             return result.ToList();

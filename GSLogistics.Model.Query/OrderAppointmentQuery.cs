@@ -16,5 +16,6 @@ namespace GSLogistics.Model.Query
 
         public int? Status { get; set; }
         public string PurchaseOrder { get; set; }
+        public string BillOfLading { get; set; }
     }
 }

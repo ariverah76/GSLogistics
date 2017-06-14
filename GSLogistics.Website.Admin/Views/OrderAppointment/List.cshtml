@@ -116,8 +116,12 @@
                                 <th>Ctns.</th>
                                 <th>Cubic</th>
                                 <th>Ctn Size</th>
+                                <th>Bol</th>
+                                <th style="display:none">DeliveryType</th>
+                                <th style="display:none">ScacCode</th>
                             </tr>
                         </thead>
+                        
                     </table>
                 </div>
             </div>
@@ -149,6 +153,9 @@
                                 <th style="visibility:hidden"></th>
                                 <th></th>
                                 <th></th>
+                                <th style="visibility:hidden"></th>
+                                <th style="visibility:hidden"></th>
+                                <th style="visibility:hidden"></th>
                                 <th style="visibility:hidden"></th>
                             </tr>
                         </tfoot>
@@ -196,6 +203,10 @@
                                 <th>Notes</th>
                                 <th>Conf. #</th>
                                 <th style="visibility:hidden"></th>
+                                <th style="visibility:hidden"></th>
+                                <th style="visibility:hidden"></th>
+                                <th style="visibility:hidden"></th>
+
 
                             </tr>
                         </thead>
@@ -256,7 +267,15 @@
                                     <td style="visibility:hidden">
                                         @Html.DisplayFor(modelItem => item.DivisionId)
                                     </td>
-
+                                    <td style="visibility:hidden">
+                                        @Html.DisplayFor(modelItem => item.BillOfLading)
+                                    </td>
+                                    <td style="visibility:hidden">
+                                        @Html.DisplayFor(modelItem => item.DeliveryTypeId)
+                                    </td>
+                                    <td style="visibility:hidden">
+                                        @Html.DisplayFor(modelItem => item.ScacCode)
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -469,6 +488,65 @@
         //var tableSelectedOrders = $("tableSelectedOrders").DataTable({
         //});
 
+        $("#tableSelectedOrders").DataTable({
+            dom: 'Bfrtip',
+            responsive: true,
+            columns: [
+                {
+                    data: 'ShipTo'
+                }
+                ,
+                {
+                    data: 'StartDate'
+                }
+                ,
+                {
+                    data: 'EndDate'
+                }
+                ,
+                {
+                    data: 'PurchaseOrderId'
+                }
+                ,
+                {
+                    data: 'PickTicketId'
+                }
+                ,
+                {
+                    data: 'Pieces'
+                }
+                ,
+                {
+                    data: 'Weigth'
+                }
+                ,
+                {
+                    data: 'BoxesCount'
+                }
+                ,
+                {
+                    data : 'Size'
+                }
+                ,
+                {
+                    data: 'BoxSize'
+                }
+                ,
+                {
+                    data: 'BillOfLading'
+                }
+                ,
+                {
+                    data: 'DeliveryTypeId'
+                }
+                ,
+                {
+                    data: 'ScacCode'
+                }
+            ]
+            
+        });
+
         $("#tableAppointments").DataTable({
             dom: 'Bfrtip',
             responsive: true,
@@ -480,7 +558,7 @@
                 }],
                 columns: [
                     {
-
+                        orderable: false
                     },
                     {
                         data: 'StoreName'
@@ -549,6 +627,19 @@
                     {
                         data: 'DivisionId', visible :false
                     }
+                    ,
+                    {
+                        data: 'BillOfLading', visible: false
+                    }
+                    ,
+                    {
+                        data : 'DeliveryTypeId', visible: false
+                    }
+                    ,
+                    {
+                        data : 'ScacCode', visible: false
+                    }
+
 
 
 
@@ -720,30 +811,70 @@
 
             table.on('select', function (e, dt, type, indexes) {
                 if (type == "row") {
-                    $("#selectedPanel").show(100);
-                    var data = table.rows(indexes).data();
-                    tableSelected.row.add([
-                        data[0]["StoreName"],
-                        data[0][2],
-                        data[0][3],
-                        data[0]["PurchaseOrderId"],
-                        data[0]["PickTicketId"],
-                        data[0][6],
-                        data[0][7],
-                        data[0][8],
-                        data[0][9],
-                        data[0][10]
-                    ]).draw(false);
-                    //$('#tableAppointments tfoot th input').each(function () {
+                   $("#selectedPanel").show(100);
+                        var data = table.rows(indexes).data();
+                    tableSelected.row.add({
+                        "ShipTo": data[0]["StoreName"],
+                        "StartDate":data[0][2],
+                        "EndDate":data[0][3],
+                        "PurchaseOrderId": data[0]["PurchaseOrderId"],
+                        "PickTicketId": data[0]["PickTicketId"],
+                        "Pieces": data[0][6],
+                        "Weigth": data[0][7],
+                        "BoxesCount": data[0][8],
+                        "Size": data[0][9],
+                        "BoxSize": data[0][10],
+                        "BillOfLading": data[0]["BillOfLading"],
+                        "DeliveryTypeId": data[0]["DeliveryTypeId"],
+                        "ScacCode": data[0]["ScacCode"]
+                    }).draw(false);
 
-                    //    $(this).val('');
-                    //    $(this).trigger('change');
-                    //    //if (title == "PO#" || title == "PT#") {
+                        var count = 0;
+                        $.ajax({
+                            type: "GET",
+                            url: '@Url.Action("SearchByBol", "OrderAppointment")',
+                            contentType: "application/json; charset=utf-8",
+                            data: { "bol": data[0]["BillOfLading"] },
+                            success: function (result) {
+                                if (result.result = "Success") {
+                                    var orders = result.orders;
+                                    count = orders.length;
+                                    for (var i = 0; i < orders.length; i++) {
+                                        if (orders[i]["PurchaseOrderId"] != data[0]["PurchaseOrderId"]) {
+                                            tableSelected.row.add({
+                                                "ShipTo": orders[i].ShipTo,
+                                                "StartDate": ToDate(orders[i].StartDate),
+                                                "EndDate": ToDate(orders[i].EndDate),
+                                                "PurchaseOrderId": orders[i].PurchaseOrderId,
+                                                "PickTicketId": orders[i].PickTicketId,
+                                                "Pieces": orders[i].Pieces,
+                                                "Weigth": orders[i].Weigth,
+                                                "BoxesCount": orders[i].BoxesCount,
+                                                "Size": orders[i].Size,
+                                                "BoxSize": orders[i].BoxSize,
+                                                "BillOfLading": orders[i].BillOfLading,
+                                                "DeliveryTypeId": orders[i].DeliveryTypeId,
+                                                "ScacCode": orders[i].ScacCode
 
+                                                }).draw(false);
+                                            var existingRow = table
+                                                .rows(function (idx, info, node) {
+                                                    return info["StoreName"] == orders[i].ShipTo && info["PurchaseOrderId"] == orders[i].PurchaseOrderId && info[4] == orders.PickTicketId ?
+                                                    true : false;
+                                                });
 
-                    //    //    $(this).html('<input type="text" style="width:80px" placeholder="Search ' + title + '" />');
-                    //    //}
-                    //});
+                                            if (existingRow) {
+                                                table.row(existingRow).nodes().to$().addClass('selected');
+                                            }
+                                        }
+                                    }
+                                }
+                                if (count > 0) {
+                                    toastr.info(count + " orders were found associated to Bill of Lading '" + data[0]["BillOfLading"] + "', and they are being added automatically for appointment")
+                                }
+                            }
+                        });
+
                 }
             });
             table.on('deselect', function (e, dt, type, indexes) {
@@ -1029,7 +1160,10 @@
     function setAppointment() {
         clearAppointmentForm();
         var table = $("#tableAppointments").DataTable();
+        
+        var t2 = $("#tableSelectedOrders").DataTable();
         var selected = table.rows('.selected').data();
+        var selected2 = t2.rows().data();
         if (selected.length == 0) {
             toastr.warning("Please select at least an Order");
             return false;
@@ -1042,16 +1176,21 @@
         var totalLbs = 0;
         var totalCubic = 0;
         var gohs = 0;
-        for (var i = 0; i < selected.length; i++) {
-            totalPieces += Number(selected[i][6]);
-            totalLbs += Number(selected[i][7]);
-            totalCtns += Number(selected[i][8]);
-            totalCubic += Number(selected[i][9]);
-            if (selected[i][10] == "GOH") {
-                gohs += Number(selected[i][6]);
-               // ('#totalgohs').show();
+        var hasBol = false;
+        for (var i = 0; i < selected2.length; i++) {
 
+            totalPieces += Number(selected2[i]["Pieces"]);
+            totalLbs += Number(selected2[i]["Weigth"]);
+            totalCtns += Number(selected2[i]["BoxesCount"]);
+            totalCubic += Number(selected2[i]["Size"]);
+            if (selected2[i]["BoxSize"] == "GOH") {
+                gohs += Number(selected2[i]["Pieces"]);
             }
+
+            if (selected2[i]["BillOfLading"].length > 0){
+                hasBol = true;
+            }
+
 
         }
         $('#totPcs').html(function (n, c) {
@@ -1061,10 +1200,10 @@
             return totalCtns ;
         });
         $('#totalCubic').html(function (n, c) {
-            return totalLbs;
+            return totalCubic;
         });
         $('#totalLbs').html(function (n, c) {
-            return totalCubic;
+            return totalLbs ;
         });
         if (gohs > 0) {
             $('#totalgohs').html(function (n, c) {
@@ -1073,13 +1212,22 @@
         }
         else {
             $('#summary li:last').remove();
-            //$("#summary li").each(function () {
-            //    var liText = $(this).text();
-            //    console.log(liText);
-            //    if (liText == '0')
-            //        $(this).hide();
-            //});
+           
         }
+
+        if (hasBol == true) {
+            $("#ShippingCompanyId").val(selected2[0]["ScacCode"]).change();
+            $("#ShippingCompanyId").prop('disabled', true)
+            var dt = selected2[0]["DeliveryTypeId"];
+            if (dt == "1") {
+                $("#IsPickup").prop("checked", true);
+            }
+            else if (dt == "2") {
+                $("#IsDelivery").prop("checked", true);
+            }
+            $('input[name = DeliveryTypeId]').attr('disabled', 'disabled');
+        }
+
 
         $('#setAppointmentModal form').validate();
 
@@ -1100,6 +1248,10 @@
         $("#ShippingTimeLimit").val('');
         $("#ShippingCompanyId").val('').trigger('change');
         $('input[name = DeliveryTypeId]').attr('checked', false);
+
+        $('input[name = DeliveryTypeId]').removeAttr('disabled');
+
+        $("#ShippingCompanyId").prop('disabled', false)
 
     }
 
@@ -1257,7 +1409,7 @@
 
     $("#btnReport").click(function () {
         var model = getDataForReport();
-      
+
         postReport(model);
 
 
@@ -1295,6 +1447,18 @@
             toastr.error("Error downloading the report");
         });
     }
+
+    function ToDate(date) {
+        var dateString = date.substr(6);
+        var currentTime = new Date(parseInt(dateString));
+        var month = currentTime.getMonth() + 1;
+        var day = currentTime.getDate();
+        var year = currentTime.getFullYear();
+        var date = month + "/" + day + "/" + year;
+
+        return date;
+    }
+    
 
 
 

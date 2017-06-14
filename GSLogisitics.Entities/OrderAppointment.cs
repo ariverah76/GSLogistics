@@ -74,6 +74,9 @@ namespace GSLogistics.Entities
         [Column("BOL", Order = 21)]
         public string BillOfLading { get; set; }
 
+        [Column("Delivery", Order = 22)]
+        public string Delivery { get; set; }
+
 
     }
 }

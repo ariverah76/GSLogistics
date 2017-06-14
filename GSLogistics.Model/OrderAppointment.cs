@@ -29,6 +29,7 @@ namespace GSLogistics.Model
         public DateTime? ShipFor { get; set; }
         public string BillOfLading { get; set; }
         public string CustomerName { get; set; }
+        public short? DeliveryTypeId { get; set; }
 
     }
 }
