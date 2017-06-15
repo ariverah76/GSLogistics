@@ -533,15 +533,15 @@
                 }
                 ,
                 {
-                    data: 'BillOfLading'
+                    data: 'BillOfLading', visible:false
                 }
                 ,
                 {
-                    data: 'DeliveryTypeId'
+                    data: 'DeliveryTypeId', visible:false
                 }
                 ,
                 {
-                    data: 'ScacCode'
+                    data: 'ScacCode', visible:false
                 }
             ]
             
@@ -806,28 +806,55 @@
             //    console.log(table.page.info());
             //});
 
+        $('#tableAppointments tbody tr').on('click', function (e) {
+            var $row = $(this);
+
+            if ($row.hasClass('selected')) {
+                $row.removeClass('selected');
+                e.stopPropagation();
+                var existingRow = table
+                    .rows(function (idx, info, node) {
+                        return info["PurchaseOrderId"] == $row[0].cells[4].innerText && info["PickTicketId"] == $row[0].cells[5].innerText  ?
+                        true : false;
+                    });
+                if (existingRow != null) {
+                    console.log('true');
+                    table.rows(existingRow).deselect();
+                }
+
+            } else {
+                $row.addClass('selected');
+            }
+
+        });
+
 
             var tableSelected = $("#tableSelectedOrders").DataTable();
 
             table.on('select', function (e, dt, type, indexes) {
                 if (type == "row") {
                    $("#selectedPanel").show(100);
-                        var data = table.rows(indexes).data();
-                    tableSelected.row.add({
-                        "ShipTo": data[0]["StoreName"],
-                        "StartDate":data[0][2],
-                        "EndDate":data[0][3],
-                        "PurchaseOrderId": data[0]["PurchaseOrderId"],
-                        "PickTicketId": data[0]["PickTicketId"],
-                        "Pieces": data[0][6],
-                        "Weigth": data[0][7],
-                        "BoxesCount": data[0][8],
-                        "Size": data[0][9],
-                        "BoxSize": data[0][10],
-                        "BillOfLading": data[0]["BillOfLading"],
-                        "DeliveryTypeId": data[0]["DeliveryTypeId"],
-                        "ScacCode": data[0]["ScacCode"]
-                    }).draw(false);
+                   var data = table.rows(indexes).data();
+                   if (table.rows(indexes).nodes().to$().hasClass('selected') == false) {
+                   //   // table.rows(indexes).nodes().to$().removeClass('selected');
+                       return false;
+                   }
+                   console.log(table.rows(indexes).nodes().to$().hasClass('selected'));
+                    //tableSelected.row.add({
+                    //    "ShipTo": data[0]["StoreName"],
+                    //    "StartDate":data[0][2],
+                    //    "EndDate":data[0][3],
+                    //    "PurchaseOrderId": data[0]["PurchaseOrderId"],
+                    //    "PickTicketId": data[0]["PickTicketId"],
+                    //    "Pieces": data[0][6],
+                    //    "Weigth": data[0][7],
+                    //    "BoxesCount": data[0][8],
+                    //    "Size": data[0][9],
+                    //    "BoxSize": data[0][10],
+                    //    "BillOfLading": data[0]["BillOfLading"],
+                    //    "DeliveryTypeId": data[0]["DeliveryTypeId"],
+                    //    "ScacCode": data[0]["ScacCode"]
+                    //}).draw(false);
 
                         var count = 0;
                         $.ajax({
@@ -838,9 +865,12 @@
                             success: function (result) {
                                 if (result.result = "Success") {
                                     var orders = result.orders;
-                                    count = orders.length;
+                                    if (orders != null) {
+
+                                        count = orders.length;
+                                    }
                                     for (var i = 0; i < orders.length; i++) {
-                                        if (orders[i]["PurchaseOrderId"] != data[0]["PurchaseOrderId"]) {
+                                        //if (orders[i]["PurchaseOrderId"] != data[0]["PurchaseOrderId"]) {
                                             tableSelected.row.add({
                                                 "ShipTo": orders[i].ShipTo,
                                                 "StartDate": ToDate(orders[i].StartDate),
@@ -859,17 +889,17 @@
                                                 }).draw(false);
                                             var existingRow = table
                                                 .rows(function (idx, info, node) {
-                                                    return info["StoreName"] == orders[i].ShipTo && info["PurchaseOrderId"] == orders[i].PurchaseOrderId && info[4] == orders.PickTicketId ?
+                                                    return  info["PurchaseOrderId"] == orders[i].PurchaseOrderId && info["PickTicketId"] == orders[i].PickTicketId ?
                                                     true : false;
                                                 });
 
                                             if (existingRow) {
                                                 table.row(existingRow).nodes().to$().addClass('selected');
                                             }
-                                        }
+                                        //}
                                     }
                                 }
-                                if (count > 0) {
+                                if (count > 1) {
                                     toastr.info(count + " orders were found associated to Bill of Lading '" + data[0]["BillOfLading"] + "', and they are being added automatically for appointment")
                                 }
                             }
@@ -883,7 +913,7 @@
 
                     var existingRow = tableSelected
                             .rows(function (idx, data, node) {
-                                return data[0] == unselected[0]["StoreName"] && data[3] == unselected[0]["PurchaseOrderId"] && data[4] == unselected[0]["PickTicketId"] ?
+                                return  data["PurchaseOrderId"] == unselected[0]["PurchaseOrderId"] && data["PickTicketId"] == unselected[0]["PickTicketId"] ?
                                 true : false;
                             });
                     if (existingRow) {
