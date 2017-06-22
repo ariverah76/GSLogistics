@@ -612,6 +612,7 @@ namespace GSLogistics.Website.Admin.Controllers
                         thisAppointment.Pieces = orderAppt.Pieces.Value;
                         thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
                         thisAppointment.ShipTo = orderAppt.ShipTo;
+                        thisAppointment.BillOfLading = orderAppt.BillOfLading;
                     }
 
                     appointments.Add(thisAppointment);
@@ -669,6 +670,7 @@ namespace GSLogistics.Website.Admin.Controllers
                         CustomerId = appt.CustomerId,
                         DivisionId = appt.DivisionId,
                         DivisionName = appt.DivisionName,
+                        DivisionNameId = appt.DivisionNameId,
                         Carrier = appt.Carrier,
                         PickTicket = appt.PickTicket,
                         PtBulk = appt.PtBulk,
@@ -792,6 +794,7 @@ namespace GSLogistics.Website.Admin.Controllers
                         CustomerId = appt.CustomerId,
                         DivisionId = appt.DivisionId,
                         DivisionName = appt.DivisionName,
+                        DivisionNameId = appt.DivisionNameId,
                         Carrier = appt.Carrier,
                         PickTicket = appt.PickTicket,
                         PtBulk = appt.PtBulk,

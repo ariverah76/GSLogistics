@@ -900,7 +900,12 @@
                                     }
                                 }
                                 if (count > 1) {
-                                    toastr.info(count + " orders were found associated to Bill of Lading '" + data[0]["BillOfLading"] + "', and they are being added automatically for appointment")
+                                    toastr.info(count + " orders were found associated to Bill of Lading '" + data[0]["BillOfLading"] + "', and they are being added automatically for appointment", "Order associated to BOL", {
+                                        "closeButton": true, "positionClass": "toast-top-center", "preventDuplicates": true, "showDuration": "300",
+                                        "hideDuration": "1000",
+                                        "timeOut": "25000"
+                                    });
+                                   
                                 }
                             }
                         });
@@ -1045,7 +1050,7 @@
         var allSameAppointmentNumber = appts.allValuesSame();
 
         if (allSameAppointmentNumber == false){
-            alert("Please ensure all the Appointments are grouped on the same appointment number");
+            toastr.warning("Please ensure all the Appointments are grouped on the same appointment number");
         }
         else {
             $('#setAppointmentModal').modal({
@@ -1347,6 +1352,27 @@
                 toastr.warning("Please select at least one Appointment");
                 return false;
             }
+            var apptNos = new Array();
+            var bols = new Array();
+            for (var i = 0; i < selected.length; i++) {
+                apptNos.push(selected[i]["AppointmentNo"]);
+                bols.push(selected[i]["BillOfLading"]);
+            }
+
+            if (bols.length > 0) {
+                var allSameBol = bols.allValuesSame();
+            }
+            if (apptNos.length > 0) {
+                var allSameApptNo = apptNos.allValuesSame();
+            }
+
+            if (allSameBol == false || apptNos == false) {
+                toastr.error("Please ensure all the Orders have same Bill of Lading Number and/or Appointment Number ","Please review!", {
+                "closeButton": true, "timeOut": "8000"
+                });
+                return false;
+            }
+            
 
             if (confirm('Are you sure you want to post these ' + selected.length + ' selected appointments ?')) {
                 var selected = table.rows('.selected').data();

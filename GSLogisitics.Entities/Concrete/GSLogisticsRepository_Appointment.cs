@@ -97,6 +97,7 @@ namespace GSLogistics.Entities.Concrete
                 Carrier = x.CatScacCode.ScacCodeName,
                 CustomerName = x.Customer != null ? x.Customer.CompanyName: string.Empty,
                 DivisionName = x.Division != null ? x.Division.Description: string.Empty,
+                DivisionNameId = x.Division != null ? x.Division.NameId : null,
                 DeliveryTypeId = x.DeliveryTypeId
 
             });
@@ -130,6 +131,7 @@ namespace GSLogistics.Entities.Concrete
                 Carrier = x.CatScacCode.ScacCodeName,
                 CustomerName = x.Customer != null ? x.Customer.CompanyName : string.Empty,
                 DivisionName = x.Division != null ? x.Division.Description : string.Empty,
+                DivisionNameId = x.Division !=null? x.Division.NameId: string.Empty,
                 DeliveryTypeId = x.DeliveryTypeId
 
             });

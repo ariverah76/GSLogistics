@@ -51,7 +51,7 @@
                 <th style="visibility:hidden"></th>
                 <th style="visibility:hidden"></th>
                 <th style="visibility:hidden"></th>
-
+                <th style="visibility:hidden"></th>
             </tr>
         </thead>
         <tfoot>
@@ -69,6 +69,7 @@
                 <th></th>
                 <th></th>
                 <th></th>
+                <th style="visibility:hidden"></th>
                 <th style="visibility:hidden"></th>
                 <th style="visibility:hidden"></th>
                 <th style="visibility:hidden"></th>
@@ -123,6 +124,9 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.DeliveryTypeId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BillOfLading)
                     </td>
                     
                 </tr>
@@ -214,6 +218,11 @@
                     data: 'DeliveryTypeId',
                     visible:false
                 }
+                ,
+                {
+                    data: 'BillOfLading',
+                    visible: false
+                }
             ],
             select: {
                 style: 'multi'
@@ -248,8 +257,7 @@
 
         tableappt1.on('select', function (e, dt, type, indexes) {
             if (type === 'row') {
-                //var data = tableappt1.rows(indexes).data().pluck('BoxesNumber');
-                //console.log(data);
+              
                 var total = sumColumn('BoxesNumber');
                 console.log(total);
                 $('#totalBoxes').html(total);
