@@ -119,6 +119,7 @@
                                 <th>Bol</th>
                                 <th style="display:none">DeliveryType</th>
                                 <th style="display:none">ScacCode</th>
+                                <th>ShipFor</th>
                             </tr>
                         </thead>
                         
@@ -153,6 +154,7 @@
                                 <th style="visibility:hidden"></th>
                                 <th></th>
                                 <th></th>
+                                <th style="visibility:hidden"></th>
                                 <th style="visibility:hidden"></th>
                                 <th style="visibility:hidden"></th>
                                 <th style="visibility:hidden"></th>
@@ -206,7 +208,7 @@
                                 <th style="visibility:hidden"></th>
                                 <th style="visibility:hidden"></th>
                                 <th style="visibility:hidden"></th>
-
+                                <th style="visibility:hidden"></th>
 
                             </tr>
                         </thead>
@@ -275,6 +277,9 @@
                                     </td>
                                     <td style="visibility:hidden">
                                         @Html.DisplayFor(modelItem => item.ScacCode)
+                                    </td>
+                                    <td style="visibility:hidden">
+                                        @Html.DisplayFor(modelItem => item.ShipFor)
                                     </td>
                                 </tr>
                             }
@@ -543,6 +548,10 @@
                 {
                     data: 'ScacCode', visible:false
                 }
+                ,
+                {
+                    data: 'ShipFor', visible:false
+                }
             ]
             
         });
@@ -551,94 +560,98 @@
             dom: 'Bfrtip',
             responsive: true,
             "displayLength": 15,
-                columnDefs: [{
-                    orderable: false,
-                    className: 'select-checkbox',
-                    targets: 0
-                }],
-                columns: [
-                    {
-                        orderable: false
-                    },
-                    {
-                        data: 'StoreName'
-                    }
-                    ,
-                    {
+            columnDefs: [{
+                orderable: false,
+                className: 'select-checkbox',
+                targets: 0
+            }],
+            columns: [
+                {
+                    orderable: false
+                },
+                {
+                    data: 'StoreName'
+                }
+                ,
+                {
 
-                    }
-                    ,
-                    {
+                }
+                ,
+                {
 
-                    }
-                    ,
-                    {
-                        data: 'PurchaseOrderId'
-                    }
-                    ,
-                    {
-                        data: 'PickTicketId'
-                    }
-                    ,
-                    {
+                }
+                ,
+                {
+                    data: 'PurchaseOrderId'
+                }
+                ,
+                {
+                    data: 'PickTicketId'
+                }
+                ,
+                {
 
-                    }
-                    ,
-                    {
+                }
+                ,
+                {
 
-                    }
-                    ,
-                    {
+                }
+                ,
+                {
 
-                    }
-                    ,
-                    {
+                }
+                ,
+                {
 
-                    }
-                    ,
-                    {
+                }
+                ,
+                {
 
-                    }
-                    ,
-                    {
+                }
+                ,
+                {
 
-                    }
-                    ,
-                    {
-                        visible: false
-                    }
-                    ,
-                    {
-                        visible: false
-                    }
-                    ,
-                    {
-                        visible: false
-                    }
-                    ,
-                    {
-                        data: 'Notes', className: 'editable'
-                    }
-                    ,
-                    {
-                        data: 'ConfirmationNumber'
-                    }
-                    ,
-                    {
-                        data: 'DivisionId', visible :false
-                    }
-                    ,
-                    {
-                        data: 'BillOfLading', visible: false
-                    }
-                    ,
-                    {
-                        data : 'DeliveryTypeId', visible: false
-                    }
-                    ,
-                    {
-                        data : 'ScacCode', visible: false
-                    }
+                }
+                ,
+                {
+                    visible: false
+                }
+                ,
+                {
+                    visible: false
+                }
+                ,
+                {
+                    visible: false
+                }
+                ,
+                {
+                    data: 'Notes', className: 'editable'
+                }
+                ,
+                {
+                    data: 'ConfirmationNumber'
+                }
+                ,
+                {
+                    data: 'DivisionId', visible :false
+                }
+                ,
+                {
+                    data: 'BillOfLading', visible: false
+                }
+                ,
+                {
+                    data : 'DeliveryTypeId', visible: false
+                }
+                ,
+                {
+                    data : 'ScacCode', visible: false
+                }
+                ,
+                {
+                    data : 'ShipFor', visible: false
+                }
 
 
 
@@ -884,7 +897,8 @@
                                                 "BoxSize": orders[i].BoxSize,
                                                 "BillOfLading": orders[i].BillOfLading,
                                                 "DeliveryTypeId": orders[i].DeliveryTypeId,
-                                                "ScacCode": orders[i].ScacCode
+                                                "ScacCode": orders[i].ScacCode,
+                                                "ShipFor": ToDate(orders[i].ShipFor)
 
                                                 }).draw(false);
                                             var existingRow = table
@@ -1261,6 +1275,8 @@
                 $("#IsDelivery").prop("checked", true);
             }
             $('input[name = DeliveryTypeId]').attr('disabled', 'disabled');
+
+            $("#ShippingDate").val(selected2[0]["ShipFor"]);
         }
 
 
