@@ -644,6 +644,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Context\AdminUserContext.cs" />
+    <Compile Include="Context\AdminUserContext_User.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -704,9 +706,17 @@
       <Project>{d44145fe-6e91-4dd4-8a22-78a78cc3d0c8}</Project>
       <Name>GSLogistics.Website.Admin.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GSLogistics.Interface\GSLogistics.Interface.csproj">
+      <Project>{3258DCFF-3339-4B21-9134-F26BF38691FF}</Project>
+      <Name>GSLogistics.Interface</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GSLogistics.Logic.Interface\GSLogistics.Logic.Interface.csproj">
       <Project>{D7CCE6EE-8C18-4D86-A449-4D90401F632F}</Project>
       <Name>GSLogistics.Logic.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GSLogistics.UserSecurity\GSLogistics.UserSecurity.csproj">
+      <Project>{79963F2B-24B0-4FC8-98A4-BCF7541158DA}</Project>
+      <Name>GSLogistics.UserSecurity</Name>
     </ProjectReference>
     <ProjectReference Include="..\GSLogistics.Website.Common\GSLogistics.Website.Common.csproj">
       <Project>{401a9c7e-7f4e-4021-90f3-3dc80cc07215}</Project>
