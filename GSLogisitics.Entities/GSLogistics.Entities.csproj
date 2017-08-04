@@ -96,6 +96,7 @@
     <Compile Include="Concrete\GSLogisticsRepository_Customer.cs" />
     <Compile Include="Concrete\GSLogisticsRepository_OrderAppointment.cs" />
     <Compile Include="Concrete\GSLogisticsRepository_ScacCode.cs" />
+    <Compile Include="Concrete\GSLogisticsRepository_User.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="CustomerDivision.cs" />
     <Compile Include="GSExternalContext.cs" />
@@ -103,6 +104,8 @@
     <Compile Include="OrderAppointment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScacCode.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="UserCustomer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
