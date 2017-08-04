@@ -54,6 +54,7 @@ namespace GSLogistics.Website.Admin.Models
 
         public string ScacCode { get; set; }
         public short? DeliveryTypeId { get; set; }
+        public string Shipping { get; set; }
 
     }
 }

@@ -88,11 +88,29 @@ namespace GSLogistics.Entities.Concrete
                 Weigth = x.Weigth,
                 CustomerName = x.Customer != null ? x.Customer.CompanyName : string.Empty,
                 DivisionName = x.Division != null ? x.Division.Description : string.Empty,
-                DeliveryTypeId = string.IsNullOrEmpty(x.Delivery) ? default(short?) : x.Delivery == "P" ? (short)1 : (short)2
+                DeliveryTypeId = string.IsNullOrEmpty(x.Delivery) ? default(short?) : x.Delivery == "P" ? (short)1 : (short)2,
+                Shipping  = GetShippingDescription(x.Shipping)
             });
 
             return result.ToList();
 
+        }
+
+        private string GetShippingDescription(string key)
+        {
+            switch(key.ToUpper())
+            {
+                case "":
+                    return "No pallet assigned";
+                case "C":
+                    return "Shipping Complete";
+                case "P":
+                    return "Shipping Partial";
+                case "N":
+                    return "Pallet assigned but no work in shipping";
+                default:
+                    return "Unknown";
+            }
         }
         public List<Model.OrderAppointment> ToList(OrderAppointmentQuery query)
         {

@@ -134,158 +134,168 @@
                 </div>
 
                 <div class="panel-body">
-                    <table class="table display-compact table-bordered table-striped" id="tableAppointments">
-                        <tfoot>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th>PO#</th>
-                                <th>PT#</th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th style="visibility:hidden"></th>
-                                <th style="visibility:hidden"></th>
-                                <th style="visibility:hidden"></th>
-                                <th></th>
-                                <th></th>
-                                <th style="visibility:hidden"></th>
-                                <th style="visibility:hidden"></th>
-                                <th style="visibility:hidden"></th>
-                                <th style="visibility:hidden"></th>
-                                <th style="visibility:hidden"></th>
-                            </tr>
-                        </tfoot>
-                        <thead>
-                            <tr>
-                                <th class="text-center">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table display-compact table-bordered table-striped" id="tableAppointments" cellspacing="0" width="100%">
+                                <tfoot>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th>PO#</th>
+                                        <th>PT#</th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th style="visibility:hidden"></th>
+                                        <th style="visibility:hidden"></th>
+                                        <th style="visibility:hidden"></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th style="visibility:hidden"></th>
+                                        <th style="visibility:hidden"></th>
+                                        <th style="visibility:hidden"></th>
+                                        <th style="visibility:hidden"></th>
+                                        <th style="visibility:hidden"></th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
 
-                                </th>
-                                <th>
-                                    @*@Html.DisplayNameFor(model => model.StoreName)*@
-                                    Ship To
-                                </th>
-                                <th>
-                                    Start Date
-                                </th>
-                                <th>Cancel Date</th>
-                                <th>PO#</th>
-                                <th>PT#</th>
-                                <th>
-                                    Pcs
-                                    @*@Html.DisplayNameFor(model => model.Pieces)*@
-                                </th>
-                                <th>
-                                    Lbs@*@Html.DisplayNameFor(model => model.Weight)*@
-                                </th>
-                                <th>
-                                    Ctns.
-                                    @*@Html.DisplayNameFor(model => model.BoxesNumber)*@
-                                </th>
-                                <th>
-                                    Cubic
-                                    @*@Html.DisplayNameFor(model => model.Volume)*@
-                                </th>
-                                <th>
-                                    Ctn Size
-                                    @*@Html.DisplayNameFor(model => model.BoxSize)*@
-                                </th>
-                                <th>
-                                    Create Dt
-                                    @*@Html.DisplayNameFor(model => model.EstimatedShippingDate)*@
-                                </th>
-                                <th style="visibility:hidden"></th>
-                                <th style="visibility:hidden"></th>
-                                <th style="visibility:hidden"></th>
-                                <th>Notes</th>
-                                <th>Conf. #</th>
-                                <th style="visibility:hidden"></th>
-                                <th style="visibility:hidden"></th>
-                                <th style="visibility:hidden"></th>
-                                <th style="visibility:hidden"></th>
-                                <th style="visibility:hidden"></th>
+                                        </th>
+                                        <th>
+                                            @*@Html.DisplayNameFor(model => model.StoreName)*@
+                                            Ship To
+                                        </th>
+                                        <th>
+                                            Start Date
+                                        </th>
+                                        <th>Cancel Date</th>
+                                        <th>PO#</th>
+                                        <th>PT#</th>
+                                        <th>
+                                            Pcs
+                                            @*@Html.DisplayNameFor(model => model.Pieces)*@
+                                        </th>
+                                        <th>
+                                            Lbs@*@Html.DisplayNameFor(model => model.Weight)*@
+                                        </th>
+                                        <th>
+                                            Ctns.
+                                            @*@Html.DisplayNameFor(model => model.BoxesNumber)*@
+                                        </th>
+                                        <th>
+                                            Cubic
+                                            @*@Html.DisplayNameFor(model => model.Volume)*@
+                                        </th>
+                                        <th>
+                                            Ctn Size
+                                            @*@Html.DisplayNameFor(model => model.BoxSize)*@
+                                        </th>
+                                        <th>
+                                            Created
+                                            @*@Html.DisplayNameFor(model => model.EstimatedShippingDate)*@
+                                        </th>
+                                        <th style="visibility:hidden"></th>
+                                        <th style="visibility:hidden"></th>
+                                        <th style="visibility:hidden"></th>
+                                        <th>Notes</th>
+                                        <th>Conf #</th>
+                                        <th style="visibility:hidden"></th>
+                                        <th style="visibility:hidden"></th>
+                                        <th style="visibility:hidden"></th>
+                                        <th style="visibility:hidden"></th>
+                                        <th style="visibility:hidden"></th>
+                                        <th>Shipping</th>
 
-                            </tr>
-                        </thead>
-                        
-                        <tbody>
-                            @foreach (var item in Model.OrderAppointments)
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var item in Model.OrderAppointments)
             {
-                                <tr class="info">
-                                    <td></td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.StoreName)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.StartDate)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.EndDate)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.PurchaseOrderId)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.PickTicketId)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Pieces)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Weight)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.BoxesNumber)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Volume)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.BoxSize)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.EstimatedShippingDate)
-                                    </td>
-                                    <td style="visibility:hidden">
-                                        @Html.DisplayFor(modelItem => item.PtBulk)
-                                    </td>
-                                    <td style="visibility:hidden">
-                                        @Html.DisplayFor(modelItem => item.CustomerId)
-                                    </td>
-                                    <td style="visibility:hidden">
-                                        @Html.DisplayFor(modelItem => item.DivisionName)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Notes)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.ConfirmationNumber)
-                                    </td>
-                                    <td style="visibility:hidden">
-                                        @Html.DisplayFor(modelItem => item.DivisionId)
-                                    </td>
-                                    <td style="visibility:hidden">
-                                        @Html.DisplayFor(modelItem => item.BillOfLading)
-                                    </td>
-                                    <td style="visibility:hidden">
-                                        @Html.DisplayFor(modelItem => item.DeliveryTypeId)
-                                    </td>
-                                    <td style="visibility:hidden">
-                                        @Html.DisplayFor(modelItem => item.ScacCode)
-                                    </td>
-                                    <td style="visibility:hidden">
-                                        @Html.DisplayFor(modelItem => item.ShipFor)
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
+                                        <tr class="info">
+                                            <td></td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.StoreName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.StartDate)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.EndDate)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.PurchaseOrderId)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.PickTicketId)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Pieces)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Weight)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.BoxesNumber)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Volume)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.BoxSize)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.EstimatedShippingDate)
+                                            </td>
+                                            <td style="visibility:hidden">
+                                                @Html.DisplayFor(modelItem => item.PtBulk)
+                                            </td>
+                                            <td style="visibility:hidden">
+                                                @Html.DisplayFor(modelItem => item.CustomerId)
+                                            </td>
+                                            <td style="visibility:hidden">
+                                                @Html.DisplayFor(modelItem => item.DivisionName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Notes)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.ConfirmationNumber)
+                                            </td>
+                                            <td style="visibility:hidden">
+                                                @Html.DisplayFor(modelItem => item.DivisionId)
+                                            </td>
+                                            <td style="visibility:hidden">
+                                                @Html.DisplayFor(modelItem => item.BillOfLading)
+                                            </td>
+                                            <td style="visibility:hidden">
+                                                @Html.DisplayFor(modelItem => item.DeliveryTypeId)
+                                            </td>
+                                            <td style="visibility:hidden">
+                                                @Html.DisplayFor(modelItem => item.ScacCode)
+                                            </td>
+                                            <td style="visibility:hidden">
+                                                @Html.DisplayFor(modelItem => item.ShipFor)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Shipping)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
 
-                    </table>
+                            </table>
+                        </div>
+                    </div>
+>                    
                 </div>
             </div>
 
@@ -652,6 +662,10 @@
                 {
                     data : 'ShipFor', visible: false
                 }
+                ,
+                {
+                    data : 'Shipping'
+                }
 
 
 
@@ -672,7 +686,7 @@
                         if (last !== group) {
                             api.column
                             $(rows).eq(i).before(
-                                '<tr class="group"><td colspan="14">' + client + ' - ' + group + '</td></tr>'
+                                '<tr class="group"><td colspan="15">' + client + ' - ' + group + '</td></tr>'
                             );
 
                             last = group;
