@@ -13,6 +13,8 @@ using Microsoft.AspNet.Identity;
 using GSLogistics.Website.Common;
 using System.Web;
 using Microsoft.AspNet.Identity.Owin;
+using GSLogistics.UserSecurity;
+using Ninject;
 
 namespace GSLogistics.Website.Admin.Controllers
 {
@@ -21,12 +23,15 @@ namespace GSLogistics.Website.Admin.Controllers
     public class AccountController : Controller
     {
         IAuthProvider authProvider;
-
-        public AccountController(IAuthProvider auth)
+        IKernel _kernel;
+        public AccountController(IKernel kernel, IAuthProvider auth)
         {
             authProvider = auth;
         }
-
+        public AccountController(IKernel kernel)
+        {
+            _kernel = kernel;
+        }
         [AllowAnonymous]
         public ViewResult Login()
         {
@@ -60,6 +65,14 @@ namespace GSLogistics.Website.Admin.Controllers
                         IsPersistent = false
                     }, identity);
 
+
+                    // clientTest / test1
+                    var userContext = new GSLogisticsUserContext(_kernel, user.UserName);
+                    Session["UserContext"] = userContext;
+                    if (userContext.CustomerIds.Any())
+                    {
+                        return Redirect(string.IsNullOrEmpty(returnUrl) ? "/OrderAppointment/LogReport" : returnUrl);
+                    }
                     return Redirect(string.IsNullOrEmpty(returnUrl) ? "/OrderAppointment/List" : returnUrl);
                 }
                 //if (authProvider.Authenticate(model.UserName, model.Password))

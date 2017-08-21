@@ -29,10 +29,10 @@ namespace GSLogistics.Website.Admin.Context
                 GSLogisticsUserContext user;
 
 
-                var userID = Microsoft.AspNet.Identity.IdentityExtensions.GetUserId(Thread.CurrentPrincipal.Identity);
-                if (!string.IsNullOrWhiteSpace(userID))
+                var userName = Microsoft.AspNet.Identity.IdentityExtensions.GetUserName(Thread.CurrentPrincipal.Identity);
+                if (!string.IsNullOrWhiteSpace(userName))
                 {
-                    user = new GSLogisticsUserContext(kernel);
+                    user = new GSLogisticsUserContext(kernel,userName );
                 }
                 else
                 {
@@ -45,4 +45,7 @@ namespace GSLogistics.Website.Admin.Context
             }
         }
     }
+
+
+    
 }

@@ -839,6 +839,10 @@ namespace GSLogistics.Website.Admin.Controllers
 
             using (var logic = Kernel.Get<ICustomerLogic>())
             {
+
+                //TODO : Implement on View model the client and divisions the current user could belong to 
+                //TODO : Also, Hide button back to orders if current user is a client role
+                //TODO : Do not allow client roles to access other  controller methods 
                 var cust = await logic.ToListAsync();
                 var clients = cust.OrderBy(x => x.CompanyName).Select(x => new { Id = x.CustomerId, Name = x.CompanyName }).ToList();
                 //var clients = repository.Customers.OrderBy(x => x.CompanyName).Select(x => new { Id = x.CustomerId, Name = x.CompanyName }).ToList();

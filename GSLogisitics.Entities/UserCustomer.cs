@@ -11,13 +11,13 @@ namespace GSLogistics.Entities
     [Table("UserCustomer", Schema = "dbo")]
     public class UserCustomer
     {
-        [Column("UserId", Order = 1)]
-        public int UserId { get; set; }
+        [Column("UserId", Order = 1), Key]
+        public byte UserId { get; set; }
 
-        [Column("CustomerId", Order = 2)]
+        [Column("CustomerId", Order = 2), Key]
         public string CustomerId { get; set; }
 
-        [Column("DivisionId", Order = 3)]
+        [Column("DivisionId", Order = 3), Key]
         public int DivisionId { get; set; }
     }
 }

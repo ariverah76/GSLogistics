@@ -10,6 +10,20 @@ namespace GSLogistics.Website.Admin.Context
     {
 
         private IUserContext _UserContext;
+
+        public string UserName
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         string[] IUserContext.CustomerIds
         {
             get

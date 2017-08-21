@@ -168,6 +168,10 @@
       <Project>{55436367-194b-4627-bc65-92caf6853028}</Project>
       <Name>GSLogistics.Reporting</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GSLogistics.UserSecurity\GSLogistics.UserSecurity.csproj">
+      <Project>{79963F2B-24B0-4FC8-98A4-BCF7541158DA}</Project>
+      <Name>GSLogistics.UserSecurity</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GSLogistics.Website.Admin.Resources\GSLogistics.Website.Admin.Resources.csproj">
       <Project>{19a5b306-3358-4cce-be7c-db9f4910e1c9}</Project>
       <Name>GSLogistics.Website.Admin.Resources</Name>

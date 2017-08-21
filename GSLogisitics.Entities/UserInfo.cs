@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 namespace GSLogistics.Entities
 {
     [Table("CatUsers", Schema = "dbo")]
-    public class User
+    public class UserInfo
     {
 
         [Column("UserNo", Order = 1), Key]
-        public int UserId { get; set; }
+        public byte UserId { get; set; }
 
         [Column("DescriptionProfile", Order = 2)]
         public string Description { get; set; }
 
-        [Column("UserName", Order = 3)]
+        [Column("NameUser", Order = 3)]
         public string UserName { get; set; }
 
         [ForeignKey("UserId")]

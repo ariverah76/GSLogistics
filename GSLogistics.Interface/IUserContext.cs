@@ -9,6 +9,7 @@ namespace GSLogistics.Interface
     public interface IUserContext
     {
         int UserId { get;set;}
+        string UserName { get; set; }
 
         //bool IsClientAdmin { get; set; }
 
