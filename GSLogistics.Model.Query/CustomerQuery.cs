@@ -10,5 +10,7 @@ namespace GSLogistics.Model.Query
     {
         public string CustomerId { get; set; }
         public string CustomerName { get; set; }
+
+        public string[] CustomerIds { get; set; }
     }
 }

@@ -20,6 +20,8 @@ namespace GSLogistics.Website.Admin.Models
         [Display(Name = "Division")]
         public int? SelectedDivisionId { get; set; }
 
+        public string[] AvailableClientIds { get; set; }
+
 
         private List<Appointment> _appointments;
         public List<Appointment> Appointments

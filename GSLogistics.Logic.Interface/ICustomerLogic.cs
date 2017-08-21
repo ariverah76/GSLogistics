@@ -1,4 +1,5 @@
 ﻿using GSLogistics.Model;
+using GSLogistics.Model.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace GSLogistics.Logic.Interface
     {
 
         Task<List<Customer>> ToListAsync();
+        Task<List<Model.Customer>> ToListAsync(CustomerQuery query);
         Task<Customer> FirstOrDefaultAsync(string identifier);
     }
 }

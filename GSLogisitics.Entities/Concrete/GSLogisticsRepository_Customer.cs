@@ -42,6 +42,31 @@ namespace GSLogistics.Entities.Concrete
             return returnValue;
         }
 
+        public async Task<List<Model.Customer>> ToListAsync(CustomerQuery query)
+        {
+            List<Model.Customer> returnValue = new List<Model.Customer>();
+
+            var q = context.Customers.Where(x => true);
+
+            if(!string.IsNullOrEmpty(query.CustomerId))
+            {
+                q = q.Where(x => x.CustomerId == query.CustomerId);
+            }
+
+            if (query.CustomerIds.Any())
+            {
+                q = q.Where(x => query.CustomerIds.Contains(x.CustomerId));
+            }
+
+            var result = await q
+                .AsNoTracking()
+                .ToListAsync();
+
+            result.ForEach(x => returnValue.Add(new Model.Customer() { CustomerId = x.CustomerId, CompanyName = x.CompanyName }));
+
+            return returnValue;
+        }
+
         public async Task<Model.Customer> FirstOrDefaultAsync(string identifier)
         {
             var result = await context.Customers.Where(x => x.CustomerId == identifier).FirstOrDefaultAsync();

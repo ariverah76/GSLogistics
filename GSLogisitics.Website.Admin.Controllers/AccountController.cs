@@ -69,6 +69,8 @@ namespace GSLogistics.Website.Admin.Controllers
                     // clientTest / test1
                     var userContext = new GSLogisticsUserContext(_kernel, user.UserName);
                     Session["UserContext"] = userContext;
+                    ViewBag.UserName = userContext.UserName;
+
                     if (userContext.CustomerIds.Any())
                     {
                         return Redirect(string.IsNullOrEmpty(returnUrl) ? "/OrderAppointment/LogReport" : returnUrl);

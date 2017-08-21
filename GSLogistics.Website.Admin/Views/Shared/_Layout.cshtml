@@ -39,8 +39,19 @@
                 </button>
                 @Html.ActionLink("GS Logistics", "List", "OrderAppointment", new { area = "" }, new { @class = "navbar-brand" })
             </div>
+            
             <div class="nav navbar-nav navbar-right">
                 @Html.ActionLink("Sign Out", "Logout", "Account", null, new { @class = "navbar-brand" })
+            </div>
+            <div class="nav navbar-nav navbar-right">
+                @{
+                    var userContext = HttpContext.Current.Session["UserContext"] as GSLogistics.UserSecurity.GSLogisticsUserContext;
+                    if (userContext != null)
+                    {
+                        <p class="navbar-text">Hello @userContext.UserName!</p>
+                    }
+                }
+               
             </div>
             @*<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">

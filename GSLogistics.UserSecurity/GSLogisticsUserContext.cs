@@ -31,13 +31,18 @@ namespace GSLogistics.UserSecurity
         {
             var clientInfo = GenerateClientUserInfo(userName);
 
-            CustomerIds = clientInfo.CustomerIds.ToList();
-            DivisionIds = clientInfo.DivisionIds.ToList();
-
+            if (clientInfo.CustomerIds  != null && clientInfo.CustomerIds.Any())
+            {
+                CustomerIds = clientInfo.CustomerIds.ToList();
+            }
+            if (clientInfo.DivisionIds !=null && clientInfo.DivisionIds.Any())
+            {
+                DivisionIds = clientInfo.DivisionIds.ToList();
+            }
             UserName = clientInfo.UserName;
 
 
-           // Session["ClientUserContext"] = clientInfo;
+
         }
 
         public List<string> CustomerIds { get; internal set; }

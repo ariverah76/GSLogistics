@@ -26,7 +26,10 @@
         @using (Ajax.BeginForm("GetLogReport", ajaxOptions))
         {
             <div class="btn-group btn-group-justified">
-                @Html.ActionLink("Back to Orders", "List", "OrderAppointment", new { @class ="btn btn-info"})
+                @if (!User.IsInRole("Clients"))
+                {
+                    @Html.ActionLink("Back to Orders", "List", "OrderAppointment", new { @class = "btn btn-info" })
+                }
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Download Report

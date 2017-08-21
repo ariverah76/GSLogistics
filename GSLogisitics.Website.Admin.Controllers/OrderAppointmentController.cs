@@ -14,6 +14,7 @@ using GSLogistics.Website.Admin.Resources;
 using GSLogistics.Logic.Interface;
 using GSLogistics.Model.Query;
 using System.Text;
+using GSLogistics.UserSecurity;
 
 namespace GSLogistics.Website.Admin.Controllers
 {
@@ -830,6 +831,12 @@ namespace GSLogistics.Website.Admin.Controllers
         {
             var model = new LogReportIndex_ViewModel();
             model.SelectedDay = DateTime.Today;
+
+            var userContext = Session["UserContext"] as GSLogisticsUserContext;
+            if (userContext !=null)
+            {
+                model.AvailableClientIds = userContext.CustomerIds.ToArray();
+            }
             return await this.LogReport(model);
         }
 
@@ -843,11 +850,21 @@ namespace GSLogistics.Website.Admin.Controllers
                 //TODO : Implement on View model the client and divisions the current user could belong to 
                 //TODO : Also, Hide button back to orders if current user is a client role
                 //TODO : Do not allow client roles to access other  controller methods 
-                var cust = await logic.ToListAsync();
+
+
+                Dictionary<string, string> result = new Dictionary<string, string>();
+                List<Model.Customer> cust = new List<Model.Customer>();
+                if (model.AvailableClientIds !=null && model.AvailableClientIds.Any())
+                {
+                    cust = await logic.ToListAsync(new CustomerQuery() { CustomerIds = model.AvailableClientIds });
+                }
+                else
+                {
+                    cust = await logic.ToListAsync();
+                }
                 var clients = cust.OrderBy(x => x.CompanyName).Select(x => new { Id = x.CustomerId, Name = x.CompanyName }).ToList();
                 //var clients = repository.Customers.OrderBy(x => x.CompanyName).Select(x => new { Id = x.CustomerId, Name = x.CompanyName }).ToList();
 
-                Dictionary<string, string> result = new Dictionary<string, string>();
                 clients.ForEach(x => result.Add(x.Id, x.Name));
 
                 ViewBag.Customers = new SelectList(result, "Key", "Value", null);
@@ -877,8 +894,21 @@ namespace GSLogistics.Website.Admin.Controllers
             }
             using (var divLogic = Kernel.Get<IDivisionLogic>())
             {
-               // var divisions = repository.GetDivisionByClient(customerId).Select(d => new { Id = d.DivisionId, Name = $"{d.NameId} {d.Description}" }).ToList();
+                
+
+                // var divisions = repository.GetDivisionByClient(customerId).Select(d => new { Id = d.DivisionId, Name = $"{d.NameId} {d.Description}" }).ToList();
                 var divisions2 = await divLogic.GetDivisionByCustomerId(customerId);// (d => new { Id = d.DivisionId, Name = $"{d.NameId} {d.Description}" }).ToList();
+
+                var userContext = Session["UserContext"] as GSLogisticsUserContext;
+                if (userContext != null)
+                {
+                    if (userContext != null && userContext.DivisionIds.Any())
+                    {
+                        var availableDivisionsIds = userContext.DivisionIds.ToList();
+                        divisions2 = divisions2.Where(x => availableDivisionsIds.Contains(x.DivisionId)).ToList();
+                    }
+                    
+                } 
 
                 var divs = divisions2.Select(d => new { Id = d.DivisionId, Name = $"{d.Name} {d.Description}" }).ToList();
                 divs.Insert(0, new { Id = 0, Name = "Select" });

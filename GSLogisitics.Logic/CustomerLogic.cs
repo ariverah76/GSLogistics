@@ -1,5 +1,6 @@
 ﻿using GSLogistics.Logic.Interface;
 using GSLogistics.Model;
+using GSLogistics.Model.Query;
 using Ninject;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,6 +26,11 @@ namespace GSLogistics.Logic
             return await Repository.FirstOrDefaultAsync(identifier);
         }
 
-        
+        public async Task<List<Customer>> ToListAsync(CustomerQuery query)
+        {
+            return await Repository.ToListAsync(query);
+        }
+
+
     }
 }
