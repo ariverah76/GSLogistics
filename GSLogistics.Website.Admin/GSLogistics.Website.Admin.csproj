@@ -676,6 +676,7 @@
     <Content Include="Views\Shared\_AppointmentList.cshtml" />
     <Content Include="Views\OrderAppointment\LogReport.cshtml" />
     <Content Include="Views\OrderAppointment\_LogReport_AppointmentsPartial.cshtml" />
+    <Content Include="Views\Account\Error.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

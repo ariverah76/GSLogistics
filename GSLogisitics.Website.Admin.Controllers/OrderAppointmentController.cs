@@ -15,6 +15,7 @@ using GSLogistics.Logic.Interface;
 using GSLogistics.Model.Query;
 using System.Text;
 using GSLogistics.UserSecurity;
+using GSLogistics.Website.Common;
 
 namespace GSLogistics.Website.Admin.Controllers
 {
@@ -37,6 +38,7 @@ namespace GSLogistics.Website.Admin.Controllers
         //}
 
         [HttpGet]
+        [GSDenyAttribute(Roles = "Clients")]
         public async  Task<ActionResult> List()
         {
             var model = new OrderAppointmentsIndex_ViewModel();
@@ -754,10 +756,19 @@ namespace GSLogistics.Website.Admin.Controllers
         {
             List<Models.Appointment> appointments = new List<Models.Appointment>();
 
+            
+
             var query = new AppointmentQuery()
             {
                 Posted = true
             };
+
+            var userContext = Session["UserContext"] as GSLogisticsUserContext;
+            if (userContext != null)
+            {
+                query.CustomerIds = userContext.CustomerIds.ToArray();
+                query.DivisionIds = userContext.DivisionIds.ToArray();
+            }
 
             if (model.SelectedDay.HasValue)
             {
@@ -773,10 +784,19 @@ namespace GSLogistics.Website.Admin.Controllers
             {
                 query.CustomerId = model.SelectedClientId;
             }
+            else if (model.AvailableClientIds!= null && model.AvailableClientIds.Any())
+            {
+                query.CustomerIds = model.AvailableClientIds;
+            }
+
 
             if (model.SelectedDivisionId.HasValue && model.SelectedDivisionId.Value != 0)
             {
                 query.DivisionId = model.SelectedDivisionId.Value;
+            }
+            else if (model.AvailableDivisionIds != null && model.AvailableDivisionIds.Any())
+            {
+                query.DivisionIds = model.AvailableDivisionIds;
             }
 
             using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
@@ -847,9 +867,6 @@ namespace GSLogistics.Website.Admin.Controllers
             using (var logic = Kernel.Get<ICustomerLogic>())
             {
 
-                //TODO : Implement on View model the client and divisions the current user could belong to 
-                //TODO : Also, Hide button back to orders if current user is a client role
-                //TODO : Do not allow client roles to access other  controller methods 
 
 
                 Dictionary<string, string> result = new Dictionary<string, string>();

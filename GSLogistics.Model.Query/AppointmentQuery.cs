@@ -11,6 +11,7 @@ namespace GSLogistics.Model.Query
         public string PickTicketId { get; set; }
         public string[] PickTicketsIds { get; set; }
         public string CustomerId { get; set; }
+        public string[] CustomerIds { get; set; }
 
         public string AppointmentNumber { get; set; }
         public string PtBulk { get; set; }
@@ -24,5 +25,7 @@ namespace GSLogistics.Model.Query
         public short? DeliveryTypeId { get; set; }
 
         public int? DivisionId { get; set; }
+
+        public int[] DivisionIds { get; set; }
     }
 }

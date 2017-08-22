@@ -121,6 +121,7 @@
     <Compile Include="App_Start\ApplicationRoleManager.cs" />
     <Compile Include="App_Start\ApplicationUserManager.cs" />
     <Compile Include="DateTimeEditorExtensions.cs" />
+    <Compile Include="GSDenyAttribute.cs" />
     <Compile Include="HtmlExtensionsHelper.cs" />
     <Compile Include="IdentityHelpers.cs" />
     <Compile Include="Models\ApplicatonRole.cs" />

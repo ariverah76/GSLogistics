@@ -31,10 +31,16 @@ namespace GSLogistics.Entities.Concrete
                 q = q.Where(x => x.AppointmentNumber == query.AppointmentNumber);
             }
 
+
             if (!string.IsNullOrEmpty(query.CustomerId))
             {
                 q = q.Where(x => x.CustomerId == query.CustomerId);
             }
+            else if (query.CustomerIds != null && query.CustomerIds.Any())
+            {
+                q = q.Where(x => query.CustomerIds.Contains(x.CustomerId));
+            }
+
 
             if (query.Posted.HasValue)
             {
@@ -65,8 +71,12 @@ namespace GSLogistics.Entities.Concrete
             {
                 q = q.Where(x => x.DivisionId == query.DivisionId.Value);
             }
+            else if (query.DivisionIds != null && query.DivisionIds.Any())
+            {
+                q = q.Where(x => query.DivisionIds.Contains(x.DivisionId));
+            }
 
-            
+
 
             return q;
 
