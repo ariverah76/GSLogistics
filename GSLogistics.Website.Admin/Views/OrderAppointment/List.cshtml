@@ -890,7 +890,9 @@
                             contentType: "application/json; charset=utf-8",
                             data: { "bol": data[0]["BillOfLading"] },
                             success: function (result) {
-                                if (result.result = "Success") {
+
+                                 
+                                if (result.result == "Success" ) {
                                     var orders = result.orders;
                                     if (orders != null) {
 
@@ -926,6 +928,25 @@
                                             }
                                         //}
                                     }
+                                }
+                                else {
+                                    tableSelected.row.add({
+                                        "ShipTo": data[0]["StoreName"],
+                                        "StartDate":data[0][2],
+                                        "EndDate":data[0][3],
+                                        "PurchaseOrderId": data[0]["PurchaseOrderId"],
+                                        "PickTicketId": data[0]["PickTicketId"],
+                                        "Pieces": data[0][6],
+                                        "Weigth": data[0][7],
+                                        "BoxesCount": data[0][8],
+                                        "Size": data[0][9],
+                                        "BoxSize": data[0][10],
+                                        "BillOfLading": data[0]["BillOfLading"],
+                                        "DeliveryTypeId": data[0]["DeliveryTypeId"],
+                                        "ScacCode": data[0]["ScacCode"],
+                                        "ShipFor": ToDate(data[0]["ShipFor"])
+                                    }).draw(false);
+            
                                 }
                                 if (count > 1) {
                                     toastr.info(count + " orders were found associated to Bill of Lading '" + data[0]["BillOfLading"] + "', and they are being added automatically for appointment", "Order associated to BOL", {
@@ -1384,9 +1405,12 @@
             }
             var apptNos = new Array();
             var bols = new Array();
+            var carriers = new Array();
+
             for (var i = 0; i < selected.length; i++) {
                 apptNos.push(selected[i]["AppointmentNo"]);
                 bols.push(selected[i]["BillOfLading"]);
+                carriers.push(selected[i]["Carrier"])
             }
 
             if (bols.length > 0) {
@@ -1394,6 +1418,16 @@
             }
             if (apptNos.length > 0) {
                 var allSameApptNo = apptNos.allValuesSame();
+            }
+            if (carriers.length > 0) {
+                var allSameCarriers = carriers.allValuesSame();
+            }
+            
+            if (allSameCarriers == false) {
+                toastr.error("Please ensure all the Orders tied to the same carrier ","Please review!", {
+                        "closeButton": true, "timeOut": "8000"
+                        });
+                        return false;
             }
 
             //if (allSameBol == false || apptNos == false) {
