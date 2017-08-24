@@ -184,7 +184,7 @@
                         val = api.row(api.row($(rows).eq(i)).index()).data();
                         var bol = val['AppointmentNo'];
                         $(rows).eq(i).before(
-                            '<tr class="group"><td colspan=7> Appointment #: ' + bol + ' - BOL: ' + group +'</td></tr>'
+                            '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(' + group + ')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
                         );
                        // $(rows).eq(i).after(
                        //    '<tr class="footer"><td> Totals:</td></tr>'
@@ -213,7 +213,7 @@
                 });
                 $('tbody').find('.group').each(function (i,v) {
                     var rowCount = $(this).nextUntil('.group').length;
-                    $(this).find('td:first').append($('<span />', { 'class': 'rowCount-grid' }).append($('<b />', { 'text': ' ( Total Orders '+rowCount+')' })));
+                    $(this).find('td:nth-child(2)').append($('<span />', { 'class': 'rowCount-grid' }).append($('<b />', { 'text': ' ( Total Orders '+rowCount+')' })));
                     var subtd = '';
                     //for (var a=2;a<columna;a++)
                     //{ 
@@ -229,15 +229,17 @@
             },
         });
 
-        $('#tableLogReport tbody').on('click', 'tr.group', function () {
-            var currentOrder = table.order()[0];
-            if (currentOrder[0] === 2 && currentOrder[1] === 'asc') {
-                table.order([0, 'desc']).draw();
-            }
-            else {
-                table.order([0, 'asc']).draw();
-            }
-        });
+        //$('#tableLogReport tbody').on('click', 'tr.group', function () {
+        //    var currentOrder = table.order()[0];
+        //    if (currentOrder[0] === 2 && currentOrder[1] === 'asc') {
+        //        table.order([0, 'desc']).draw();
+        //    }
+        //    else {
+        //        table.order([0, 'asc']).draw();
+        //    }
+        //});
 
     });
+
+    
 </script>

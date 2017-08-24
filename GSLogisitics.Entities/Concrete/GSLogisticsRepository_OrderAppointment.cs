@@ -109,7 +109,7 @@ namespace GSLogistics.Entities.Concrete
                 case "N":
                     return "Pallet assigned but no work in shipping";
                 default:
-                    return "Unknown";
+                    return string.Empty;
             }
         }
         public List<Model.OrderAppointment> ToList(OrderAppointmentQuery query)
