@@ -73,7 +73,7 @@ namespace GSLogistics.Entities.Concrete
             }
             else if (query.DivisionIds != null && query.DivisionIds.Any())
             {
-                q = q.Where(x => query.DivisionIds.Contains(x.DivisionId));
+                q = q.Where(x => x.DivisionId.HasValue && query.DivisionIds.Contains(x.DivisionId.Value));
             }
 
 

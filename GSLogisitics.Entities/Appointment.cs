@@ -53,7 +53,7 @@ namespace GSLogistics.Entities
         public bool Posted { get; set; }
 
         [Column("DivisionId", Order = 11)]
-        public int DivisionId { get; set; }
+        public int? DivisionId { get; set; }
 
         [Column("DeliveryTypeId", Order = 13)]
         public short? DeliveryTypeId { get; set; }

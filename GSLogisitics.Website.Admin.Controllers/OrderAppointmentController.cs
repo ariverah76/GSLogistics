@@ -349,7 +349,7 @@ namespace GSLogistics.Website.Admin.Controllers
                     Model.Appointment appointment = new Model.Appointment();
                     appointment.CustomerId = order.CustomerId;
                     appointment.PickTicket = order.PickTicketId;
-                    appointment.DivisionId = order.DivisionId;
+                    appointment.DivisionId = order.DivisionId == 0 ? default(int?): order.DivisionId;
 
                     appointment.ScacCode = model.ScacCode;
                     appointment.ShippingDate = model.ShippingDate;
