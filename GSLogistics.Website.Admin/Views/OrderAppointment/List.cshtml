@@ -1314,6 +1314,7 @@
             $("#ShippingCompanyId").val(selected2[0]["ScacCode"]).change();
             $("#ShippingCompanyId").prop('disabled', true)
             var dt = selected2[0]["DeliveryTypeId"];
+            console.log(dt);
             if (dt == "1") {
                 $("#IsPickup").prop("checked", true);
             }

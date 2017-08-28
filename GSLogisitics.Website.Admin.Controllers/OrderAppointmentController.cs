@@ -65,7 +65,7 @@ namespace GSLogistics.Website.Admin.Controllers
                 {
                     if (!result2.ContainsKey(sc.ScacCodeId.ToString()))
                     {
-                        result2.Add(sc.ScacCodeId.ToString(), $"{sc.ScacCodeId.ToString()} {sc.Carrier}");
+                        result2.Add(sc.ScacCodeId.ToString().Trim(), $"{sc.ScacCodeId.ToString()} {sc.Carrier}");
                     }
                 }
 
