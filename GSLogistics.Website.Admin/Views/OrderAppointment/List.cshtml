@@ -16,6 +16,11 @@
     var scacCodes = this.ViewBag.ScacCodes as SelectList;
     var appointmentStatus = this.ViewBag.AppointmentStatus as SelectList;
 }
+<style type="text/css">
+    div.container {
+        width: 80%;
+    }
+</style>
 <div class="row">
     <ul class="nav nav-pills nav-justified">
         <li class="active" role="presentation"><a data-toggle="pill" href="#orders"><h3>Orders</h3></a></li>
@@ -136,7 +141,7 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <table class="table display-compact table-bordered table-striped" id="tableAppointments" cellspacing="0" width="100%">
+                            <table class="table display-compact table-bordered table-striped" id="tableAppointments" cellspacing="0" style="width:100%">
                                 <tfoot>
                                     <tr>
                                         <th></th>
@@ -476,6 +481,7 @@
 <script type="text/javascript">
 
     var editor;
+    $("#selectedPanel").hide();
     $(document).ready(function () {
         (function (seconds) {
             var refresh,
@@ -492,7 +498,7 @@
 
         }(300));
 
-        $("#selectedPanel").hide();
+      
         $("#ShippingCompanyId").select2();
         $("#SelectedClientId").select2();
         $("#SelectedDivisionId").select2();
@@ -570,11 +576,16 @@
             dom: 'Bfrtip',
             responsive: true,
             "displayLength": 15,
+            "deferRender": true,
+            processing: true,
             columnDefs: [{
                 orderable: false,
                 className: 'select-checkbox',
                 targets: 0
             }],
+            oLanguage: {
+                sProcessing: "<img src='8.gif'>"
+            },
             columns: [
                 {
                     orderable: false

@@ -604,7 +604,10 @@ namespace GSLogistics.Website.Admin.Controllers
                         Posted = appt.Posted.ToString(),
                         DateAdded = appt.DateAdded,
                         ShipTimeLimit = appt.ShippingTimeLimit,
-                        DeliveryTypeId = appt.DeliveryTypeId
+                        DeliveryTypeId = appt.DeliveryTypeId,
+                        DivisionId = appt.DivisionId,
+                        DivisionName = appt.DivisionName,
+                        DivisionNameId = appt.DivisionNameId
 
                     };
 

@@ -16,7 +16,7 @@
                     CustID
                 </th>
                 <th>
-                    Customer
+                    Division
                 </th>
                 <th>
                     PO#
@@ -84,7 +84,7 @@
                         @Html.DisplayFor(modelItem => item.CustomerId)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.CustomerName)
+                        @Html.DisplayFor(modelItem => item.DivisionDisplay)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.PurchaseOrder)
@@ -160,7 +160,7 @@
                 }
                 ,
                 {
-                    data: 'CustomerName'
+                    data: 'DivisionDisplay'
                 }
                 ,
                 {
