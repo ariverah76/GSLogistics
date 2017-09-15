@@ -31,6 +31,7 @@ namespace GSLogistics.Model
         public string CustomerName { get; set; }
         public short? DeliveryTypeId { get; set; }
         public string Shipping { get; set; }
+        public string PathPOD { get; set; }
 
     }
 }

@@ -7,7 +7,8 @@
 
 @{
     ViewBag.Title = "List";
-    AjaxOptions ajaxOptions = new AjaxOptions { UpdateTargetId = "panelBody", LoadingElementId = "loading", LoadingElementDuration = 1000 };
+    AjaxOptions ajaxOptions = new AjaxOptions { UpdateTargetId = "panelBody", LoadingElementId = "loading", LoadingElementDuration = 3000 };
+    AjaxOptions ajaxOptionsForOrders = new AjaxOptions { UpdateTargetId = "panelBodyOrders", LoadingElementId = "loadingOrders", LoadingElementDuration = 3000 };
 
 }
 @{
@@ -20,6 +21,18 @@
     div.container {
         width: 80%;
     }
+
+    #loading2 {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,.5);
+    -webkit-transition: all .5s ease;
+    z-index: 1000;
+    display:none;
+}
 </style>
 <div class="row">
     <ul class="nav nav-pills nav-justified">
@@ -32,7 +45,7 @@
     <div id="orders" class="tab-pane fade in active">
 
         @*<h2>Orders</h2>*@
-        @using (Html.BeginForm())
+        @using (Ajax.BeginForm("GetOrdersForAppointment", ajaxOptionsForOrders))
         {
             <div class="row">
                 <div class="btn-group btn-group-justified">
@@ -102,206 +115,16 @@
                 </div>
             </div>
         }
+        
         <div class="row">
-            <div class="panel panel-default" id="selectedPanel">
-                <div class="panel-heading">
-                    Selected Orders For Appointment
-                </div>
-                <div class="panel panel-body">
-                    <table class="table table-hover" id="tableSelectedOrders">
-                        <thead>
-                            <tr>
-                                <th>Ship To</th>
-                                <th>Start Date</th>
-                                <th>Cancel Date</th>
-                                <th>PO#</th>
-                                <th>PT#</th>
-                                <th>Pcs</th>
-                                <th>Lbs</th>
-                                <th>Ctns.</th>
-                                <th>Cubic</th>
-                                <th>Ctn Size</th>
-                                <th>Bol</th>
-                                <th style="display:none">DeliveryType</th>
-                                <th style="display:none">ScacCode</th>
-                                <th>ShipFor</th>
-                            </tr>
-                        </thead>
-                        
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    Orders for Appointment
+
+            <div class="panel-body" id="panelBodyOrders">
+                <div id="loadingOrders" class="load" style="display:none">
+                    <p>Loading Data...</p>
                 </div>
 
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="table display-compact table-bordered table-striped" id="tableAppointments" cellspacing="0" style="width:100%">
-                                <tfoot>
-                                    <tr>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th>PO#</th>
-                                        <th>PT#</th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th style="visibility:hidden"></th>
-                                        <th style="visibility:hidden"></th>
-                                        <th style="visibility:hidden"></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th style="visibility:hidden"></th>
-                                        <th style="visibility:hidden"></th>
-                                        <th style="visibility:hidden"></th>
-                                        <th style="visibility:hidden"></th>
-                                        <th style="visibility:hidden"></th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">
-
-                                        </th>
-                                        <th>
-                                            @*@Html.DisplayNameFor(model => model.StoreName)*@
-                                            Ship To
-                                        </th>
-                                        <th>
-                                            Start Date
-                                        </th>
-                                        <th>Cancel Date</th>
-                                        <th>PO#</th>
-                                        <th>PT#</th>
-                                        <th>
-                                            Pcs
-                                            @*@Html.DisplayNameFor(model => model.Pieces)*@
-                                        </th>
-                                        <th>
-                                            Lbs@*@Html.DisplayNameFor(model => model.Weight)*@
-                                        </th>
-                                        <th>
-                                            Ctns.
-                                            @*@Html.DisplayNameFor(model => model.BoxesNumber)*@
-                                        </th>
-                                        <th>
-                                            Cubic
-                                            @*@Html.DisplayNameFor(model => model.Volume)*@
-                                        </th>
-                                        <th>
-                                            Ctn Size
-                                            @*@Html.DisplayNameFor(model => model.BoxSize)*@
-                                        </th>
-                                        <th>
-                                            Created
-                                            @*@Html.DisplayNameFor(model => model.EstimatedShippingDate)*@
-                                        </th>
-                                        <th style="visibility:hidden"></th>
-                                        <th style="visibility:hidden"></th>
-                                        <th style="visibility:hidden"></th>
-                                        <th>Notes</th>
-                                        <th>Conf #</th>
-                                        <th style="visibility:hidden"></th>
-                                        <th style="visibility:hidden"></th>
-                                        <th style="visibility:hidden"></th>
-                                        <th style="visibility:hidden"></th>
-                                        <th style="visibility:hidden"></th>
-                                        <th>Shipping</th>
-
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    @foreach (var item in Model.OrderAppointments)
-            {
-                                        <tr class="info">
-                                            <td></td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.StoreName)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.StartDate)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.EndDate)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.PurchaseOrderId)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.PickTicketId)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Pieces)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Weight)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.BoxesNumber)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Volume)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.BoxSize)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.EstimatedShippingDate)
-                                            </td>
-                                            <td style="visibility:hidden">
-                                                @Html.DisplayFor(modelItem => item.PtBulk)
-                                            </td>
-                                            <td style="visibility:hidden">
-                                                @Html.DisplayFor(modelItem => item.CustomerId)
-                                            </td>
-                                            <td style="visibility:hidden">
-                                                @Html.DisplayFor(modelItem => item.DivisionName)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Notes)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.ConfirmationNumber)
-                                            </td>
-                                            <td style="visibility:hidden">
-                                                @Html.DisplayFor(modelItem => item.DivisionId)
-                                            </td>
-                                            <td style="visibility:hidden">
-                                                @Html.DisplayFor(modelItem => item.BillOfLading)
-                                            </td>
-                                            <td style="visibility:hidden">
-                                                @Html.DisplayFor(modelItem => item.DeliveryTypeId)
-                                            </td>
-                                            <td style="visibility:hidden">
-                                                @Html.DisplayFor(modelItem => item.ScacCode)
-                                            </td>
-                                            <td style="visibility:hidden">
-                                                @Html.DisplayFor(modelItem => item.ShipFor)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Shipping)
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-
-                            </table>
-                        </div>
-                    </div>
->                    
-                </div>
+                @*@{ Html.RenderPartial("_AppointmentList", Model.Appointments); }*@
+                @Html.Action("GetOrdersForAppointment", Model)
             </div>
 
         </div>
@@ -471,7 +294,7 @@
         </div>
     </div>
 </div>
-
+<div id="loading"></div>
 
 @Scripts.Render("~/bundles/datetimepicker")
 @Scripts.Render("~/bundles/dataTables")
@@ -481,7 +304,12 @@
 <script type="text/javascript">
 
     var editor;
+
+    
     $("#selectedPanel").hide();
+
+    
+
     $(document).ready(function () {
         (function (seconds) {
             var refresh,
@@ -498,6 +326,16 @@
 
         }(300));
 
+
+
+        $(document).ajaxStop(function () {
+            $('#loading2').hide();
+        });
+
+        $(document).ajaxStart(function () {
+            $('#loading2').show();
+        });
+
       
         $("#ShippingCompanyId").select2();
         $("#SelectedClientId").select2();
@@ -509,210 +347,212 @@
         //var tableSelectedOrders = $("tableSelectedOrders").DataTable({
         //});
 
-        $("#tableSelectedOrders").DataTable({
-            dom: 'Bfrtip',
-            responsive: true,
-            columns: [
-                {
-                    data: 'ShipTo'
-                }
-                ,
-                {
-                    data: 'StartDate'
-                }
-                ,
-                {
-                    data: 'EndDate'
-                }
-                ,
-                {
-                    data: 'PurchaseOrderId'
-                }
-                ,
-                {
-                    data: 'PickTicketId'
-                }
-                ,
-                {
-                    data: 'Pieces'
-                }
-                ,
-                {
-                    data: 'Weigth'
-                }
-                ,
-                {
-                    data: 'BoxesCount'
-                }
-                ,
-                {
-                    data : 'Size'
-                }
-                ,
-                {
-                    data: 'BoxSize'
-                }
-                ,
-                {
-                    data: 'BillOfLading', visible:false
-                }
-                ,
-                {
-                    data: 'DeliveryTypeId', visible:false
-                }
-                ,
-                {
-                    data: 'ScacCode', visible:false
-                }
-                ,
-                {
-                    data: 'ShipFor', visible:false
-                }
-            ]
+        //$("#tableSelectedOrders").DataTable({
+        //    dom: 'Bfrtip',
+        //    responsive: true,
+        //    columns: [
+        //        {
+        //            data: 'ShipTo'
+        //        }
+        //        ,
+        //        {
+        //            data: 'StartDate'
+        //        }
+        //        ,
+        //        {
+        //            data: 'EndDate'
+        //        }
+        //        ,
+        //        {
+        //            data: 'PurchaseOrderId'
+        //        }
+        //        ,
+        //        {
+        //            data: 'PickTicketId'
+        //        }
+        //        ,
+        //        {
+        //            data: 'Pieces'
+        //        }
+        //        ,
+        //        {
+        //            data: 'Weigth'
+        //        }
+        //        ,
+        //        {
+        //            data: 'BoxesCount'
+        //        }
+        //        ,
+        //        {
+        //            data : 'Size'
+        //        }
+        //        ,
+        //        {
+        //            data: 'BoxSize'
+        //        }
+        //        ,
+        //        {
+        //            data: 'BillOfLading', visible:false
+        //        }
+        //        ,
+        //        {
+        //            data: 'DeliveryTypeId', visible:false
+        //        }
+        //        ,
+        //        {
+        //            data: 'ScacCode', visible:false
+        //        }
+        //        ,
+        //        {
+        //            data: 'ShipFor', visible:false
+        //        }
+        //    ]
             
-        });
+        //});
 
-        $("#tableAppointments").DataTable({
-            dom: 'Bfrtip',
-            responsive: true,
-            "displayLength": 15,
-            "deferRender": true,
-            processing: true,
-            columnDefs: [{
-                orderable: false,
-                className: 'select-checkbox',
-                targets: 0
-            }],
-            oLanguage: {
-                sProcessing: "<img src='8.gif'>"
-            },
-            columns: [
-                {
-                    orderable: false
-                },
-                {
-                    data: 'StoreName'
-                }
-                ,
-                {
+        //$("#tableAppointments").DataTable({
+        //    dom: 'Bfrtip',
+        //    responsive: true,
+        //    "displayLength": 15,
+        //    "deferRender": true,
+        //    processing: true,
+        //    columnDefs: [{
+        //        orderable: false,
+        //        className: 'select-checkbox',
+        //        targets: 0
+        //    }],
+        //    oLanguage: {
+        //        sProcessing: "<img src='8.gif'>"
+        //    },
+        //    columns: [
+        //        {
+        //            orderable: false
+        //        },
+        //        {
+        //            data: 'StoreName'
+        //        }
+        //        ,
+        //        {
 
-                }
-                ,
-                {
+        //        }
+        //        ,
+        //        {
 
-                }
-                ,
-                {
-                    data: 'PurchaseOrderId'
-                }
-                ,
-                {
-                    data: 'PickTicketId'
-                }
-                ,
-                {
+        //        }
+        //        ,
+        //        {
+        //            data: 'PurchaseOrderId'
+        //        }
+        //        ,
+        //        {
+        //            data: 'PickTicketId'
+        //        }
+        //        ,
+        //        {
 
-                }
-                ,
-                {
+        //        }
+        //        ,
+        //        {
 
-                }
-                ,
-                {
+        //        }
+        //        ,
+        //        {
 
-                }
-                ,
-                {
+        //        }
+        //        ,
+        //        {
 
-                }
-                ,
-                {
+        //        }
+        //        ,
+        //        {
 
-                }
-                ,
-                {
+        //        }
+        //        ,
+        //        {
 
-                }
-                ,
-                {
-                    visible: false
-                }
-                ,
-                {
-                    visible: false
-                }
-                ,
-                {
-                    visible: false
-                }
-                ,
-                {
-                    data: 'Notes', className: 'editable'
-                }
-                ,
-                {
-                    data: 'ConfirmationNumber'
-                }
-                ,
-                {
-                    data: 'DivisionId', visible :false
-                }
-                ,
-                {
-                    data: 'BillOfLading', visible: false
-                }
-                ,
-                {
-                    data : 'DeliveryTypeId', visible: false
-                }
-                ,
-                {
-                    data : 'ScacCode', visible: false
-                }
-                ,
-                {
-                    data : 'ShipFor', visible: false
-                }
-                ,
-                {
-                    data : 'Shipping'
-                }
-
-
+        //        }
+        //        ,
+        //        {
+        //            visible: false
+        //        }
+        //        ,
+        //        {
+        //            visible: false
+        //        }
+        //        ,
+        //        {
+        //            visible: false
+        //        }
+        //        ,
+        //        {
+        //            data: 'Notes', className: 'editable'
+        //        }
+        //        ,
+        //        {
+        //            data: 'ConfirmationNumber'
+        //        }
+        //        ,
+        //        {
+        //            data: 'DivisionId', visible :false
+        //        }
+        //        ,
+        //        {
+        //            data: 'BillOfLading', visible: false
+        //        }
+        //        ,
+        //        {
+        //            data : 'DeliveryTypeId', visible: false
+        //        }
+        //        ,
+        //        {
+        //            data : 'ScacCode', visible: false
+        //        }
+        //        ,
+        //        {
+        //            data : 'ShipFor', visible: false
+        //        }
+        //        ,
+        //        {
+        //            data : 'Shipping'
+        //        }
 
 
-                ]
-                ,
-                select: {
-                    style: 'multi',
-                },
-                "drawCallback": function (settings) {
-                    var api = this.api();
-                    var rows = api.rows({ page: 'current' }).nodes();
-                    var last = null;
 
-                    api.column(14, { page: 'current' }).data().each(function (group, i) {
-                        val = api.row(api.row($(rows).eq(i)).index()).data();
-                        var client = val[13];
-                        if (last !== group) {
-                            api.column
-                            $(rows).eq(i).before(
-                                '<tr class="group"><td colspan="15">' + client + ' - ' + group + '</td></tr>'
-                            );
 
-                            last = group;
-                        }
+        //        ]
+        //        ,
+        //        select: {
+        //            style: 'multi',
+        //        },
+        //        "drawCallback": function (settings) {
+        //            var api = this.api();
+        //            var rows = api.rows({ page: 'current' }).nodes();
+        //            var last = null;
 
-                    });
-                },
-                "createdRow": function (row, data, dataIndex) {
-                    if (data['ConfirmationNumber'].length > 0) {
-                        $(row).css("background-color", "#EBE566");
-                    }
-                }
+        //            api.column(14, { page: 'current' }).data().each(function (group, i) {
+        //                val = api.row(api.row($(rows).eq(i)).index()).data();
+        //                var client = val[13];
+        //                if (last !== group) {
+        //                    api.column
+        //                    $(rows).eq(i).before(
+        //                        '<tr class="group"><td colspan="15">' + client + ' - ' + group + '</td></tr>'
+        //                    );
 
-        });
+        //                    last = group;
+        //                }
 
+        //            });
+        //        },
+        //        "createdRow": function (row, data, dataIndex) {
+        //            if (data['ConfirmationNumber'].length > 0) {
+        //                $(row).css("background-color", "#EBE566");
+        //            }
+        //        }
+
+        //});
+
+
+        /// This was already commented out
         //var tableorders = $("#tableAppointments").DataTable();
 
         //tableorders.on('select', function (e, dt, type, indexes) {
@@ -725,28 +565,28 @@
         //        .draw();
         //});
 
-            $('#tableAppointments tfoot th').each(function () {
+            //$('#tableAppointments tfoot th').each(function () {
 
-                var title = $(this).text();
-                if (title == "PO#" || title == "PT#") {
+            //    var title = $(this).text();
+            //    if (title == "PO#" || title == "PT#") {
 
 
-                    $(this).html('<input type="text" style="width:80px" placeholder="Search ' + title + '" />');
-                }
-            });
-            $('#tableAppointments tbody').on('click', 'tr.group', function () {
-                var currentOrder = table.order()[0];
-                if (currentOrder[0] === 2 && currentOrder[1] === 'asc') {
-                    table.order([14, 'desc']).draw();
-                }
-                else {
-                    table.order([14, 'asc']).draw();
-                }
-            });
+            //        $(this).html('<input type="text" style="width:80px" placeholder="Search ' + title + '" />');
+            //    }
+            //});
+            //$('#tableAppointments tbody').on('click', 'tr.group', function () {
+            //    var currentOrder = table.order()[0];
+            //    if (currentOrder[0] === 2 && currentOrder[1] === 'asc') {
+            //        table.order([14, 'desc']).draw();
+            //    }
+            //    else {
+            //        table.order([14, 'asc']).draw();
+            //    }
+            //});
 
 
             // DataTable
-            var table = $("#tableAppointments").DataTable();
+            @*var table = $("#tableAppointments").DataTable();
 
             // Apply the search
             table.columns().every(function () {
@@ -839,37 +679,37 @@
 
                     }
                 });
-            });
+            });*@
             //table.on('search.dt', function () {
             //    console.log(table.page.info());
             //});
 
-        $('#tableAppointments tbody tr').on('click', function (e) {
-            var $row = $(this);
+        //$('#tableAppointments tbody tr').on('click', function (e) {
+        //    var $row = $(this);
 
-            if ($row.hasClass('selected')) {
-                $row.removeClass('selected');
-                e.stopPropagation();
-                var existingRow = table
-                    .rows(function (idx, info, node) {
-                        return info["PurchaseOrderId"] == $row[0].cells[4].innerText && info["PickTicketId"] == $row[0].cells[5].innerText  ?
-                        true : false;
-                    });
-                if (existingRow != null) {
-                    console.log('true');
-                    table.rows(existingRow).deselect();
-                }
+        //    if ($row.hasClass('selected')) {
+        //        $row.removeClass('selected');
+        //        e.stopPropagation();
+        //        var existingRow = table
+        //            .rows(function (idx, info, node) {
+        //                return info["PurchaseOrderId"] == $row[0].cells[4].innerText && info["PickTicketId"] == $row[0].cells[5].innerText  ?
+        //                true : false;
+        //            });
+        //        if (existingRow != null) {
+        //            console.log('true');
+        //            table.rows(existingRow).deselect();
+        //        }
 
-            } else {
-                $row.addClass('selected');
-            }
+        //    } else {
+        //        $row.addClass('selected');
+        //    }
 
-        });
+        //});
 
 
-            var tableSelected = $("#tableSelectedOrders").DataTable();
+           // var tableSelected = $("#tableSelectedOrders").DataTable();
 
-            table.on('select', function (e, dt, type, indexes) {
+            @*table.on('select', function (e, dt, type, indexes) {
                 if (type == "row") {
                    $("#selectedPanel").show(100);
                    var data = table.rows(indexes).data();
@@ -971,29 +811,29 @@
                         });
 
                 }
-            });
-            table.on('deselect', function (e, dt, type, indexes) {
-                if (type === 'row') {
-                    var unselected = table.rows(indexes).data();
+            });*@
+            //table.on('deselect', function (e, dt, type, indexes) {
+            //    if (type === 'row') {
+            //        var unselected = table.rows(indexes).data();
 
-                    var existingRow = tableSelected
-                            .rows(function (idx, data, node) {
-                                return  data["PurchaseOrderId"] == unselected[0]["PurchaseOrderId"] && data["PickTicketId"] == unselected[0]["PickTicketId"] ?
-                                true : false;
-                            });
-                    if (existingRow) {
-                        tableSelected.row(existingRow).remove().draw();
-                        if (tableSelected.data().count() == 0) {
-                            $("#selectedPanel").hide(500);
-                        }
+            //        var existingRow = tableSelected
+            //                .rows(function (idx, data, node) {
+            //                    return  data["PurchaseOrderId"] == unselected[0]["PurchaseOrderId"] && data["PickTicketId"] == unselected[0]["PickTicketId"] ?
+            //                    true : false;
+            //                });
+            //        if (existingRow) {
+            //            tableSelected.row(existingRow).remove().draw();
+            //            if (tableSelected.data().count() == 0) {
+            //                $("#selectedPanel").hide(500);
+            //            }
 
-                    }
+            //        }
 
 
-                }
-            });
+            //    }
+            //});
 
-            function myCallbackFunction(updatedCell, updatedRow, oldValue) {
+            @*function myCallbackFunction(updatedCell, updatedRow, oldValue) {
                 console.log("The new value for the cell is: " + updatedCell.data());
                 console.log("The values for each cell in that row are: " + updatedRow.data());
 
@@ -1019,20 +859,20 @@
                     }
                 });
 
-            }
+            }*@
 
-            table.MakeCellsEditable({
-                "onUpdate": myCallbackFunction,
-                "columns": [15],
-                "confirmationButton" : true,
-                "inputTypes": [
-                    {
-                        "column":0,
-                        "type":"text",
-                        "options":null
-                    }]
+            //table.MakeCellsEditable({
+            //    "onUpdate": myCallbackFunction,
+            //    "columns": [15],
+            //    "confirmationButton" : true,
+            //    "inputTypes": [
+            //        {
+            //            "column":0,
+            //            "type":"text",
+            //            "options":null
+            //        }]
 
-            });
+            //});
 
             $('.datetimepicker-minutes .switch').attr('style', 'visibility:hidden;');
             $('.datetimepicker-hours .switch').attr('style', 'visibility:hidden;');
@@ -1395,6 +1235,7 @@
                     data:  JSON.stringify(model),
                     dataType: "json",
                     success: function (result) {
+                        $("#selectedPanel").hide();
                         toastr.info('Appointment set successfully');
                         $("#btnRefresh").trigger("click");
                         //window.location.href = "List";

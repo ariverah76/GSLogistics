@@ -1,21 +1,17 @@
-﻿using GSLogistics.Entities.Abstract;
+﻿using GSLogistics.Logic.Interface;
+using GSLogistics.Model.Query;
+using GSLogistics.UserSecurity;
 using GSLogistics.Website.Admin.Models;
 using GSLogistics.Website.Admin.Models.OrderAppointments;
+using GSLogistics.Website.Common;
 using GSLogistics.Website.Common.Controllers;
 using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Resources;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using GSLogistics.Website.Admin.Resources;
-using GSLogistics.Logic.Interface;
-using GSLogistics.Model.Query;
-using System.Text;
-using GSLogistics.UserSecurity;
-using GSLogistics.Website.Common;
 
 namespace GSLogistics.Website.Admin.Controllers
 {
@@ -36,6 +32,34 @@ namespace GSLogistics.Website.Admin.Controllers
         //{
 
         //}
+
+
+        public PartialViewResult GetOrdersForAppointment(OrderAppointmentsIndex_ViewModel model)
+        {
+            List<Models.OrderAppointment> orders = new List<Models.OrderAppointment>();
+
+            using (var orderLogic = Kernel.Get<IOrderAppointmentLogic>())
+            using (var divLogic = orderLogic.GetLogic<IDivisionLogic>())
+            {
+
+                var query = new OrderAppointmentQuery()
+                {
+                    CancelDateEndDate = model.CancelDateEndDate,
+                    CancelDateStartDate = model.CancelDateStartDate,
+                    CustomerId = model.SelectedClientId,
+                    DivisionId = model.SelectedDivisionId,
+                    ShipFor = model.ShipFor,
+                    Status = 0
+                };
+
+                orders = this.GetOrders(orderLogic, query);
+
+                model.OrderAppointments = orders;
+
+            }
+
+            return PartialView("_OrderList", orders);
+        }
 
         [HttpGet]
         [GSDenyAttribute(Roles = "Clients")]
@@ -79,9 +103,10 @@ namespace GSLogistics.Website.Admin.Controllers
             ViewBag.AppointmentStatus = new SelectList(status, "Key", "Value", null);
             using (var orderLogic = Kernel.Get<IOrderAppointmentLogic>())
             using (var divLogic = orderLogic.GetLogic<IDivisionLogic>())
+            using (var custLogic = Kernel.Get<ICustomerLogic>())
             {
 
-                var query =  new OrderAppointmentQuery()
+                var query = new OrderAppointmentQuery()
                 {
                     CancelDateEndDate = model.CancelDateEndDate,
                     CancelDateStartDate = model.CancelDateStartDate,
@@ -91,7 +116,7 @@ namespace GSLogistics.Website.Admin.Controllers
                     Status = 0
                 };
 
-                orders = await this.GetOrders(orderLogic, query);
+                //orders = await this.GetOrders(orderLogic, query);
 
                 //var ordersforAppt = await orderLogic.ToListAsync(
                 //    new OrderAppointmentQuery()
@@ -117,16 +142,16 @@ namespace GSLogistics.Website.Admin.Controllers
 
                 //}
 
-                model.OrderAppointments = orders;
+                // model.OrderAppointments = orders;
 
-                var clients = orders.Select(x => new { Id = x.CustomerId, Name = x.CustomerName }).ToList();
+                var clients = await custLogic.ToListAsync();// orders.Select(x => new { Id = x.CustomerId, Name = x.CustomerName }).ToList();
 
                 Dictionary<string, string> result = new Dictionary<string, string>();
                 foreach (var c in clients)
                 {
-                    if (!result.ContainsKey(c.Id.ToString()))
+                    if (!result.ContainsKey(c.CustomerId.ToString()))
                     {
-                        result.Add(c.Id.ToString(), c.Name);
+                        result.Add(c.CustomerId.ToString(), c.CompanyName);
                     }
                 }
                 ViewBag.Customers = new SelectList(result, "Key", "Value", null);
@@ -149,11 +174,11 @@ namespace GSLogistics.Website.Admin.Controllers
             return View("List", model);
         }
 
-        private async Task<List<OrderAppointment>> GetOrders(IOrderAppointmentLogic orderLogic, OrderAppointmentQuery query)
+        private List<OrderAppointment> GetOrders(IOrderAppointmentLogic orderLogic, OrderAppointmentQuery query)
         {
             List<Models.OrderAppointment> orders = new List<Models.OrderAppointment>();
 
-            var ordersforAppt = await orderLogic.ToListAsync(query);
+            var ordersforAppt =  orderLogic.ToList(query);
 
             foreach (var o in ordersforAppt)
             {
@@ -192,7 +217,7 @@ namespace GSLogistics.Website.Admin.Controllers
             using (var divLogic = orderLogic.GetLogic<IDivisionLogic>())
             {
 
-                var appointments = await this.GetOrders(orderLogic, query);
+                var appointments =  this.GetOrders(orderLogic, query);
 
 
 
@@ -705,6 +730,70 @@ namespace GSLogistics.Website.Admin.Controllers
             return appointments;
         }
 
+
+        [HttpPost]
+        public async Task<ActionResult> RenderPOD(string data)
+        {
+            string bol = data.Trim();
+            string filePath = string.Empty;
+            string path;
+            var mockpath = "\\\\Au-ag1\\Shipping\\E-LO\\609132017110703249.pdf";
+            
+
+           // Uri uriAddress1 = new Uri(mockpath);
+
+            //string podPath = $"{uriAddress1.Segments[2]}{uriAddress1.Segments[3]}";
+
+            
+            //string path = Server.MapPath($"~/podfiles/{podPath}");
+            //var bytes  = System.IO.File.ReadAllBytes(path);
+           // var fName = string.Format("ProofOfDelivery_BillOfLading_{0}", data);
+            //Session[fName] = bytes;
+
+            //return Json(new { success = true, fileName = fName, mimeType = "application/pdf", format = "pdf", uri = uriAddress1 }, JsonRequestBehavior.AllowGet);
+
+            using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
+            {
+                var orders = await oLogic.ToListAsync(new OrderAppointmentQuery() { BillOfLading = bol });
+
+                if (orders != null && orders.Any())
+                {
+                    var order = orders.FirstOrDefault(x => !string.IsNullOrEmpty(x.PathPOD.Trim()));
+
+                    if (order != null)
+                    {
+                        Uri uriAddress = new Uri(mockpath);
+
+                        string podPath = $"{uriAddress.Segments[2]}{uriAddress.Segments[3]}";
+
+                         path = Server.MapPath($"~/podfiles/{podPath}");// order.PathPOD;
+
+                       
+                       // filePath = path;
+
+                        if (System.IO.File.Exists(path))
+                        {
+                            var byteResult = System.IO.File.ReadAllBytes(path);
+
+                            var fName = string.Format("ProofOfDelivery_BillOfLading_{0}", data);
+                            Session[fName] = byteResult;
+
+                            return Json(new { success = true, fileName = fName, mimeType = "application/pdf", format = "pdf" }, JsonRequestBehavior.AllowGet);
+
+                        }
+                        else
+                        {
+                            return Json(new { success = false, path = path }, JsonRequestBehavior.AllowGet);
+                        }
+
+                    }
+                }
+
+               // var filePath = Server.MapPath("/PodFiles");
+
+                return Json(new { success = false}, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         public async Task<ActionResult> GenerateLogReport(LogReportIndex_ViewModel model)
         {

@@ -89,29 +89,14 @@ namespace GSLogistics.Entities.Concrete
                 CustomerName = x.Customer != null ? x.Customer.CompanyName : string.Empty,
                 DivisionName = x.Division != null ? x.Division.Description : string.Empty,
                 DeliveryTypeId = string.IsNullOrEmpty(x.Delivery) ? default(short?) : x.Delivery == "P" ? (short)1 : (short)2,
-                Shipping  = GetShippingDescription(x.Shipping)
+                Shipping  = GetShippingDescription(x.Shipping),
+                PathPOD = x.PathPOD
             });
 
             return result.ToList();
 
         }
 
-        private string GetShippingDescription(string key)
-        {
-            switch(key.ToUpper())
-            {
-                case "":
-                    return "No pallet assigned";
-                case "C":
-                    return "Shipping Complete";
-                case "P":
-                    return "Shipping Partial";
-                case "N":
-                    return "Pallet assigned but no work in shipping";
-                default:
-                    return string.Empty;
-            }
-        }
         public List<Model.OrderAppointment> ToList(OrderAppointmentQuery query)
         {
             var l =  OrderAppointment_BuildQuery(query)
@@ -139,13 +124,67 @@ namespace GSLogistics.Entities.Concrete
                 StartDate = x.StartDate,
                 Status = x.Status,
                 Weigth = x.Weigth,
-                CustomerName = x.Customer !=null ? x.Customer.CompanyName : "",
-                DivisionName = x.Division !=null ? x.Division.Description : ""
+                CustomerName = x.Customer != null ? x.Customer.CompanyName : string.Empty,
+                DivisionName = x.Division != null ? x.Division.Description : string.Empty,
+                DeliveryTypeId = string.IsNullOrEmpty(x.Delivery) ? default(short?) : x.Delivery == "P" ? (short)1 : (short)2,
+                Shipping = GetShippingDescription(x.Shipping),
+                PathPOD = x.PathPOD
             });
 
             return result.ToList();
 
         }
+
+        private string GetShippingDescription(string key)
+        {
+            switch(key.ToUpper())
+            {
+                case "":
+                    return "No pallet assigned";
+                case "C":
+                    return "Shipping Complete";
+                case "P":
+                    return "Shipping Partial";
+                case "N":
+                    return "Pallet assigned but no work in shipping";
+                default:
+                    return string.Empty;
+            }
+        }
+        //public List<Model.OrderAppointment> ToList(OrderAppointmentQuery query)
+        //{
+        //    var l =  OrderAppointment_BuildQuery(query)
+        //        .AsNoTracking()
+        //        .ToList();
+
+        //    var result = l.Select(x => new Model.OrderAppointment
+        //    {
+        //        BillOfLading = x.BillOfLading,
+        //        BoxesCount = x.BoxesCount,
+        //        BoxSize = x.BoxSize,
+        //        ConfirmationNumber = x.ConfirmationNumber,
+        //        CustomerId = x.CustomerId,
+        //        DivisionId = x.DivisionId,
+        //        EndDate = x.EndDate,
+        //        Notes = x.Notes,
+        //        PickTicketId = x.PickTicketId,
+        //        Pieces = x.Pieces,
+        //        PtBulk = x.PtBulk,
+        //        PurchaseOrderId = x.PurchaseOrderId,
+        //        ScacCode = x.ScacCode,
+        //        ShipFor = x.ShipFor,
+        //        ShipTo = x.ShipTo,
+        //        Size = x.Size,
+        //        StartDate = x.StartDate,
+        //        Status = x.Status,
+        //        Weigth = x.Weigth,
+        //        CustomerName = x.Customer !=null ? x.Customer.CompanyName : "",
+        //        DivisionName = x.Division !=null ? x.Division.Description : ""
+        //    });
+
+        //    return result.ToList();
+
+        //}
 
         public async Task<int> Update(Model.OrderAppointment orderAppointment)
         {

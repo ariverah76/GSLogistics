@@ -2,7 +2,7 @@
 @using GSLogistics.Website.Admin.Models
 @model List<Appointment>
 
-<table class="table display-compact table-striped table-bordered" id="tableLogReport" width="100">
+<table class="table display-compact table-striped table-bordered" id="tableLogReport" style="width:100%">
     <thead>
         <tr>
             <th>
@@ -184,7 +184,7 @@
                         val = api.row(api.row($(rows).eq(i)).index()).data();
                         var bol = val['AppointmentNo'];
                         $(rows).eq(i).before(
-                            '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(' + group + ')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
+                            '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
                         );
                        // $(rows).eq(i).after(
                        //    '<tr class="footer"><td> Totals:</td></tr>'

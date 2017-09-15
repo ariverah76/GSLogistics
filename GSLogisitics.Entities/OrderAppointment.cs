@@ -80,6 +80,9 @@ namespace GSLogistics.Entities
         [Column("Shipping", Order = 23)]
         public string Shipping { get; set; }
 
+        [Column("pathPOD", Order = 24)]
+        public string PathPOD { get; set; }
+
 
 
     }

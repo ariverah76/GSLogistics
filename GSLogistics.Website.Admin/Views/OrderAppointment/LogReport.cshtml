@@ -14,6 +14,12 @@
     var divisions = this.ViewBag.Divisions as SelectList;
 }
 
+<style type="text/css">
+    div.container {
+        width: 80%;
+    }
+</style>
+
 <div class="panel panel-title">
     <h2>Log Report</h2>
 </div>
@@ -36,11 +42,11 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        @*<li>@Ajax.ActionLink("Pdf","DownloadLogReport", "OrderAppointment", new {selectedDay = Model.SelectedDay, customerId = Model.SelectedClientId, divisionId = Model.SelectedDivisionId, deliveryTypeId = Model.DeliveryTypeId, format = "pdf" }, new AjaxOptions { HttpMethod = "POST"}, new { @class = "dropdown-item"  })</li>*@ 
+                        @*<li>@Ajax.ActionLink("Pdf","DownloadLogReport", "OrderAppointment", new {selectedDay = Model.SelectedDay, customerId = Model.SelectedClientId, divisionId = Model.SelectedDivisionId, deliveryTypeId = Model.DeliveryTypeId, format = "pdf" }, new AjaxOptions { HttpMethod = "POST"}, new { @class = "dropdown-item"  })</li>*@
                         @*<li>@Html.ActionLink("Excel", "TestDownload", "OrderAppointment", new { @class = "dropdown-item", @id = "reportExcel" })</li>*@
                         <li><a href="#" class="dropdown-item" id="btnPdf">PDF</a></li>
                         <li><a href="#" class="dropdown-item" id="btnExcel">Excel</a></li>
-                        
+
                     </ul>
                 </div>
 
@@ -49,7 +55,7 @@
             <div class="panel panel-default">
                  <div class="panel-heading">Search</div>
                 <div class="panel-body">
-                   
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -84,7 +90,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
@@ -130,9 +136,9 @@
             //};
             var model = getDataForReport();
             model.ReportFormat = "excel";
-           
+
             postReport(model);
-            
+
 
         });
 
@@ -178,6 +184,8 @@
             });
         }
 
+        
+
         $("#SelectedClientId").change(function () {
             var selectedItem = $(this).val();
             var ddDivisions = $("#SelectedDivisionId");
@@ -192,27 +200,49 @@
                         ddDivisions.append($('<option></option>').val(option.Id).html(option.Name));
 
                     });
-                    
-                   
+
+
                 }
                 ,  error: function (xhr, ajaxOptions, thrownError) {
                     toastr.Error('Failed to get Divisions');
                 }
             });
-                
+
 
         });
 
-        
+
 
 
     });
 
-    function donwloadPOD(data) {
-        alert('this will render the pdf on the browser once we have everything in place');
+    function donwloadPOD(bol) {
+        toastr.info("Downloading Document..." + bol);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("RenderPOD", "OrderAppointment")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ "data": bol }),
+            dataType: "text",
+
+        }).done(function (returnValue) {
+            console.log(returnValue);
+            var obj = JSON.parse(returnValue);
+            if (obj.success == true) {
+                window.location.href = obj.uri;
+                //window.location.href = "/OrderAppointment/DownloadReport?reportName=" + obj.fileName + "&format=" + obj.mimeType + "&fileExtension=" + obj.format
+                toastr.success("Document downloaded!");
+            }
+            else {
+                toastr.error("There was an error processing your request. Try later.");
+            }
+        }).fail(function () {
+            toastr.error("Error downloading the document");
+        });
+
     }
 
-   
+
 </script>
 
 @Styles.Render("~/Content/datetimepicker")
