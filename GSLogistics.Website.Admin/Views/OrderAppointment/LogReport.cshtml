@@ -229,8 +229,7 @@
             console.log(returnValue);
             var obj = JSON.parse(returnValue);
             if (obj.success == true) {
-                window.location.href = obj.uri;
-                //window.location.href = "/OrderAppointment/DownloadReport?reportName=" + obj.fileName + "&format=" + obj.mimeType + "&fileExtension=" + obj.format
+                window.location.href = "/OrderAppointment/DownloadReport?reportName=" + obj.fileName + "&format=" + obj.mimeType + "&fileExtension=" + obj.format
                 toastr.success("Document downloaded!");
             }
             else {

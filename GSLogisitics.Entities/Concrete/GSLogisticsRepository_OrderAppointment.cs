@@ -7,6 +7,7 @@ using GSLogistics.Model;
 using System.Collections;
 using GSLogistics.Model.Query;
 using System.Data.Entity;
+using System.Transactions;
 
 namespace GSLogistics.Entities.Concrete
 {
@@ -61,9 +62,22 @@ namespace GSLogistics.Entities.Concrete
         }
         public async Task<List<Model.OrderAppointment>> ToListAsync(OrderAppointmentQuery query)
         {
-            var l = await OrderAppointment_BuildQuery(query)
-                .AsNoTracking()
-                .ToListAsync();
+            List<Entities.OrderAppointment> l = new List<OrderAppointment>();
+
+            var transactionOptions = new System.Transactions.TransactionOptions();
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted;
+
+            using (var t = new TransactionScope(TransactionScopeOption.Required, transactionOptions, TransactionScopeAsyncFlowOption.Enabled))
+            {
+                l = await OrderAppointment_BuildQuery(query)
+               .AsNoTracking()
+               .ToListAsync();
+
+                t.Complete();
+                t.Dispose();
+            }
+
+           
 
             var result = l.Select(x => new Model.OrderAppointment
             {
@@ -99,9 +113,21 @@ namespace GSLogistics.Entities.Concrete
 
         public List<Model.OrderAppointment> ToList(OrderAppointmentQuery query)
         {
-            var l =  OrderAppointment_BuildQuery(query)
+            List<Entities.OrderAppointment> l = new List<OrderAppointment>();
+            var transactionOptions = new System.Transactions.TransactionOptions();
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted;
+
+            using (var t = new TransactionScope(TransactionScopeOption.Required, transactionOptions))
+            {
+                 l = OrderAppointment_BuildQuery(query)
                 .AsNoTracking()
                 .ToList();
+
+                t.Complete();
+                t.Dispose();
+            }
+
+                
 
             var result = l.Select(x => new Model.OrderAppointment
             {
