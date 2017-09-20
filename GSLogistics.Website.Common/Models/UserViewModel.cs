@@ -1,7 +1,9 @@
-﻿using GSLogistics.Website.Models;
+﻿using GSLogistics.Model;
+using GSLogistics.Website.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace GSLogistics.Website.Common.Models
 {
@@ -27,5 +29,13 @@ namespace GSLogistics.Website.Common.Models
         public string RoleName { get; set; }
         public string[] IdsToAdd { get; set; }
         public string[] IdsToDelete { get; set; }
+    }
+
+    public class ClientRoleEditModel
+    {
+        public string UserId { get; set; }
+        public IEnumerable<SelectListItem> Customers { get; set; }
+        public IEnumerable<string> SelectedCustomers { get; set; }
+        public IEnumerable<Division> Divisions { get; set; }
     }
 }

@@ -1,0 +1,21 @@
+﻿
+@model  GSLogistics.Website.Common.Models.ClientRoleEditModel
+    
+
+@{ ViewBag.Title = "Link Customers";}
+<h2>Link To Customer Role</h2>
+
+@Html.ValidationSummary(false)
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(m => m.UserId)
+    <div class="form-group">
+        <label>Customers</label>
+
+    </div>
+    <div class="form-group">
+        @Html.ListBoxFor(m => m.SelectedCustomers, Model.Customers, new { size = 10 })
+    </div>
+    <button type="submit" class="btn btn-primary">Assign</button>
+    @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+}

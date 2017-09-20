@@ -36,5 +36,48 @@ namespace GSLogistics.Entities.Concrete
 
             return null;
         }
+
+        public async Task<IEnumerable<string>> GetCustomersForUser(string userId)
+        {
+            var user = await context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
+
+            if (user != null)
+            {
+                var query = context.UserInfos
+                  .Where(x => x.UserName == user.UserName);
+
+                var result = await query.FirstOrDefaultAsync();
+
+                return result.UserCustomers.Select(x => x.CustomerId).ToList();
+            }
+            else
+            {
+                return new List<string>();
+            }
+            
+        }
+
+        public async Task<bool> AssignCustomers(string userId, IList<string> customerIds)
+        {
+            var user = await context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
+
+            var gsUser = await context.UserInfos.Where(x => x.UserName == user.UserName).FirstOrDefaultAsync();
+            var currentCustIds = gsUser.UserCustomers.Select(x => x.CustomerId).ToList();
+            //TODO: filter the ids already assigned
+
+
+            foreach (string custId in customerIds.Where(x=> !currentCustIds.Contains(x)))
+            {
+                var usercust = new UserCustomer();
+                usercust.CustomerId = custId;
+                usercust.UserId = gsUser.UserId;
+
+                gsUser.UserCustomers.Add(usercust);
+
+                await context.SaveChangesAsync();
+            }
+
+            return true;
+        }
     }
 }

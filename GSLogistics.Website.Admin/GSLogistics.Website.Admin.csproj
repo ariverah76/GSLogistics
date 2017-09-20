@@ -679,6 +679,7 @@
     <Content Include="Views\OrderAppointment\_LogReport_AppointmentsPartial.cshtml" />
     <Content Include="Views\Account\Error.cshtml" />
     <Content Include="Views\Shared\_OrderList.cshtml" />
+    <Content Include="Views\RoleAdmin\CustomerRoleEdit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

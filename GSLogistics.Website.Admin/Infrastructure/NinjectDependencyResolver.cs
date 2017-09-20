@@ -44,6 +44,7 @@ namespace GSLogistics.Website.Admin.Infrastructure
             _kernel.Bind<IDivisionLogic>().To<DivisionLogic>();
             _kernel.Bind<ICustomerLogic>().To<CustomerLogic>();
             _kernel.Bind<IAppointmentLogic>().To<AppointmentLogic>();
+            _kernel.Bind<IUserLogic>().To<UserLogic>();
         }
     }
 }

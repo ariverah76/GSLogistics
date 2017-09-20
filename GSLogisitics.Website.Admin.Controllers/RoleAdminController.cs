@@ -1,9 +1,12 @@
-﻿using GSLogistics.Website.Common;
+﻿using GSLogistics.Logic.Interface;
+using GSLogistics.Website.Common;
+using GSLogistics.Website.Common.Controllers;
 using GSLogistics.Website.Common.Models;
 using GSLogistics.Website.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using Ninject;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,8 +18,13 @@ using System.Web.Mvc;
 
 namespace GSLogistics.Website.Admin.Controllers
 {
-    public class RoleAdminController : Controller
+    public class RoleAdminController : BaseController
     {
+        public RoleAdminController(IKernel kernel)
+            :base(kernel)
+        {
+
+        }
 
         public ActionResult Index()
         {
@@ -80,6 +88,51 @@ namespace GSLogistics.Website.Admin.Controllers
             }
         }
 
+        [HttpGet]
+
+        public async Task<ActionResult> EditCustomers(string id)
+        {
+            var model = new ClientRoleEditModel();
+            using (var custLogic = Kernel.Get<ICustomerLogic>())
+            using (var userLogic = Kernel.Get<IUserLogic>())
+            {
+                var clients = await custLogic.ToListAsync();
+
+                Dictionary<string, string> result = new Dictionary<string, string>();
+                foreach (var c in clients.OrderBy(x => x.CompanyName))
+                {
+                    if (!result.ContainsKey(c.CustomerId.ToString()))
+                    {
+                        result.Add(c.CustomerId.ToString(), c.CompanyName);
+                    }
+                }
+
+                model.UserId = id;
+                model.Customers = new SelectList(result, "Key", "Value", null);
+
+                var assignedCustomers = await userLogic.GetCustomersLinkedByUser(id);
+                model.SelectedCustomers = assignedCustomers;
+
+                return View("CustomerRoleEdit", model);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> EditCustomers(ClientRoleEditModel model)
+        {
+            using (var userLogic = Kernel.Get<IUserLogic>())
+            {
+                var result = await userLogic.AssignCustomers(model.UserId, model.SelectedCustomers.ToList());
+
+                if (result)
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
+
+                return View("CustomerRoleEdit", model);
+            }
+
+        }
 
         public async Task<ActionResult> Edit(string id)
         {
