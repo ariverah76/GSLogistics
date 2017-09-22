@@ -28,6 +28,23 @@ namespace GSLogistics.Entities.Concrete
             return returnValue;
         }
 
+        public async Task<List<Model.Division>> GetDivisionsByCustomerIds(string[] customerIds)
+        {
+            List<Model.Division> returnValue = new List<Model.Division>();
+            var query = context.CustomerDivisions.Include("Customer").Where(x => customerIds.Contains(x.CustomerId));
+
+            var result = await query
+                .AsNoTracking()
+                .ToListAsync();
+
+            foreach (var d in result)
+            {
+                returnValue.Add(new Model.Division() { CustomerId = d.CustomerId, DivisionId = d.DivisionId, Name = d.NameId, Description = d.Description , CustomerName = d.Customer.CompanyName});
+            }
+
+            return returnValue;
+        }
+
         public async Task<List<Model.Customer>> ToListAsync()
         {
             List<Model.Customer> returnValue = new List<Model.Customer>();

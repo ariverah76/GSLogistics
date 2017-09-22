@@ -10,5 +10,7 @@ namespace GSLogistics.Logic.Interface
     {
         Task<List<Model.Division>> GetDivisionByCustomerId(string customerId);
         Task<Model.Division> GetFirstOrDefaultAsync(int divisionId);
+
+        Task<List<Model.Division>> GetDivisionsByCustomerIds(string[] customerIds);
     }
 }

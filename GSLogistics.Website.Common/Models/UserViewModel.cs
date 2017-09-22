@@ -35,7 +35,9 @@ namespace GSLogistics.Website.Common.Models
     {
         public string UserId { get; set; }
         public IEnumerable<SelectListItem> Customers { get; set; }
+        public string SelectedCustomerId { get; set; }
         public IEnumerable<string> SelectedCustomers { get; set; }
-        public IEnumerable<Division> Divisions { get; set; }
+        public IEnumerable<SelectListItem> Divisions { get; set; }
+        public IEnumerable<int> SelectedDivisions { get; set; }
     }
 }

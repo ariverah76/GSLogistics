@@ -995,7 +995,7 @@ namespace GSLogistics.Website.Admin.Controllers
         #endregion  
 
         [HttpGet]
-        public async Task<ActionResult> GetDivisionByClient(string customerId)
+        public async Task<ActionResult> GetDivisionByClient(string customerId, bool addPlaceholder = true)
         {
             if (String.IsNullOrEmpty(customerId))
             {
@@ -1003,10 +1003,7 @@ namespace GSLogistics.Website.Admin.Controllers
             }
             using (var divLogic = Kernel.Get<IDivisionLogic>())
             {
-                
-
-                // var divisions = repository.GetDivisionByClient(customerId).Select(d => new { Id = d.DivisionId, Name = $"{d.NameId} {d.Description}" }).ToList();
-                var divisions2 = await divLogic.GetDivisionByCustomerId(customerId);// (d => new { Id = d.DivisionId, Name = $"{d.NameId} {d.Description}" }).ToList();
+                var divisions2 = await divLogic.GetDivisionByCustomerId(customerId);
 
                 var userContext = Session["UserContext"] as GSLogisticsUserContext;
                 if (userContext != null)
@@ -1019,12 +1016,49 @@ namespace GSLogistics.Website.Admin.Controllers
                     
                 } 
 
-                var divs = divisions2.Select(d => new { Id = d.DivisionId, Name = $"{d.Name} {d.Description}" }).ToList();
+                var divs = divisions2.OrderBy(x => x.DivisionId).ThenBy(x => x.Name).Select(d => new { Id = d.DivisionId, Name = $"{d.Name} {d.Description}" }).ToList();
+                if (addPlaceholder)
+                {
+                    divs.Insert(0, new { Id = 0, Name = "Select" });
+                }
+
+                return Json(divs.OrderBy(x => x.Id).ThenBy(x => x.Name), JsonRequestBehavior.AllowGet);
+            }
+            
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetDivisionByClientIds(string[] customerIds)
+        {
+            if (customerIds != null  && customerIds.Any())
+            {
+                return new EmptyResult();
+            }
+            using (var divLogic = Kernel.Get<IDivisionLogic>())
+            {
+
+
+                // var divisions = repository.GetDivisionByClient(customerId).Select(d => new { Id = d.DivisionId, Name = $"{d.NameId} {d.Description}" }).ToList();
+                var divisions2 = await divLogic.GetDivisionsByCustomerIds(customerIds);// (d => new { Id = d.DivisionId, Name = $"{d.NameId} {d.Description}" }).ToList();
+
+                var userContext = Session["UserContext"] as GSLogisticsUserContext;
+                if (userContext != null)
+                {
+                    if (userContext != null && userContext.DivisionIds.Any())
+                    {
+                        var availableDivisionsIds = userContext.DivisionIds.ToList();
+                        divisions2 = divisions2.Where(x => availableDivisionsIds.Contains(x.DivisionId)).ToList();
+                    }
+
+                }
+
+                var divs = divisions2.Select(d => new { Id = d.DivisionId, Name = $"{d.CustomerName} - {d.Name} {d.Description}" }).ToList();
                 divs.Insert(0, new { Id = 0, Name = "Select" });
 
                 return Json(divs, JsonRequestBehavior.AllowGet);
             }
-            
+
         }
 
         private class data

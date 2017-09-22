@@ -22,11 +22,17 @@ namespace GSLogistics.Logic
             return await Repository.GetDivisionsByCustomerId(customerId);
         }
 
+        public async  Task<List<Model.Division>> GetDivisionsByCustomerIds(string[] customerIds)
+        {
+            return await Repository.GetDivisionsByCustomerIds(customerIds);
+        }
+
 
         public async Task<Model.Division> GetFirstOrDefaultAsync(int divisionId)
         {
             return await Repository.FirstOrDefaultAsync(divisionId);
         }
+
 
     }
 }

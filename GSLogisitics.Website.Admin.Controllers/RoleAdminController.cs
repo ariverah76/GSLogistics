@@ -113,6 +113,8 @@ namespace GSLogistics.Website.Admin.Controllers
                 var assignedCustomers = await userLogic.GetCustomersLinkedByUser(id);
                 model.SelectedCustomers = assignedCustomers;
 
+                model.Divisions  = new SelectList(new Dictionary<int, string>(), "Key", "Value", null);
+
                 return View("CustomerRoleEdit", model);
             }
         }

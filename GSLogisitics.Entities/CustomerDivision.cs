@@ -23,5 +23,8 @@ namespace GSLogistics.Entities
 
         [Column(Order = 5)]
         public string NameId { get; set; }
+
+        [ForeignKey("CustomerId")]
+        public virtual Customer Customer { get; set; }
     }
 }

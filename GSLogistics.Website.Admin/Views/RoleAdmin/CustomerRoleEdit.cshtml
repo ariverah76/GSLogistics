@@ -5,17 +5,74 @@
 @{ ViewBag.Title = "Link Customers";}
 <h2>Link To Customer Role</h2>
 
+
 @Html.ValidationSummary(false)
+
 @using (Html.BeginForm())
 {
     @Html.HiddenFor(m => m.UserId)
-    <div class="form-group">
-        <label>Customers</label>
+
+        
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Customers</label>
+                <div class="form-group">
+
+                    @Html.DropDownListFor(m => m.SelectedCustomerId, Model.Customers, "Select", new { @class = "form-control" })
+                </div>
+                @*@Html.ListBoxFor(m => m.SelectedCustomers, Model.Customers, new { size = 10 })*@
+            </div>
+        </div>
+        
 
     </div>
-    <div class="form-group">
-        @Html.ListBoxFor(m => m.SelectedCustomers, Model.Customers, new { size = 10 })
+    <div class="row">
+        <div class="col-sm-6">
+            <label>Divisions</label>
+            <div class="form-group">
+
+                @Html.ListBoxFor(m => m.SelectedDivisions, Model.Divisions, new { @class = "form-control" })
+            </div>
+
+        </div>
     </div>
     <button type="submit" class="btn btn-primary">Assign</button>
+
     @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
 }
+
+
+<script type="text/javascript">
+
+    $('#SelectedDivisions').multiSelect();
+    $("#SelectedCustomerId").change(function () {
+        var selectedItem = $(this).val();
+        console.log(selectedItem);
+        var ddDivisions = $("#SelectedDivisions");
+        $.ajax({
+            cache: false,
+            type: 'GET',
+            url: '@Url.Action("GetDivisionByClient","OrderAppointment")',
+            data: { "customerId": selectedItem, "addPlaceholder": false },
+            success: function (data) {
+                //ddDivisions.html('');
+                ddDivisions.multiSelect('destroy').multiSelect();
+                $.each(data, function (id, option) {
+                    ddDivisions.multiSelect('addOption', {value: option.Id, text: option.Name });
+//                    ddDivisions.append($('<option></option>').val(option.Id).html(option.Name));
+
+                });
+                ddDivisions.multiSelect('refresh');
+
+
+            }
+            , error: function (xhr, ajaxOptions, thrownError) {
+                toastr.Error('Failed to get Divisions');
+            }
+        });
+
+
+    });
+
+</script>
