@@ -19,5 +19,10 @@ namespace GSLogistics.Entities
 
         [Column("DivisionId", Order = 3), Key]
         public int DivisionId { get; set; }
+
+        [ForeignKey("CustomerId")]
+        public virtual Customer Customer { get; set; }
+        [ForeignKey("DivisionId")]
+        public virtual CustomerDivision Division { get; set; }
     }
 }

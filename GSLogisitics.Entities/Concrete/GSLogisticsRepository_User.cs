@@ -57,6 +57,44 @@ namespace GSLogistics.Entities.Concrete
             
         }
 
+        public async Task<IEnumerable<int>> GetDivisionsForUser(string userId)
+        {
+            var user = await context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
+
+            if (user != null)
+            {
+                var query = context.UserInfos
+                  .Where(x => x.UserName == user.UserName);
+
+                var result = await query.FirstOrDefaultAsync();
+
+                return result.UserCustomers.Select(x => x.DivisionId).ToList();
+            }
+            else
+            {
+                return new List<int>();
+            }
+
+        }
+
+        public async Task<List<UserCustomer>> GetUserCustomers(string userId)
+        {
+            var user = await context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                var query = context.UserInfos
+                  .Where(x => x.UserName == user.UserName);
+
+                var result = await query.FirstOrDefaultAsync();
+
+                return result.UserCustomers.ToList();
+            }
+            else
+            {
+                return new List<UserCustomer>();
+            }
+        }
+
         public async Task<bool> AssignCustomers(string userId, IList<string> customerIds)
         {
             var user = await context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
@@ -76,6 +114,73 @@ namespace GSLogistics.Entities.Concrete
 
                 await context.SaveChangesAsync();
             }
+
+            return true;
+        }
+
+        public async Task<bool> AssignDivisions(string userId, Dictionary<int, string> customerDivisions)
+        {
+            var user = await context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
+
+            var gsUser = await context.UserInfos.Where(x => x.UserName == user.UserName).FirstOrDefaultAsync();
+            var currentDivIds = gsUser.UserCustomers.Select(x => x.DivisionId).ToList();
+
+            var divisionIds = customerDivisions.Keys;
+
+            foreach (int divId in divisionIds.Where(x => !currentDivIds.Contains(x)))
+            { 
+                var division = await context.CustomerDivisions.FirstOrDefaultAsync(x => x.DivisionId == divId);
+
+                if (division != null)
+                {
+                    var usercust = new UserCustomer();
+                    usercust.CustomerId = division.CustomerId;
+                    usercust.DivisionId = division.DivisionId;
+                    usercust.UserId = gsUser.UserId;
+
+                    gsUser.UserCustomers.Add(usercust);
+
+                    await context.SaveChangesAsync();
+                }
+            }
+
+            return true;
+        }
+
+        public async Task<UserInfo> CreateUserInfoAsync(string userName, string description)
+        {
+            var user = new UserInfo()
+            {
+                Description = description,
+                UserName = userName
+            };
+
+            context.UserInfos.Add(user);
+
+            await context.SaveChangesAsync();
+
+            return user;
+        }
+
+        public async Task<bool> DeleteCustomerRole(string userId, string customerId, int divisionId)
+        {
+            var user = await context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
+
+            var gsUser = await context.UserInfos.Where(x => x.UserName == user.UserName).FirstOrDefaultAsync();
+
+            var userCust = new Entities.UserCustomer()
+            {
+                CustomerId = customerId,
+                DivisionId = divisionId,
+                UserId = gsUser.UserId
+
+            };
+
+            var userCustomer = await context.UserCustomers.Where(x => x.CustomerId == customerId && x.DivisionId == divisionId && x.UserId == gsUser.UserId).FirstAsync();
+
+            context.UserCustomers.Remove(userCustomer);
+            //gsUser.UserCustomers.Remove(userCust);
+            var result = await context.SaveChangesAsync();
 
             return true;
         }

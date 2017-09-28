@@ -38,6 +38,27 @@ namespace GSLogistics.Website.Common.Models
         public string SelectedCustomerId { get; set; }
         public IEnumerable<string> SelectedCustomers { get; set; }
         public IEnumerable<SelectListItem> Divisions { get; set; }
+        [Required(ErrorMessage = "Please select at least one division")]
         public IEnumerable<int> SelectedDivisions { get; set; }
+
+        public CustomerRolesForCustomer[] NewRoles { get; set; }
+
+        public CustomerRolesForCustomer[] CurrentRoles { get; set; }
+    }
+
+    public class ClientRoleDeleteModel
+    {
+        public string UserId { get; set; }
+        public string CustomerId { get; set; }
+        public int DivisionId { get; set; }
+
+    }
+
+    public class CustomerRolesForCustomer
+    {
+        public string CustomerId { get; set; }
+        public string CustomerName { get; set; }
+        public int DivisionId { get; set; }
+        public string DivisionName { get; set; }
     }
 }

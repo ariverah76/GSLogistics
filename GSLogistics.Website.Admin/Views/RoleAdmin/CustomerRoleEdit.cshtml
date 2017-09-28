@@ -7,48 +7,258 @@
 
 
 @Html.ValidationSummary(false)
-
-@using (Html.BeginForm())
-{
     @Html.HiddenFor(m => m.UserId)
+    @*@Html.HiddenFor(m => m.SelectedDivisions);*@
 
-        
     <div class="row">
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label>Customers</label>
-                <div class="form-group">
+        <div id="panelGridCurrent">
 
-                    @Html.DropDownListFor(m => m.SelectedCustomerId, Model.Customers, "Select", new { @class = "form-control" })
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="panel panel-default" id="selectedDivPanel">
+                        <div class="panel-heading">
+                            Current Divisions Assigned
+                        </div>
+                        <div class="panel panel-body">
+                            <table class="table table-hover" id="tableCurrentRoles">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Customer</th>
+                                        <th></th>
+                                        <th>Division</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach(var r in Model.CurrentRoles )
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(m => r.CustomerId)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(m => r.CustomerName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(m => r.DivisionId)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(m => r.DivisionName)
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                @*@Html.ListBoxFor(m => m.SelectedCustomers, Model.Customers, new { size = 10 })*@
+
             </div>
         </div>
-        
-
     </div>
     <div class="row">
-        <div class="col-sm-6">
-            <label>Divisions</label>
-            <div class="form-group">
+        <h3>Add New Roles</h3>
+        <div class="col-sm-5">
 
-                @Html.ListBoxFor(m => m.SelectedDivisions, Model.Divisions, new { @class = "form-control" })
+            <div class="row">
+                <div>
+                    <div class="form-group">
+                        <label>Customers</label>
+                        <div class="form-group">
+
+                            @Html.DropDownListFor(m => m.SelectedCustomerId, Model.Customers, "Select", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
             </div>
+            <div class="row">
+                <div>
+                    <label>Divisions</label>
+                    <div class="form-group">
 
+                        @Html.ListBoxFor(m => m.SelectedDivisions, Model.Divisions, new { @class = "form-control" })
+                    </div>
+                   
+                </div>
+                
+            </div>
+            <div class="row">
+                <div>
+                    <button type="button" class="btn btn-info align-middle" style="vertical-align:middle" onclick="assignDivisions()">Assign</button>
+                </div>
+            </div>
         </div>
+        <div class="col-sm-2" style="vertical-align:bottom; height:200px">
+            
+        </div>
+        <div id="panelGrid">
+
+            <div class="col-sm-5">
+                <div class="row">
+                    <div class="panel panel-default" id="selectedDivPanel">
+                        <div class="panel-heading">
+                            Divisions to Add
+                        </div>
+                        <div class="panel panel-body">
+                            <table class="table table-hover" id="tableSelectedDivisions">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Customer</th>
+                                        <th></th>
+                                        <th>Division</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-border">
+                    <button type="button" onclick="saveCustomerRoles()" class="btn btn-primary">Save</button>
+                    @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+
+                </div>
+            </div>
+        </div>
+
     </div>
-    <button type="submit" class="btn btn-primary">Assign</button>
 
-    @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
-}
 
+@Scripts.Render("~/bundles/dataTables")
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/toastr")
 
 <script type="text/javascript">
+
+
+    $(document).ready(function () {
+        var tableDivisions =  $("#tableSelectedDivisions").DataTable({
+            responsive: true,
+            "searching": false,
+            "info": false,
+            "lengthChange": false,
+            "paging": false,
+            "columnDefs": [{
+                "targets": -1,
+                data: null,
+                "defaultContent": "<button class=\"btn btn-danger btn-sm fa fa-trash\"></button>"
+            }],
+            columns: [
+                {
+                    data: 'CustomerId', visible:false
+                }
+                ,
+                {
+                    data: 'Customer'
+                }
+                ,
+                {
+                    data: 'DivisionId', visible:false
+                }
+                ,
+                {
+                    data: 'Division'
+                }
+                ,
+                {
+                    orderable: false
+                }
+            ]
+
+        });
+
+        var tableCurrentRoles = $("#tableCurrentRoles").DataTable({
+            responsive: true,
+            "searching": false,
+            "info": false,
+            "lengthChange": false,
+            "paging": false,
+            "columnDefs": [{
+                "targets": -1,
+                data: null,
+                "defaultContent": "<button class=\"btn btn-danger btn-sm fa fa-trash\"></button>"
+            }],
+            columns: [
+                {
+                    data: 'CustomerId', visible: false
+                }
+                ,
+                {
+                    data: 'Customer'
+                }
+                ,
+                {
+                    data: 'DivisionId', visible: false
+                }
+                ,
+                {
+                    data: 'Division'
+                }
+                ,
+                {
+                    orderable: false
+                }
+            ]
+
+        });
+        $('#tableSelectedDivisions tbody').on('click', 'button', function () {
+           // var data = tableDivisions.row($(this).parents('tr')).data();
+            tableDivisions.row($(this).parents('tr')).remove().draw();
+            //alert(data["DivisionId"] + "' key data " + data["CustomerId"]);
+        });
+
+        $('#tableCurrentRoles tbody').on('click', 'button', function () {
+
+            if (confirm("Do you want to remove this Division to this user?")) {
+
+                var data = tableCurrentRoles.row($(this).parents('tr')).data();
+
+                var model = {};
+                model.UserID = $("#UserId").val();
+                model.CustomerId = data["CustomerId"];
+                model.DivisionId = data["DivisionId"];
+                var deleted = false;
+                var row = $(this).parents('tr');
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DeleteCustomerRole", "RoleAdmin")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(model),
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.success == true) {
+                            tableCurrentRoles.row(row).remove().draw();
+                            //deleted = true;
+                            toastr.success('Deleted!');
+                        }
+                        else {
+                            deleted = false;
+                            toastr.Error('Something went wrong!');
+                        }
+
+                    }
+
+                });
+
+            }
+            
+            
+            
+        });
+
+        $('#panelGrid').hide();
+
+    });
 
     $('#SelectedDivisions').multiSelect();
     $("#SelectedCustomerId").change(function () {
         var selectedItem = $(this).val();
-        console.log(selectedItem);
+        var selectedDivisions = $('#SelectedDivisions').val();
+        console.log(selectedDivisions);
         var ddDivisions = $("#SelectedDivisions");
         $.ajax({
             cache: false,
@@ -56,12 +266,22 @@
             url: '@Url.Action("GetDivisionByClient","OrderAppointment")',
             data: { "customerId": selectedItem, "addPlaceholder": false },
             success: function (data) {
-                //ddDivisions.html('');
-                ddDivisions.multiSelect('destroy').multiSelect();
-                $.each(data, function (id, option) {
-                    ddDivisions.multiSelect('addOption', {value: option.Id, text: option.Name });
-//                    ddDivisions.append($('<option></option>').val(option.Id).html(option.Name));
+                $('#SelectedDivisions option').each(function (index, option) {
+                    $(option).remove();
+                });
 
+                var table = $("#tableSelectedDivisions").DataTable();
+                
+                var divisions = table.column(2).data().toArray();
+                $.each(data, function (id, option) {
+                    if (divisions.length > 0) {
+                        if (divisions.includes(option.Id.toString()) == false) {
+                            ddDivisions.multiSelect('addOption', { value: option.Id, text: option.Name });
+                        }
+                    }
+                    else {
+                        ddDivisions.multiSelect('addOption', { value: option.Id, text: option.Name });
+                    }
                 });
                 ddDivisions.multiSelect('refresh');
 
@@ -74,5 +294,80 @@
 
 
     });
+
+    function saveCustomerRoles() {
+        var table = $("#tableSelectedDivisions").DataTable();
+        var selected = table.rows().data();
+        var roles = new Array();
+
+        for (var i = 0; i < selected.length; i++) {
+
+            var newRole = {
+                CustomerId: selected[i]['CustomerId'],
+                DivisionId: selected[i]['DivisionId'],
+            };
+            roles.push(newRole);
+        }
+
+        var model = {};
+        model.UserID = $("#UserId").val();
+        model.NewRoles = roles;
+
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("EditCustomers", "RoleAdmin")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(model),
+            dataType: "json",
+            success: function (result) {
+                toastr.success('New roles assigned');
+                
+                window.location.href = "/Admin/Index";
+            }
+        });
+    }
+
+    function assignDivisions() {
+
+        var table = $("#tableSelectedDivisions").DataTable();
+        //console.log($("#SelectedCustomerId option:selected").text());
+        //console.log($("#SelectedCustomerId").val());
+
+        //console.log($("#SelectedDivisions option:selected").text());
+        //console.log($("#SelectedDivisions").val());
+
+
+        var selectedDivNames = $("#SelectedDivisions option:selected").map(function () {
+            return $(this).html();
+        }).get();
+
+        var selectedDivIds = $("#SelectedDivisions").val();
+
+        if (selectedDivIds == null || selectedDivIds.length == 0) {
+            toastr.error("Please select one division");
+            return false;
+        }
+        console.log(selectedDivNames);
+
+        var data = table.rows().data();
+        //var divAssigned = data
+        for (var i = 0; i < selectedDivNames.length; i++) {
+
+            table.row.add({
+                "CustomerId": $("#SelectedCustomerId").val(),
+                "Customer": $("#SelectedCustomerId option:selected").text(),
+                "DivisionId": selectedDivIds[i],
+                "Division": selectedDivNames[i],
+                "Action": ''
+                
+            }).draw(false);   
+        }
+
+        $("#SelectedCustomerId").val('').change();
+        $('#panelGrid').show();
+        
+    }
+    
 
 </script>

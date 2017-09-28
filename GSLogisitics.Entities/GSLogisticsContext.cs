@@ -47,6 +47,7 @@ namespace GSLogistics.Entities
         public DbSet<ScacCode> ScacCodes { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<UserInfo> UserInfos { get; set; }
+        public DbSet<UserCustomer> UserCustomers { get; set; }
 
     }
 

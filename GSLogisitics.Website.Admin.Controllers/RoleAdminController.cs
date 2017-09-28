@@ -111,7 +111,12 @@ namespace GSLogistics.Website.Admin.Controllers
                 model.Customers = new SelectList(result, "Key", "Value", null);
 
                 var assignedCustomers = await userLogic.GetCustomersLinkedByUser(id);
+                var assignedDivisions = await userLogic.GetDivisionsForUser(id);
                 model.SelectedCustomers = assignedCustomers;
+                model.SelectedDivisions = assignedDivisions;
+
+                var current = await userLogic.GetUserCustomers(id);
+                model.CurrentRoles = current.ToArray();
 
                 model.Divisions  = new SelectList(new Dictionary<int, string>(), "Key", "Value", null);
 
@@ -124,16 +129,40 @@ namespace GSLogistics.Website.Admin.Controllers
         {
             using (var userLogic = Kernel.Get<IUserLogic>())
             {
-                var result = await userLogic.AssignCustomers(model.UserId, model.SelectedCustomers.ToList());
+                Dictionary<int, string> roles = new Dictionary<int, string>();
+
+                foreach(var y in model.NewRoles)
+                {
+                    roles.Add(y.DivisionId, y.CustomerId);
+                }
+                var result = await userLogic.AssignDivisions(model.UserId, roles);
 
                 if (result)
                 {
-                    return RedirectToAction("Index", "Admin");
+                    //return RedirectToAction("Index", "Admin");
+                    return Json(new { url = "Index/Admin" });
                 }
-
-                return View("CustomerRoleEdit", model);
+                return Json(new { url = "/" });
+                //return View("CustomerRoleEdit", model);
             }
 
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteCustomerRole(ClientRoleDeleteModel model)
+        {
+            using (var userLogic = Kernel.Get<IUserLogic>())
+            {
+                var result = await userLogic.DeleteCustomerRole(model.UserId, model.CustomerId, model.DivisionId);
+
+                if (result)
+                {
+                    return Json(new { success = true });
+                }
+
+                return Json(new { success = false });
+            }
         }
 
         public async Task<ActionResult> Edit(string id)

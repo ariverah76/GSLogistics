@@ -12,7 +12,7 @@ namespace GSLogistics.Entities
     public class UserInfo
     {
 
-        [Column("UserNo", Order = 1), Key]
+        [Column("UserNo", Order = 1), Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public byte UserId { get; set; }
 
         [Column("DescriptionProfile", Order = 2)]

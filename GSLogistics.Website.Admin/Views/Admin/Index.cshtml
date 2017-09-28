@@ -33,6 +33,11 @@
                         @using (Html.BeginForm("Delete", "Admin",new { id = user.Id }))
                         {
                             @Html.ActionLink("Edit", "Edit", new { id = user.Id }, new { @class = "btn btn-primary btn-xs" })
+                            if (user.Roles.Select(x => x.RoleId).Contains("cb8be998-c3f9-4060-ab63-8db6d7614585"))
+                            {
+                                @Html.ActionLink("Cust/Divs", "EditCustomers", "RoleAdmin", new { id = user.Id }, new { @class = "btn btn-primary btn-xs" })
+                            }
+
                             <button class="btn btn-danger btn-xs"
                                     type="submit">
                                 Delete

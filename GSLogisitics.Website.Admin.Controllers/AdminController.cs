@@ -10,15 +10,24 @@ using Microsoft.AspNet.Identity.Owin;
 using GSLogistics.Website.Common.Models;
 using GSLogistics.Website.Models;
 using Microsoft.AspNet.Identity;
+using Ninject;
+using GSLogistics.Website.Common.Controllers;
+using GSLogistics.Logic.Interface;
 
 namespace GSLogistics.Website.Admin.Controllers
 {
-    public class AdminController : Controller 
+    public class AdminController : BaseController 
     {
+        
+        public AdminController(IKernel kernel):
+            base(kernel)
+        {
+            
+        }
 
         public ActionResult Index()
         {
-            var users = UserManager.Users.OrderBy(x => x.UserName);
+            var users = UserManager.Users.OrderBy(x => x.UserName).ToList();
 
             return View(users);
         }
@@ -44,6 +53,12 @@ namespace GSLogistics.Website.Admin.Controllers
                 ApplicationUser user = new ApplicationUser() { UserName = model.Name, Email = model.Email };
 
                 IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+
+                using (var logic = Kernel.Get<IUserLogic>())
+                {
+                    await logic.CreateAsync(user.UserName, "WebSite admin");
+                }
+
 
                 if (result.Succeeded)
                 {
