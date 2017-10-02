@@ -18,5 +18,7 @@ namespace GSLogistics.Logic.Interface
         Task<List<CustomerRolesForCustomer>> GetUserCustomers(string userId);
 
         Task<bool> DeleteCustomerRole(string userId, string customerId, int divisionId);
+
+        Task<Model.UserInfo> GetUserInfo(string userId);
     }
 }

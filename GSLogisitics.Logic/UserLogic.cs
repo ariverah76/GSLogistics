@@ -70,5 +70,14 @@ namespace GSLogistics.Logic
         {
             return await Repository.DeleteCustomerRole(userId, customerId, divisionId);
         }
+
+        public async Task<Model.UserInfo> GetUserInfo(string userId)
+        {
+            var result = await Repository.UserInfo_FirstOrDefaultAsync(userId);
+
+            
+            return result != null ? new Model.UserInfo() { UserId = result.UserId, Description = result.Description, UserName = result.UserName } : null ;
+        }
+
     }
 }

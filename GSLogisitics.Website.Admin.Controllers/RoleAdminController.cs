@@ -118,6 +118,10 @@ namespace GSLogistics.Website.Admin.Controllers
                 var current = await userLogic.GetUserCustomers(id);
                 model.CurrentRoles = current.ToArray();
 
+                var user = await userLogic.GetUserInfo(id);
+
+                ViewBag.UserName = user.UserName;
+
                 model.Divisions  = new SelectList(new Dictionary<int, string>(), "Key", "Value", null);
 
                 return View("CustomerRoleEdit", model);

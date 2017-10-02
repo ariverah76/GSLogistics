@@ -162,6 +162,7 @@ namespace GSLogistics.Entities.Concrete
             return user;
         }
 
+       
         public async Task<bool> DeleteCustomerRole(string userId, string customerId, int divisionId)
         {
             var user = await context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
@@ -184,5 +185,17 @@ namespace GSLogistics.Entities.Concrete
 
             return true;
         }
+
+        public async Task<UserInfo> UserInfo_FirstOrDefaultAsync(string userId)
+        {
+            var user = await context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
+
+            if (user != null)
+            {
+                return await context.UserInfos.Where(x => x.UserName == user.UserName).FirstOrDefaultAsync();
+            }
+            return null;
+        }
+
     }
 }
