@@ -18,6 +18,28 @@
     div.container {
         width: 80%;
     }
+     
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background : rgba(255,255,255,.8)
+                    url("~/8.gif")
+                    50% 50%
+                    no-repeat;
+    
+    }
+    body.loading {
+        overflow: hidden;
+    }
+
+    body.loading .modal {
+        display: block;
+    }
 </style>
 
 <div class="panel panel-title">
@@ -103,7 +125,7 @@
         </div>
      </div>
 </div>
-
+<div class="modal"></div>
 @Scripts.Render("~/bundles/datetimepicker")
 @Scripts.Render("~/bundles/dataTables")
 @Scripts.Render("~/bundles/jqueryval")
@@ -112,6 +134,21 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
+
+        $(document).ajaxStop(function () {
+            $body = $("body");
+            console.log('ajax stop');
+            $body.removeClass("loading");
+
+        });
+
+        $(document).ajaxStart(function () {
+            $body = $("body");
+            console.log('ajax started');
+            $body.addClass("loading")
+        });
+
+
         $("#SelectedClientId").select2();
         $("#SelectedDivisionId").select2();
 

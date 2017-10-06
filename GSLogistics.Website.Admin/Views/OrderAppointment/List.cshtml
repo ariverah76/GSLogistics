@@ -8,7 +8,7 @@
 @{
     ViewBag.Title = "List";
     AjaxOptions ajaxOptions = new AjaxOptions { UpdateTargetId = "panelBody", LoadingElementId = "loading", LoadingElementDuration = 1000 };
-    AjaxOptions ajaxOptionsForOrders = new AjaxOptions { UpdateTargetId = "panelBodyOrders", LoadingElementId = "loadingOrders", LoadingElementDuration = 1000 };
+    AjaxOptions ajaxOptionsForOrders = new AjaxOptions { UpdateTargetId = "panelBodyOrders", LoadingElementId = "loadingOrders"};
 
 }
 @{
@@ -23,16 +23,39 @@
     }
 
     #loading2 {
-    width: 100%;
-    height: 100%;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(0,0,0,.5);
+        -webkit-transition: all .5s ease;
+        z-index: 1000;
+        display: none;
+    }
+    
+.modal {
+    display: none;
     position: fixed;
+    z-index: 1000;
     top: 0;
     left: 0;
-    background-color: rgba(0,0,0,.5);
-    -webkit-transition: all .5s ease;
-    z-index: 1000;
-    display:none;
-}
+    height: 100%;
+    width: 100%;
+    background : rgba(255,255,255,.8)
+                url("~/8.gif")
+                50% 50%
+                no-repeat;
+    
+    }
+    body.loading {
+        overflow: hidden;
+    }
+
+    body.loading .modal {
+        display: block;
+    }
+
 </style>
 <div class="row">
     <ul class="nav nav-pills nav-justified">
@@ -121,6 +144,7 @@
             <div class="panel-body" id="panelBodyOrders">
                 <div id="loadingOrders" class="load" style="display:none">
                     <p>Loading Data...</p>
+                    <img src="@Url.Content("~/8.gif")" /> 
                 </div>
 
                 @*@{ Html.RenderPartial("_AppointmentList", Model.Appointments); }*@
@@ -295,6 +319,7 @@
     </div>
 </div>
 <div id="loading"></div>
+<div class="modal"></div>
 
 @Scripts.Render("~/bundles/datetimepicker")
 @Scripts.Render("~/bundles/dataTables")
@@ -329,11 +354,16 @@
 
 
         $(document).ajaxStop(function () {
-            $('#loading2').hide();
+            $body = $("body");
+            console.log('ajax stop');
+            $body.removeClass("loading");
+
         });
 
         $(document).ajaxStart(function () {
-            $('#loading2').show();
+            $body = $("body");
+            console.log('ajax started');
+            $body.addClass("loading")
         });
 
       
