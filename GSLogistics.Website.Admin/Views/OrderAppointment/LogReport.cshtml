@@ -19,7 +19,7 @@
         width: 80%;
     }
      
-    .modal {
+    .blocking {
         display: none;
         position: fixed;
         z-index: 1000;
@@ -28,7 +28,7 @@
         height: 100%;
         width: 100%;
         background : rgba(255,255,255,.8)
-                    url("~/8.gif")
+                    url("/8.gif")
                     50% 50%
                     no-repeat;
     
@@ -37,7 +37,7 @@
         overflow: hidden;
     }
 
-    body.loading .modal {
+    body.loading .blocking {
         display: block;
     }
 </style>
@@ -125,7 +125,7 @@
         </div>
      </div>
 </div>
-<div class="modal"></div>
+<div class="blocking"></div>
 @Scripts.Render("~/bundles/datetimepicker")
 @Scripts.Render("~/bundles/dataTables")
 @Scripts.Render("~/bundles/jqueryval")

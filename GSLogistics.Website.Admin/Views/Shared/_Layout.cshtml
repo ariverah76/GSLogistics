@@ -33,8 +33,46 @@
 
 
     <script src="~/Scripts/jquery.multi-select.js"></script>
+    <script type="text/javascript">
+     (function() {
+       var html = document.getElementsByTagName('html')[0];
+       html.className += ' is-loading';
+
+       window.onload = function() {
+         html.className = String(html.className).replace('is-loading','');
+       }
+     }());
+    </script>
+
+    <style>
+        #loading {
+            /*display: none;
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 300px;*/
+
+            display: none;
+        position: fixed;
+        z-index: 1000;
+        top: 0px;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background : rgba(255,255,255,.8)
+                    url("/8.gif")
+                    50% 50%
+                    no-repeat;
+        }
+
+        .is-loading #loading {
+            display: block;
+        }
+    </style>
 </head>
 <body>
+    
+    
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -74,7 +112,10 @@
             </div>*@
         </div>
    </div>
-
+    <div id="loading">
+        <!-- loading image to see while loading background image -->
+        @*<img src="8.gif">*@
+    </div>
     <div class="container" id="container">
         @RenderBody()
      

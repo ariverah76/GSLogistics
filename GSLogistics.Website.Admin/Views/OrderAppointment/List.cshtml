@@ -22,7 +22,7 @@
         width: 80%;
     }
 
-    #loading2 {
+    /*#loading2 {
         width: 100%;
         height: 100%;
         position: fixed;
@@ -32,27 +32,27 @@
         -webkit-transition: all .5s ease;
         z-index: 1000;
         display: none;
-    }
+    }*/
     
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background : rgba(255,255,255,.8)
-                url("~/8.gif")
-                50% 50%
-                no-repeat;
+    .blocking {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background : rgba(255,255,255,.8)
+                    url("/8.gif")
+                    50% 50%
+                    no-repeat;
     
     }
     body.loading {
         overflow: hidden;
     }
 
-    body.loading .modal {
+    body.loading .blocking {
         display: block;
     }
 
@@ -144,7 +144,7 @@
             <div class="panel-body" id="panelBodyOrders">
                 <div id="loadingOrders" class="load" style="display:none">
                     <p>Loading Data...</p>
-                    <img src="@Url.Content("~/8.gif")" /> 
+                    @*<img src="@Url.Content("~/8.gif")" />*@ 
                 </div>
 
                 @*@{ Html.RenderPartial("_AppointmentList", Model.Appointments); }*@
@@ -318,8 +318,8 @@
         </div>
     </div>
 </div>
-<div id="loading"></div>
-<div class="modal"></div>
+@*<div id="loading"></div>*@
+<div class="blocking"></div>
 
 @Scripts.Render("~/bundles/datetimepicker")
 @Scripts.Render("~/bundles/dataTables")
@@ -1095,8 +1095,8 @@
                 var orderForAppointment = {
                     PurchaseOrderId: selected[i]["PurchaseOrderId"],
                     PickTicketId: selected[i]["PickTicketId"],
-                    PtBulk: selected[i][12],
-                    CustomerId: selected[i][13]
+                    PtBulk: selected[i]["PtBulk"],
+                    CustomerId: selected[i]["CustomerId"]
                 };
                 orders.push(orderForAppointment);
 
@@ -1241,8 +1241,8 @@
                     var orderForAppointment = {
                         PurchaseOrderId: selected[i]["PurchaseOrderId"],
                         PickTicketId: selected[i]["PickTicketId"],
-                        PtBulk: selected[i][12],
-                        CustomerId: selected[i][13],
+                        PtBulk: selected[i]["PtBulk"],
+                        CustomerId: selected[i]["CustomerId"],
                         DivisionId: selected[i]["DivisionId"]
                     };
                     orders.push(orderForAppointment);
