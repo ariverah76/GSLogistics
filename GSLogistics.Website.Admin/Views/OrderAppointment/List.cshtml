@@ -992,6 +992,8 @@
             $("#ShippingTime").val(selected[0]["ShipTime"]);
             $("#ShippingCompanyId").val(selected[0]["ScaccCode"]).change();
 
+            $('#totalOrdersLabel').hide();
+
             var dt = selected[0]["DeliveryTypeId"];
             if (dt == "1") {
                 $("#IsPickup").prop("checked", true);
@@ -1126,6 +1128,8 @@
         clearAppointmentForm();
         var table = $("#tableAppointments").DataTable();
         
+        $("#summary").show();
+        
         var t2 = $("#tableSelectedOrders").DataTable();
         var selected = table.rows('.selected').data();
         var selected2 = t2.rows().data();
@@ -1136,6 +1140,7 @@
         $('#totalOrdersLabel').html(function(n, c) {
             return selected.length + ' order(s) to assign'
         });
+        $('#totalOrdersLabel').show();
         var totalPieces = 0;
         var totalCtns = 0;
         var totalLbs = 0;
@@ -1194,6 +1199,7 @@
             $('input[name = DeliveryTypeId]').attr('disabled', 'disabled');
 
             $("#ShippingDate").val(selected2[0]["ShipFor"]);
+            $("#ShippingDate").prop('disabled', true);
         }
 
 
@@ -1220,6 +1226,7 @@
         $('input[name = DeliveryTypeId]').removeAttr('disabled');
 
         $("#ShippingCompanyId").prop('disabled', false)
+        $("#ShippingDate").prop('disabled',false);
 
     }
 
@@ -1281,6 +1288,7 @@
 
         function postAppointment() {
             var table = $("#tableappt").DataTable();
+            
             var selected = table.rows('.selected').data();
             if (selected.length == 0) {
                 toastr.warning("Please select at least one Appointment");
@@ -1320,6 +1328,7 @@
             //    return false;
             //}
             
+            $("#summary").show();
 
             if (confirm('Are you sure you want to post these ' + selected.length + ' selected appointments ?')) {
                 var selected = table.rows('.selected').data();
@@ -1351,7 +1360,6 @@
                     dataType: "json",
                     success: function (result) {
                         toastr.success('Appointment(s) posted successfully');
-                        alert();
                         table.rows('.selected').remove().draw(false);
                     }
 

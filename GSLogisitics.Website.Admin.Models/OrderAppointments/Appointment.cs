@@ -55,6 +55,8 @@ namespace GSLogistics.Website.Admin.Models
 
         public string BillOfLading { get; set; }
 
+        public string pathPOD { get; set; }
+
 
 
     }

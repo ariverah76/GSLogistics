@@ -53,7 +53,7 @@ namespace GSLogistics.Entities.Concrete
             }
             if (query.ShippingDateEnd.HasValue)
             {
-                q = q.Where(x => x.ShipDate >= query.ShippingDateEnd.Value);
+                q = q.Where(x => x.ShipDate <= query.ShippingDateEnd.Value);
             }
             if (query.ShippingDate.HasValue)
             {

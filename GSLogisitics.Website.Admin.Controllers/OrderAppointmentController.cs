@@ -592,7 +592,7 @@ namespace GSLogistics.Website.Admin.Controllers
 
             if (!string.IsNullOrEmpty(model.AppointmentNumberSearch))
             {
-                query.AppointmentNumber = model.AppointmentNumber;
+                query.AppointmentNumber = model.AppointmentNumberSearch;
             }
 
             if (model.ShippingDateStart.HasValue)
@@ -737,7 +737,7 @@ namespace GSLogistics.Website.Admin.Controllers
             string bol = data.Trim();
             string filePath = string.Empty;
             string path;
-            var mockpath = "\\\\Au-ag1\\Shipping\\E-LO\\609132017110703249.pdf";
+           // var mockpath = "\\\\Au-ag1\\Shipping\\E-LO\\609132017110703249.pdf";
             
 
            // Uri uriAddress1 = new Uri(mockpath);
@@ -762,7 +762,7 @@ namespace GSLogistics.Website.Admin.Controllers
 
                     if (order != null)
                     {
-                        Uri uriAddress = new Uri(mockpath);
+                        Uri uriAddress = new Uri(order.PathPOD.Trim());
 
                         string podPath = $"{uriAddress.Segments[2]}{uriAddress.Segments[3]}";
 
@@ -928,6 +928,7 @@ namespace GSLogistics.Website.Admin.Controllers
                         thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
                         thisAppointment.ShipTo = orderAppt.ShipTo;
                         thisAppointment.BillOfLading = orderAppt.BillOfLading;
+                        thisAppointment.pathPOD = orderAppt.PathPOD;
                     }
 
                     appointments.Add(thisAppointment);

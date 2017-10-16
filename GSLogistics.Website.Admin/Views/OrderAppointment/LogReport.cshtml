@@ -5,7 +5,7 @@
 
 @{
     ViewBag.Title = "Log Report";
-    AjaxOptions ajaxOptions = new AjaxOptions { UpdateTargetId = "panelBody", LoadingElementId = "loading", LoadingElementDuration = 1000 };
+    AjaxOptions ajaxOptions = new AjaxOptions { UpdateTargetId = "panelBody", LoadingElementId = "pnlGrid" };
 
 }
 
@@ -118,7 +118,7 @@
             </div>
             }
         <div class="panel-body" id="panelBody">
-            <div id="loading" class="load" style="display:none">
+            <div id="pnlGrid" class="load" style="display:none">
                 <p>Loading Data...</p>
             </div>
             @Html.Action("GetLogReport", Model)
@@ -237,6 +237,7 @@
                         ddDivisions.append($('<option></option>').val(option.Id).html(option.Name));
 
                     });
+                    $("#btnRefresh").trigger('click');
 
 
                 }
@@ -248,6 +249,11 @@
 
         });
 
+
+        
+        $("#SelectedDivisionId").change(function () {
+            $("#btnRefresh").trigger('click');
+        });
 
 
 
