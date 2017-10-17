@@ -1294,14 +1294,29 @@
                 toastr.warning("Please select at least one Appointment");
                 return false;
             }
+            
+            var today = new Date();
+            
+
             var apptNos = new Array();
             var bols = new Array();
             var carriers = new Array();
+            var overdue = false;
 
             for (var i = 0; i < selected.length; i++) {
+                var shippingDate = new Date(selected[i]["ShipDate"]);
+                console.log(shippingDate);
+                console.log("today:");
+                console.log(today);
+
                 apptNos.push(selected[i]["AppointmentNo"]);
                 bols.push(selected[i]["BillOfLading"]);
                 carriers.push(selected[i]["Carrier"])
+                
+                if (shippingDate < today) {
+                    overdue = true;
+                }
+                 
             }
 
             if (bols.length > 0) {
@@ -1316,6 +1331,13 @@
             
             if (allSameCarriers == false) {
                 toastr.error("Please ensure all the Orders tied to the same carrier ","Please review!", {
+                        "closeButton": true, "timeOut": "8000"
+                        });
+                        return false;
+            }
+
+            if (overdue == true) {
+                toastr.error("Please ensure all the Orders has a valid Shipping Date","Please review!", {
                         "closeButton": true, "timeOut": "8000"
                         });
                         return false;
