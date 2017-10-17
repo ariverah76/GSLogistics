@@ -283,6 +283,8 @@
                                 @Html.LabelFor(m => m.ShippingDate)
                                 @Html.DatePicker(m => m.ShippingDate, minDateDays: -2, htmlAttributes:  new { @class = "form-control" })
                                 @Html.ValidationMessageFor(m => m.ShippingDate)
+                                @Html.DatePicker(m => m.ReScheduleDate, minDateDays: -2, htmlAttributes: new { @class = "form-control" })
+
                             </div>
                             <div class="form-group">
                                 @Html.LabelFor(m => m.ShippingTime)
@@ -968,6 +970,11 @@
             toastr.warning("Please select at least an Order");
             return false;
         }
+
+        if (selected.length > 1) {
+            toastr.warning("Only one order can be edited at time");
+            return false;
+        }
         var appts = new Array();
 
 
@@ -983,6 +990,8 @@
             toastr.warning("Please ensure all the Appointments are grouped on the same appointment number");
         }
         else {
+            var today = new Date();
+
             $('#setAppointmentModal').modal({
                 show: true,
                 backdrop: "static"
@@ -991,8 +1000,24 @@
             $("#ShippingDate").val(selected[0]["ShipDate"]);
             $("#ShippingTime").val(selected[0]["ShipTime"]);
             $("#ShippingCompanyId").val(selected[0]["ScaccCode"]).change();
+            $("#RescheduleDate").hide();
 
             $('#totalOrdersLabel').hide();
+            $("#ShippingDate").prop('disabled', true);
+
+            var shippingDate = new Date(selected[0]["ShipDate"]);
+
+            if (shippingDate < today) {
+                if (confirm("Appointment date is on overdue, do you want to re-schedule?")) {
+                   // $("#ShippingDate").prop('disabled', false);
+                    $("#ShippingDate").hide();
+                    $("#ReScheduleDate").show();
+                }
+                else {
+                    $("#ShippingDate").show();
+                    $("#ReScheduleDate").hide();
+                }
+            }
 
             var dt = selected[0]["DeliveryTypeId"];
             if (dt == "1") {
@@ -1036,6 +1061,7 @@
             model.ScacCode = $("#ShippingCompanyId").val();
             model.ShippingTimeLimit = $('#ShippingTimeLimit').val();
             model.DeliveryTypeId = $('input[name = DeliveryTypeId]:checked').val();
+            model.ReScheduleDate = $("#ReScheduleDate").val();
 
             model.Orders = orders;
 
@@ -1185,6 +1211,9 @@
            
         }
 
+        $("#ReScheduleDate").hide();
+        $("#ShippingDate").show();
+
         if (hasBol == true) {
             $("#ShippingCompanyId").val(selected2[0]["ScacCode"]).change();
             $("#ShippingCompanyId").prop('disabled', true)
@@ -1222,7 +1251,7 @@
         $("#ShippingTimeLimit").val('');
         $("#ShippingCompanyId").val('').trigger('change');
         $('input[name = DeliveryTypeId]').attr('checked', false);
-
+        $('#ReScheduleDate').val('');
         $('input[name = DeliveryTypeId]').removeAttr('disabled');
 
         $("#ShippingCompanyId").prop('disabled', false)

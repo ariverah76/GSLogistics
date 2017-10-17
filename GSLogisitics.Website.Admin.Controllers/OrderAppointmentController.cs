@@ -496,14 +496,17 @@ namespace GSLogistics.Website.Admin.Controllers
                         ShippingTime = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTime.Hour, model.ShippingTime.Minute, 0),
                         ScacCode = model.ScacCode,
                         DateAdded = appt.DateAdded,
-                        DeliveryTypeId = model.DeliveryTypeId
+                        DeliveryTypeId = model.DeliveryTypeId,
+                        ReScheduleDate = model.ReScheduleDate
+                        
                     };
 
                     if (model.ShippingTimeLimit.HasValue)
                     {
                         appointment.ShippingTimeLimit = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTimeLimit.Value.Hour, model.ShippingTimeLimit.Value.Minute, 0);
                     }
-                    await logic.Update(appointment);
+                    await logic.UpdateScript(appointment);
+                    //await logic.Update(appointment);
 
                    // repository.UpdateAppointment(appointment);
                 }
@@ -632,8 +635,9 @@ namespace GSLogistics.Website.Admin.Controllers
                         DeliveryTypeId = appt.DeliveryTypeId,
                         DivisionId = appt.DivisionId,
                         DivisionName = appt.DivisionName,
-                        DivisionNameId = appt.DivisionNameId
-
+                        DivisionNameId = appt.DivisionNameId,
+                        ReScheduleDate = appt.ReScheduleDate
+                        
                     };
 
                     var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();

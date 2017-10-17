@@ -40,6 +40,9 @@
                     S. Time
                 </th>
                 <th>
+                    Reschedule Dt
+                </th>
+                <th>
                     Scac
                 </th>
                 <th>
@@ -64,6 +67,7 @@
                 <th>APPT#</th>
                 <th>TotalPieces</th>
                 <th>TotalBoxes</th>
+                <th></th>
                 <th></th>
                 <th></th>
                 <th></th>
@@ -106,6 +110,9 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.ShippingTimeFriendly)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ReScheduleDate)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.ScaccCode)
@@ -192,9 +199,14 @@
                 }
                 ,
                 {
+                    data: 'RescheduleDate'
+                }
+                ,
+                {
                     data: 'ScaccCode' 
                 }
                 ,
+                
                 {
                     data: 'Carrier'
                 }

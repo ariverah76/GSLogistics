@@ -57,6 +57,8 @@ namespace GSLogistics.Website.Admin.Models
 
         public string pathPOD { get; set; }
 
+        public DateTime? ReScheduleDate { get;set;}
+
 
 
     }

@@ -61,6 +61,9 @@ namespace GSLogistics.Entities
         [Column("UserName", Order = 14)]
         public string UserName { get; set; }
 
+        [Column("ReScheduleDate", Order = 15)]
+        public DateTime? ReScheduleDate { get; set; }
+
         [ForeignKey("ScacCode")]
         public virtual ScacCode CatScacCode { get; set; }
 
@@ -69,6 +72,8 @@ namespace GSLogistics.Entities
 
         [ForeignKey("DivisionId")]
         public virtual CustomerDivision Division { get; set; }
+
+
 
     }
 }

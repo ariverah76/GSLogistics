@@ -116,6 +116,8 @@ namespace GSLogistics.Website.Admin.Models
         [Required( ErrorMessage = "Please specify type of Delivery")]
         public int? DeliveryTypeId { get; set; }
 
+        public DateTime? ReScheduleDate { get; set; }
+
         #endregion
     }
 }

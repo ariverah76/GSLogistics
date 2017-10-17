@@ -30,5 +30,7 @@ namespace GSLogistics.Model
         public short? DeliveryTypeId { get; set; }
         public string BillOfLading { get; set; }
 
+        public DateTime? ReScheduleDate { get; set; }
+
     }
 }

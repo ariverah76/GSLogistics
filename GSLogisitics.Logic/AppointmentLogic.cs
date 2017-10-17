@@ -37,5 +37,10 @@ namespace GSLogistics.Logic
             return Repository.ToList(query);
         }
 
+
+        public async Task<int> UpdateScript(Appointment appointment)
+        {
+            return await Repository.UpdateScript(appointment);
+        }
     }
 }
