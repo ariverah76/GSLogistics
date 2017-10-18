@@ -57,8 +57,8 @@ namespace GSLogistics.Entities.Concrete
             }
             if (query.ShippingDate.HasValue) // TODO : look for reschedule date
             {
-                q = q.Where(x => x.ShipDate.Year == query.ShippingDate.Value.Year && x.ShipDate.Month == query.ShippingDate.Value.Month && x.ShipDate.Day == query.ShippingDate.Value.Day);
-                //|| x.ShipDate.Year == query..Value.Year && x.ShipDate.Month == query.ShippingDate.Value.Month && x.ShipDate.Day == query.ShippingDate.Value.Day);
+                q = q.Where(x => x.ShipDate.Year == query.ShippingDate.Value.Year && x.ShipDate.Month == query.ShippingDate.Value.Month && x.ShipDate.Day == query.ShippingDate.Value.Day
+                || x.ReScheduleDate.Value.Year == query.ShippingDate.Value.Year && x.ReScheduleDate.Value.Month == query.ShippingDate.Value.Month && x.ReScheduleDate.Value.Day == query.ShippingDate.Value.Day);
             }
             if (!string.IsNullOrEmpty(query.Status))
             {

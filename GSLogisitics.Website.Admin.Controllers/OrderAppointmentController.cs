@@ -537,26 +537,7 @@ namespace GSLogistics.Website.Admin.Controllers
             return Json(new { url = "List" });
         }
         
-
-        //[HttpPost]
-        //public JsonResult UpdateNotes()
-        //{
-            
-        //    string[] keys = Request.Form.AllKeys;
-           
-
-        //    var result = keys[1].Split(new char[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
-
-        //    Entities.OrderAppointment oappt = new Entities.OrderAppointment() { PickTicketId = result[1], ShipTo = Request.Form[keys[1]] };
-
-        //    repository.UpdateOrderAppointmentNotes(result[1], Request.Form[keys[1]]);
-
-
-        //    var resp = new data() { DT_RowId = result[1], PickTicketId = result[1], StoreName = Request.Form[keys[1]] };
-
-
-        //    return Json(resp);
-        //}
+        
 
         [HttpPost]
         public async Task<ActionResult> UpdateAppointment(UpdateAppointment update)
