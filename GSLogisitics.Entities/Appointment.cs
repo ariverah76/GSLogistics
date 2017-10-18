@@ -21,7 +21,7 @@ namespace GSLogistics.Entities
         [Column(Order =0), Key]
         public string CustomerId{ get; set; }
 
-        [Column(Order =1), Key]
+        [Column(Order =1)]
         public DateTime DateAdd { get; set; }
 
         [Column(Order = 2), Key]

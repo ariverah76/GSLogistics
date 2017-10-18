@@ -1012,6 +1012,7 @@
                    // $("#ShippingDate").prop('disabled', false);
                     $("#ShippingDate").hide();
                     $("#ReScheduleDate").show();
+                    $("#ReScheduleDate").val(selected[0]["RescheduleDate"]);
                 }
                 else {
                     $("#ShippingDate").show();
@@ -1058,7 +1059,7 @@
             model.AppointmentNumber = $("#AppointmentNumber").val();
             model.Shippingdate = $("#ShippingDate").val();
             model.ShippingTime = $("#ShippingTime").val();
-            model.ScacCode = $("#ShippingCompanyId").val();
+            model.ScacCode = $("#ShippingCompanyId").val(); 
             model.ShippingTimeLimit = $('#ShippingTimeLimit').val();
             model.DeliveryTypeId = $('input[name = DeliveryTypeId]:checked').val();
             model.ReScheduleDate = $("#ReScheduleDate").val();
@@ -1167,6 +1168,9 @@
             return selected.length + ' order(s) to assign'
         });
         $('#totalOrdersLabel').show();
+
+        $('#btnSave').attr('onclick', 'setNewAppointment()')
+
         var totalPieces = 0;
         var totalCtns = 0;
         var totalLbs = 0;
@@ -1207,7 +1211,8 @@
             });
         }
         else {
-            $('#summary li:last').remove();
+            //$('#summary li:last').remove();
+            $(".list-group li:has(span[id='totalgohs'])").remove();
            
         }
 
@@ -1344,6 +1349,18 @@
                 
                 if (shippingDate < today) {
                     overdue = true;
+                    
+                    var timeStamp = Date.parse(selected[i]["RescheduleDate"]);
+                    if (isNaN(timeStamp) == false) {
+                        var reScheduleDate = new Date(selected[i]["RescheduleDate"]);
+                        if (reScheduleDate < today) {
+                            overdue = true;
+                        }
+                        else {
+                            overdue = false;
+                        }
+                    }
+
                 }
                  
             }
