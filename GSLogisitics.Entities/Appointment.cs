@@ -64,6 +64,9 @@ namespace GSLogistics.Entities
         [Column("ReScheduleDate", Order = 15)]
         public DateTime? ReScheduleDate { get; set; }
 
+        [Column("IsReSchedule", Order = 16)]
+        public bool IsReSchedule { get; set; }
+
         [ForeignKey("ScacCode")]
         public virtual ScacCode CatScacCode { get; set; }
 

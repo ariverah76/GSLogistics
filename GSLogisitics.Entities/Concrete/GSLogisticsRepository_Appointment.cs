@@ -77,6 +77,10 @@ namespace GSLogistics.Entities.Concrete
                 q = q.Where(x => x.DivisionId.HasValue && query.DivisionIds.Contains(x.DivisionId.Value));
             }
 
+            if (query.IsReschedule.HasValue)
+            {
+                q = q.Where(x => x.IsReSchedule == query.IsReschedule.Value);
+            }
 
 
             return q;
@@ -110,7 +114,8 @@ namespace GSLogistics.Entities.Concrete
                 DivisionName = x.Division != null ? x.Division.Description : string.Empty,
                 DivisionNameId = x.Division != null ? x.Division.NameId : null,
                 DeliveryTypeId = x.DeliveryTypeId,
-                ReScheduleDate = x.ReScheduleDate
+                ReScheduleDate = x.ReScheduleDate,
+                IsReSchedule =x.IsReSchedule
 
             });
 
@@ -145,7 +150,9 @@ namespace GSLogistics.Entities.Concrete
                 DivisionName = x.Division != null ? x.Division.Description : string.Empty,
                 DivisionNameId = x.Division != null ? x.Division.NameId : string.Empty,
                 DeliveryTypeId = x.DeliveryTypeId,
-                ReScheduleDate = x.ReScheduleDate
+                ReScheduleDate = x.ReScheduleDate,
+                IsReSchedule = x.IsReSchedule
+                
 
             });
 
@@ -338,6 +345,8 @@ namespace GSLogistics.Entities.Concrete
                     {
                         entity.ReScheduleDate = appointment.ReScheduleDate;
                     }
+
+                    entity.IsReSchedule = appointment.IsReSchedule;
 
 
                     var result =  await context.SaveChangesAsync();

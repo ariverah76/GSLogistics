@@ -46,7 +46,7 @@
             </th>
             <th></th>
             <th></th>
-
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -97,6 +97,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.pathPOD)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExternalBol)
                 </td>
             </tr>
         }
@@ -173,7 +176,12 @@
                 ,
                 {
                     data: 'pathPOD',
-                    visible: false
+                    visible: true
+                }
+                ,
+                {
+                    data: 'ExternalBol',
+                    visible: true
                 }
             ]
             ,
@@ -192,19 +200,31 @@
                         groupid++;
                         val = api.row(api.row($(rows).eq(i)).index()).data();
                         var bol = val['AppointmentNo'];
-                        var rowData = api.row(i).data();
+                        
+                        console.log(val['ExternalBol'])
                         //$(rows).eq(i).before(
                         //    '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
                         //);
+                        //  '<tr class="group"><td>&nbsp;</td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
                         if (val['pathPOD'].length == 0) {
                             $(rows).eq(i).before(
-                            '<tr class="group"><td>&nbsp;</td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
+                            '<tr class="group"><td colspan=1><button class="btn btn-info" type="button" data-toggle="tooltip" title="Re-Schedule" onclick="reschedule(\'' + group + '\',\'' + bol + '\')" id=btnresch_' + group + '><i class="fa fa-calendar-plus-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
                             );
                         }
                         else {
-                            $(rows).eq(i).before(
-                              '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
-                          );
+                            var header = '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
+                            var extcol = val['ExternalBol'];
+                            if (extcol.search("checked") > 0 ) {
+                                
+                                header = header.replace("btn btn-danger", "btn btn-warning");
+                                header = header.replace("See POD", "See External POD");
+                                header = header.replace("</button>", 'E</button>');
+                                header = header.replace("fa fa-file-pdf-o", "fa fa-file-pdf-o pull-left");
+                            }
+                            else {
+
+                            }
+                            $(rows).eq(i).before(header);
                         }
                             
                         

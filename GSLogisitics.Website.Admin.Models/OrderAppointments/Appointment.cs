@@ -38,7 +38,7 @@ namespace GSLogistics.Website.Admin.Models
 
         public string PurchaseOrder { get; set; }
         public int Pieces { get; set; }
-        public int BoxesNumber { get; set; } 
+        public int BoxesNumber { get; set; }
         public string Posted { get; set; }
         public DateTime DateAdded { get; set; }
 
@@ -47,7 +47,7 @@ namespace GSLogistics.Website.Admin.Models
         public string DivisionNameId { get; set; }
 
         public string DivisionDisplay
-        { 
+        {
             get { return $"{DivisionNameId} {DivisionName}"; }
         }
         public string ShipTo { get; set; }
@@ -59,7 +59,9 @@ namespace GSLogistics.Website.Admin.Models
 
         [DataType(DataType.Date)]
         [UIHint("Date")]
-        public DateTime? ReScheduleDate { get;set;}
+        public DateTime? ReScheduleDate { get; set; }
+
+        public bool ExternalBol { get; set; }
 
 
 

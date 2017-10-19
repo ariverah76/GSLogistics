@@ -788,6 +788,58 @@ namespace GSLogistics.Website.Admin.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<ActionResult> RescheduleBol(string bol, string appointmentnumber)
+        {
+            StringBuilder sb = new StringBuilder();
+            using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
+            using (var aLogic = Kernel.Get<IAppointmentLogic>())
+            {
+               // List<Model.OrderAppointment> orders = new List<Model.OrderAppointment>();
+                OrderAppointmentQuery query = new OrderAppointmentQuery();
+                if (!string.IsNullOrEmpty(bol))
+                {
+                    query.BillOfLading = bol;
+                }
+                else
+                {
+                    query.EmptyBol = true;
+                }
+
+                //var orders = await oLogic.ToListAsync(query);
+                var appointments = await aLogic.ToListAsync(new AppointmentQuery() { AppointmentNumber = appointmentnumber, Posted = true, Status = "A" });
+
+                bool found = false;
+                foreach(var appt in appointments)
+                {
+
+                    appt.IsReSchedule = true;
+
+                    var result = await aLogic.Update(appt);
+
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        sb.AppendLine($"Picket Ticket {appt.PickTicket}, Bill Of Lading {bol}, could not be re-scheduled. Error: {result}");
+                    }
+
+                    // && string.IsNullOrEmpty(bol) ? true : x.BillOfLading == bol
+                    //found = orders.Any(x => x.CustomerId == appt.CustomerId && x.PickTicketId == appt.PickTicket);
+
+                    //if (!found)
+                    //{
+                    //    throw new Exception("Not match");
+                    //}
+                    //else
+                    //{
+                       
+                    //}
+
+                }
+
+            }
+
+            return Json(new { result = sb.ToString() }, JsonRequestBehavior.AllowGet);
+        }
         public async Task<ActionResult> GenerateLogReport(LogReportIndex_ViewModel model)
         {
             //var model = new LogReportIndex_ViewModel()
@@ -841,11 +893,12 @@ namespace GSLogistics.Website.Admin.Controllers
         {
             List<Models.Appointment> appointments = new List<Models.Appointment>();
 
-            
+
 
             var query = new AppointmentQuery()
             {
-                Posted = true
+                Posted = true,
+                IsReschedule = false
             };
 
             var userContext = Session["UserContext"] as GSLogisticsUserContext;
@@ -922,6 +975,7 @@ namespace GSLogistics.Website.Admin.Controllers
                         thisAppointment.ShipTo = orderAppt.ShipTo;
                         thisAppointment.BillOfLading = orderAppt.BillOfLading;
                         thisAppointment.pathPOD = orderAppt.PathPOD;
+                        thisAppointment.ExternalBol = orderAppt.ExternalBol;
                     }
 
                     appointments.Add(thisAppointment);
@@ -1068,7 +1122,7 @@ namespace GSLogistics.Website.Admin.Controllers
             {
                 Posted = true,
                 ShippingDateEnd = DateTime.Today,
-                hasBool = true
+                IsReschedule = true
                 
             };
 

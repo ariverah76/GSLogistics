@@ -8,6 +8,10 @@ namespace GSLogistics.Model.Query
 {
     public class AppointmentQuery
     {
+        public AppointmentQuery()
+        {
+            IsReschedule = false;
+        }
         public string PickTicketId { get; set; }
         public string[] PickTicketsIds { get; set; }
         public string CustomerId { get; set; }
@@ -29,5 +33,7 @@ namespace GSLogistics.Model.Query
         public int? DivisionId { get; set; }
 
         public int[] DivisionIds { get; set; }
+
+        public bool? IsReschedule { get; set; }
     }
 }

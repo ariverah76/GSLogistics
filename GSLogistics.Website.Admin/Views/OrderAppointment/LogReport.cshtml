@@ -223,6 +223,8 @@
 
         
 
+        
+
         $("#SelectedClientId").change(function () {
             var selectedItem = $(this).val();
             var ddDivisions = $("#SelectedDivisionId");
@@ -281,6 +283,29 @@
         }).fail(function () {
             toastr.error("Error downloading the document");
         });
+
+    }
+
+    function reschedule(bol, apptnumber) {
+
+        if (confirm("Are you really sure to re-schedule this Bill of Lading?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("RescheduleBol", "OrderAppointment")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify( {"bol": bol, "appointmentnumber": apptnumber  }),
+                dataType: "json",
+
+            }).done(function (returnValue) {
+                if (returnValue.success) {
+                    window.location.href = "/OrderAppointment/DownloadReport?reportName=" + returnValue.fName + "&format=" + returnValue.mimeType + "&fileExtension=" + returnValue.ReportFormat;
+                    toastr.success("Report downloaded!");
+                    $("#btnRefresh").trigger('click');
+                }
+            }).fail(function () {
+                toastr.error("Error downloading the report");
+            });
+        }
 
     }
 

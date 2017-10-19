@@ -83,7 +83,8 @@ namespace GSLogistics.Entities
         [Column("pathPOD", Order = 24)]
         public string PathPOD { get; set; }
 
-
+        [Column("ExternalBol", Order = 25)]
+        public bool ExternalBol { get; set; }
 
     }
 }

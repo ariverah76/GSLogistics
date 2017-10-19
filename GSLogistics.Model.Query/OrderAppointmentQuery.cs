@@ -20,5 +20,7 @@ namespace GSLogistics.Model.Query
 
         public string[]  CustomerIds { get; set; }
         public int[] DivisionIds { get; set; }
+
+        public bool EmptyBol { get; set; }
     }
 }

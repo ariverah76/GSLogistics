@@ -56,6 +56,10 @@ namespace GSLogistics.Entities.Concrete
             {
                 q = q.Where(x => x.BillOfLading == query.BillOfLading);
             }
+            else if (query.EmptyBol)
+            {
+                q = q.Where(x => string.IsNullOrEmpty(x.BillOfLading));
+            }
 
             return q;
 
@@ -104,7 +108,8 @@ namespace GSLogistics.Entities.Concrete
                 DivisionName = x.Division != null ? x.Division.Description : string.Empty,
                 DeliveryTypeId = string.IsNullOrEmpty(x.Delivery) ? default(short?) : x.Delivery == "P" ? (short)1 : (short)2,
                 Shipping  = GetShippingDescription(x.Shipping),
-                PathPOD = x.PathPOD
+                PathPOD = x.PathPOD, 
+                ExternalBol = x.ExternalBol
             });
 
             return result.ToList();
@@ -154,7 +159,8 @@ namespace GSLogistics.Entities.Concrete
                 DivisionName = x.Division != null ? x.Division.Description : string.Empty,
                 DeliveryTypeId = string.IsNullOrEmpty(x.Delivery) ? default(short?) : x.Delivery == "P" ? (short)1 : (short)2,
                 Shipping = GetShippingDescription(x.Shipping),
-                PathPOD = x.PathPOD
+                PathPOD = x.PathPOD,
+                ExternalBol = x.ExternalBol
             });
 
             return result.ToList();

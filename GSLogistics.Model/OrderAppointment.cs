@@ -32,6 +32,7 @@ namespace GSLogistics.Model
         public short? DeliveryTypeId { get; set; }
         public string Shipping { get; set; }
         public string PathPOD { get; set; }
+        public bool ExternalBol { get; set; }
 
     }
 }

@@ -31,6 +31,7 @@ namespace GSLogistics.Model
         public string BillOfLading { get; set; }
 
         public DateTime? ReScheduleDate { get; set; }
+        public bool IsReSchedule { get; set; }
 
     }
 }
