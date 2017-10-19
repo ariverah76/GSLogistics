@@ -1,10 +1,14 @@
 ﻿
+
 @using GSLogistics.Website.Admin.Models
 @model List<Appointment>
 
-<table class="table display-compact table-striped table-bordered" id="tableLogReport" style="width:100%">
+<table class="table display-compact table-striped table-bordered" id="tableLogReportOverdue" style="width:100%">
     <thead>
         <tr>
+            <th class="text-center">
+
+            </th>
             <th>
                 Appt#
             </th>
@@ -53,6 +57,7 @@
         @foreach (var item in Model)
         {
             <tr>
+                <td></td>
                 <td>
                     @Html.DisplayFor(modelItem => item.AppointmentNo)
                 </td>
@@ -101,18 +106,27 @@
             </tr>
         }
     </tbody>
-    
+
 </table>
 
 <script type="text/javascript">
 
     $(document).ready(function () {
 
-        $("#tableLogReport").DataTable({
+        $("#tableLogReportOverdue").DataTable({
             dom: 'lfTrtip',
-            
+
             paging: false,
+            columnDefs: [{
+                orderable: false,
+                className: 'select-checkbox',
+                targets: 0
+            }],
             columns: [
+                {
+
+                }
+                ,
                 {
                     data: 'AppointmentNo'
                 }
@@ -177,6 +191,10 @@
                 }
             ]
             ,
+            select: {
+                style: 'multi'
+            }
+            ,
             "drawCallback": function (settings) {
                 var api = this.api();
                 var rows = api.rows({ page: 'current' }).nodes();
@@ -192,32 +210,15 @@
                         groupid++;
                         val = api.row(api.row($(rows).eq(i)).index()).data();
                         var bol = val['AppointmentNo'];
-                        var rowData = api.row(i).data();
-                        //$(rows).eq(i).before(
-                        //    '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
-                        //);
-                        if (val['pathPOD'].length == 0) {
-                            $(rows).eq(i).before(
-                            '<tr class="group"><td>&nbsp;</td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
-                            );
-                        }
-                        else {
-                            $(rows).eq(i).before(
-                              '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
-                          );
-                        }
-                            
-                        
-                        console.log(val['pathPOD']);
-                        // $(rows).eq(i).after(
-                        //    '<tr class="footer"><td> Totals:</td></tr>'
-                       //);
+
+
+                        $(rows).eq(i).before(
+                        '<tr class="group"><td colspan=7> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
+                        );
 
                         last = group;
                     }
                     val = api.row(api.row($(rows).eq(i)).index()).data();      //current order index
-                    console.log('Val: ' + val);
-                    console.log(val);
                     $.each(val, function (index2, val2) {
                         if (index2 == "Pieces" || index2 == "BoxesNumber") {
                             if (typeof subtotal[groupid] == 'undefined') {
@@ -236,35 +237,27 @@
                 });
                 $('tbody').find('.group').each(function (i,v) {
                     var rowCount = $(this).nextUntil('.group').length;
-                    //If we need to check all the orders has a pathPOD this is where we can inject the button instead 
+                    //If we need to check all the orders has a pathPOD this is where we can inject the button instead
                     $(this).find('td:nth-child(2)').append($('<span />', { 'class': 'rowCount-grid' }).append($('<b />', { 'text': ' ( Total Orders '+rowCount+')' })));
                     var subtd = '';
                     //for (var a=2;a<columna;a++)
-                    //{ 
+                    //{
                     //    subtd += '<td> Total'+subtotal[i][a] +'</td>';
                     //}
                     subtd += '<td> <span><strong> ' + subtotal[i]["Pieces"] + '</strong></span></td>';
-                    subtd += '<td colspan=5><span><strong>' + subtotal[i]["BoxesNumber"] + '</strong></span></td>';
+                    subtd += '<td colspan=6><span><strong>' + subtotal[i]["BoxesNumber"] + '</strong></span></td>';
                     $(this).append(subtd);
 
                 });
-						
-            
+
+
             },
-            
+
         });
 
-        //$('#tableLogReport tbody').on('click', 'tr.group', function () {
-        //    var currentOrder = table.order()[0];
-        //    if (currentOrder[0] === 2 && currentOrder[1] === 'asc') {
-        //        table.order([0, 'desc']).draw();
-        //    }
-        //    else {
-        //        table.order([0, 'asc']).draw();
-        //    }
-        //});
+       
 
     });
 
-    
+
 </script>

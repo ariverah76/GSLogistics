@@ -24,6 +24,8 @@ namespace GSLogistics.Model.Query
         public DateTime? ShippingDate { get; set; }
         public short? DeliveryTypeId { get; set; }
 
+        public bool? hasBool { get; set; }
+
         public int? DivisionId { get; set; }
 
         public int[] DivisionIds { get; set; }

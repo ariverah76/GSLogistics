@@ -6,7 +6,7 @@
 
 
 @{
-    ViewBag.Title = "List";
+    ViewBag.Title = "Orders";
     AjaxOptions ajaxOptions = new AjaxOptions { UpdateTargetId = "panelBody", LoadingElementId = "loading", LoadingElementDuration = 1000 };
     AjaxOptions ajaxOptionsForOrders = new AjaxOptions { UpdateTargetId = "panelBodyOrders", LoadingElementId = "loadingOrders"};
 
@@ -106,13 +106,13 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.CancelDateStartDate)
-                                    @Html.DatePicker(x => x.CancelDateStartDate, 0, new { @class = "form-control" })
+                                    @Html.DatePicker(x => x.CancelDateStartDate, htmlAttributes: new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.CancelDateEndDate)
-                                    @Html.DatePicker(x => x.CancelDateEndDate,0, new { @class = "form-control" })
+                                    @Html.DatePicker(x => x.CancelDateEndDate, htmlAttributes:  new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
@@ -125,11 +125,11 @@
                                     @Html.LabelFor(model => model.ShipFor)
                                     @if (!Model.EnableShipForFilter)
                                     {
-                                        @Html.DatePicker(x => x.ShipFor, 0, new { @class = "form-control", @disabled = "disabled" })
+                                        @Html.DatePicker(x => x.ShipFor, htmlAttributes: new { @class = "form-control", @disabled = "disabled" })
                                     }
                                     else
                                     {
-                                        @Html.DatePicker(x => x.ShipFor,0, new { @class = "form-control" })
+                                        @Html.DatePicker(x => x.ShipFor, htmlAttributes: new { @class = "form-control" })
                                     }
                                 </div>
                             </div>
@@ -194,13 +194,13 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.ShippingDateStart)
-                                            @Html.DatePicker(x => x.ShippingDateStart,-2, new { @class = "form-control" })
+                                            @Html.DatePicker(x => x.ShippingDateStart,minDateDays:-2, htmlAttributes: new { @class = "form-control" })
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.ShippingDateEnd)
-                                            @Html.DatePicker(x => x.ShippingDateEnd,0, new { @class = "form-control" })
+                                            @Html.DatePicker(x => x.ShippingDateEnd, minDateDays: 0, htmlAttributes: new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -283,7 +283,7 @@
                                 @Html.LabelFor(m => m.ShippingDate)
                                 @Html.DatePicker(m => m.ShippingDate, minDateDays: -2, htmlAttributes:  new { @class = "form-control" })
                                 @Html.ValidationMessageFor(m => m.ShippingDate)
-                                @Html.DatePicker(m => m.ReScheduleDate, minDateDays: -2, htmlAttributes: new { @class = "form-control" })
+                                @*@Html.DatePicker(m => m.ReScheduleDate, minDateDays: -2, htmlAttributes: new { @class = "form-control" })*@
 
                             </div>
                             <div class="form-group">
@@ -971,23 +971,29 @@
             return false;
         }
 
-        if (selected.length > 1) {
-            toastr.warning("Only one order can be edited at time");
-            return false;
-        }
+        //if (selected.length > 1) {
+        //    toastr.warning("Only one order can be edited at time");
+        //    return false;
+        //}
         var appts = new Array();
+        var bols = new Array();
 
 
-
+        var hasBol = false;
         for (var i = 0; i < selected.length; i++) {
             appts.push(selected[i]["AppointmentNo"]);
+            bols.push(selected[i]["BillOfLading"])
 
+            if (selected[i]["BillOfLading"].length > 0) {
+                hasBol = true;
+            }
         }
 
         var allSameAppointmentNumber = appts.allValuesSame();
+        var allSameBols = bols.allValuesSame();
 
-        if (allSameAppointmentNumber == false){
-            toastr.warning("Please ensure all the Appointments are grouped on the same appointment number");
+        if (allSameAppointmentNumber == false || allSameBols == false){
+            toastr.warning("Please ensure all the Appointments are grouped on the same Appointment Number or Bill of Lading");
         }
         else {
             var today = new Date();
@@ -1000,24 +1006,35 @@
             $("#ShippingDate").val(selected[0]["ShipDate"]);
             $("#ShippingTime").val(selected[0]["ShipTime"]);
             $("#ShippingCompanyId").val(selected[0]["ScaccCode"]).change();
-            $("#RescheduleDate").hide();
+          //  $("#RescheduleDate").hide();
 
             $('#totalOrdersLabel').hide();
             $("#ShippingDate").prop('disabled', true);
 
             var shippingDate = new Date(selected[0]["ShipDate"]);
 
-            if (shippingDate < today) {
-                if (confirm("Appointment date is on overdue, do you want to re-schedule?")) {
-                   // $("#ShippingDate").prop('disabled', false);
-                    $("#ShippingDate").hide();
-                    $("#ReScheduleDate").show();
-                    $("#ReScheduleDate").val(selected[0]["RescheduleDate"]);
-                }
-                else {
-                    $("#ShippingDate").show();
-                    $("#ReScheduleDate").hide();
-                }
+            //if (shippingDate < today) {
+            //    if (confirm("Appointment date is on overdue, do you want to re-schedule?")) {
+            //       // $("#ShippingDate").prop('disabled', false);
+            //        $("#ShippingDate").hide();
+            //        $("#ReScheduleDate").show();
+            //        $("#ReScheduleDate").val(selected[0]["RescheduleDate"]);
+            //    }
+            //    else {
+            //        $("#ShippingDate").show();
+            //        $("#ReScheduleDate").hide();
+            //    }
+            //}
+            if (hasBol == true) {
+               
+                $("#ShippingCompanyId").prop('disabled', true)
+                $('input[name = DeliveryTypeId]').attr('disabled', 'disabled');
+                $("#ShippingDate").prop('disabled', true);
+            }
+            else {
+                $("#ShippingCompanyId").prop('disabled', false)
+                $('input[name = DeliveryTypeId]').removeAttr('disabled');
+                $("#ShippingDate").prop('disabled', false);
             }
 
             var dt = selected[0]["DeliveryTypeId"];
@@ -1062,7 +1079,7 @@
             model.ScacCode = $("#ShippingCompanyId").val(); 
             model.ShippingTimeLimit = $('#ShippingTimeLimit').val();
             model.DeliveryTypeId = $('input[name = DeliveryTypeId]:checked').val();
-            model.ReScheduleDate = $("#ReScheduleDate").val();
+           // model.ReScheduleDate = $("#ReScheduleDate").val();
 
             model.Orders = orders;
 
@@ -1177,6 +1194,8 @@
         var totalCubic = 0;
         var gohs = 0;
         var hasBol = false;
+        var bols = new Array();
+
         for (var i = 0; i < selected2.length; i++) {
 
             totalPieces += Number(selected2[i]["Pieces"]);
@@ -1191,8 +1210,21 @@
                 hasBol = true;
             }
 
+            bols.push(selected2[i]["BillOfLading"]);
 
         }
+
+        if (bols.length > 0) {
+            var allSameBol = bols.allValuesSame();
+        }
+        if (allSameBol == false) {
+            toastr.error("Please ensure all the Orders have same Bill of Lading Number ","Please review!", {
+            "closeButton": true, "timeOut": "8000"
+            });
+            return false;
+        }
+        
+
         $('#totPcs').html(function (n, c) {
             return totalPieces;
         });
@@ -1216,7 +1248,7 @@
            
         }
 
-        $("#ReScheduleDate").hide();
+//        $("#ReScheduleDate").hide();
         $("#ShippingDate").show();
 
         if (hasBol == true) {
@@ -1256,7 +1288,7 @@
         $("#ShippingTimeLimit").val('');
         $("#ShippingCompanyId").val('').trigger('change');
         $('input[name = DeliveryTypeId]').attr('checked', false);
-        $('#ReScheduleDate').val('');
+      //  $('#ReScheduleDate').val('');
         $('input[name = DeliveryTypeId]').removeAttr('disabled');
 
         $("#ShippingCompanyId").prop('disabled', false)
@@ -1307,7 +1339,12 @@
                     dataType: "json",
                     success: function (result) {
                         $("#selectedPanel").hide();
-                        toastr.info('Appointment set successfully');
+                        if (result.result !== "") {
+                            toastr.error(result.result);
+                        } else {
+                            toastr.info('Appointment set successfully');
+                        }
+                       
                         $("#btnRefresh").trigger("click");
                         //window.location.href = "List";
                     },
@@ -1384,12 +1421,12 @@
                         return false;
             }
 
-            if (overdue == true) {
-                toastr.error("Please ensure all the Orders has a valid Shipping Date","Please review!", {
-                        "closeButton": true, "timeOut": "8000"
-                        });
-                        return false;
-            }
+            //if (overdue == true) {
+            //    toastr.error("Please ensure all the Orders has a valid Shipping Date","Please review!", {
+            //            "closeButton": true, "timeOut": "8000"
+            //            });
+            //            return false;
+            //}
 
             //if (allSameBol == false || apptNos == false) {
             //    toastr.error("Please ensure all the Orders have same Bill of Lading Number and/or Appointment Number ","Please review!", {
@@ -1429,7 +1466,13 @@
                     data: JSON.stringify(model),
                     dataType: "json",
                     success: function (result) {
-                        toastr.success('Appointment(s) posted successfully');
+                        if (result.result == "") {
+                            toastr.success('Appointment(s) posted successfully');
+                        }
+                        else {
+                            toastr.error(result.result);
+                        }
+                        
                         table.rows('.selected').remove().draw(false);
                     }
 
@@ -1477,8 +1520,14 @@
                 data: JSON.stringify(model),
                 dataType: "json",
                 success: function (result) {
+                    if (result.result == "") {
+                        toastr.success('Appointment(s) cancelled successfully');
+                        
+                    }
+                    else {
+                        toastr.error(result.result);
 
-                    toastr.success('Appointment(s) cancelled successfully');
+                    }
                     table.rows('.selected').remove().draw(false);
                 }
 

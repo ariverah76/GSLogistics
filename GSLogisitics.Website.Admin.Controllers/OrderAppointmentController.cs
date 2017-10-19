@@ -363,7 +363,7 @@ namespace GSLogistics.Website.Admin.Controllers
 
             //    return Json(new { result = "Error" });
             //}
-
+            StringBuilder sb = new StringBuilder();
             using (var ol = Kernel.Get<IOrderAppointmentLogic>())
             using (var apptLogic = ol.GetLogic<IAppointmentLogic>())
             {
@@ -390,8 +390,6 @@ namespace GSLogistics.Website.Admin.Controllers
 
                     appointment.PtBulk = order.PtBulk;
 
-                    await apptLogic.Create(appointment);
-                    //repository.SaveAppointment(appointment);
 
                     Model.OrderAppointment oappt = new Model.OrderAppointment()
                     {
@@ -401,15 +399,18 @@ namespace GSLogistics.Website.Admin.Controllers
                         CustomerId = order.CustomerId,
                         Status = 1
                     };
-                    //Entities.OrderAppointment oappt = new Entities.OrderAppointment() { PurchaseOrderId = order.PurchaseOrderId, PickTicketId = order.PickTicketId, PtBulk = order.PtBulk, CustomerId = order.CustomerId, Status = 1 };
+                    
+                    var result = await apptLogic.SetAppointment(appointment, order.PurchaseOrderId);
 
-                    await ol.Update(oappt);
-                    //repository.UpdateOrderAppointment(oappt);
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        sb.AppendLine($"Order: {order.PickTicketId} Purchase Order: {order.PurchaseOrderId}, got the follow error: {result}");
+                    }
 
                 }
             }
 
-            return Json(new { result = "Success", url = "OrderAppointment/List" });
+            return Json(new { result = sb.ToString(), url = "OrderAppointment/List" });
         }
 
         [HttpPost]
@@ -441,6 +442,8 @@ namespace GSLogistics.Website.Admin.Controllers
         [Authorize(Roles = "Administrators")]
         public async Task<ActionResult> ActionAppointments(ActionAppointment model)
         {
+            StringBuilder sb = new StringBuilder();
+
             using (var appointmentLogic = Kernel.Get<IAppointmentLogic>())
             using (var ol = appointmentLogic.GetLogic<IOrderAppointmentLogic>())
             {
@@ -455,27 +458,32 @@ namespace GSLogistics.Website.Admin.Controllers
                         Status = appt.Status
                     };
 
-                    await appointmentLogic.Update(appointment);
-                    //await repository.UpdateAppointment(appointment);
-                    if (model.Action == AppointmentAction.Cancel)
+                    var result = await appointmentLogic.Update(appointment);
+
+                    if (string.IsNullOrEmpty(result))
                     {
-                        Model.OrderAppointment orderAppointment = new Model.OrderAppointment()
+                        if (model.Action == AppointmentAction.Cancel && (!appt.Posted.Value && appt.Status == "D"))
                         {
-                            CustomerId = appt.CustomerId,
-                            PickTicketId = appt.PickTicket,
-                            PurchaseOrderId = appt.PurchaseOrderId,
-                            Status = 0
-                        };
+                            Model.OrderAppointment orderAppointment = new Model.OrderAppointment()
+                            {
+                                CustomerId = appt.CustomerId,
+                                PickTicketId = appt.PickTicket,
+                                PurchaseOrderId = appt.PurchaseOrderId,
+                                Status = 0
+                            };
 
-                        await ol.Update(orderAppointment);
-
-                        //repository.UpdateOrderAppointment(orderAppointment);
-
+                            await ol.Update(orderAppointment);
+                        }
                     }
+                    else
+                    {
+                        sb.AppendLine($"Order: {appt.PickTicket} Client : {appt.CustomerId} failed to be posted. Error : {result}");
+                    }
+                    //await repository.UpdateAppointment(appointment);
                 }
             }
 
-            return Json(new { url = "OrderAppointment/List" });
+            return Json(new { result = sb.ToString(),  url = "OrderAppointment/List" });
         }
 
         [HttpPost]
@@ -919,7 +927,7 @@ namespace GSLogistics.Website.Admin.Controllers
                     appointments.Add(thisAppointment);
                 }
             }
-
+            appointments = appointments.OrderBy(x => x.PickTicket).ToList();
 
             return PartialView("_LogReport_AppointmentsPartial", appointments);
         }
@@ -1046,6 +1054,139 @@ namespace GSLogistics.Website.Admin.Controllers
             }
 
         }
+
+
+
+
+        public PartialViewResult GetLogReportOverdue(LogReportIndex_ViewModel model)
+        {
+            List<Models.Appointment> appointments = new List<Models.Appointment>();
+
+
+
+            var query = new AppointmentQuery()
+            {
+                Posted = true,
+                ShippingDateEnd = DateTime.Today,
+                hasBool = true
+                
+            };
+
+       
+            if (model.SelectedDay.HasValue)
+            {
+                query.ShippingDate = model.SelectedDay.Value;
+            }
+            
+
+            if (!string.IsNullOrEmpty(model.SelectedClientId))
+            {
+                query.CustomerId = model.SelectedClientId;
+            }
+            
+
+
+            if (model.SelectedDivisionId.HasValue && model.SelectedDivisionId.Value != 0)
+            {
+                query.DivisionId = model.SelectedDivisionId.Value;
+            }
+            
+
+            using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
+            using (var aLogic = oLogic.GetLogic<IAppointmentLogic>())
+            {
+
+                var orderAppts = oLogic.ToList(new OrderAppointmentQuery());
+                var ordersWithPOD = orderAppts.Where(x => string.IsNullOrEmpty(x.PathPOD) || string.IsNullOrWhiteSpace(x.PathPOD)).ToList();
+                var list = aLogic.ToList(query);
+
+                foreach (var appt in list )
+                {
+                    var thisAppointment = new Models.Appointment()
+                    {
+                        AppointmentNo = appt.AppointmentNumber,
+                        CustomerName = appt.CustomerName,
+                        CustomerId = appt.CustomerId,
+                        DivisionId = appt.DivisionId,
+                        DivisionName = appt.DivisionName,
+                        DivisionNameId = appt.DivisionNameId,
+                        Carrier = appt.Carrier,
+                        PickTicket = appt.PickTicket,
+                        PtBulk = appt.PtBulk,
+                        ScaccCode = appt.ScacCode,
+                        ShipDate = appt.ShippingDate.Value,
+                        ShipTime = appt.ShippingTime.Value,
+                        Posted = appt.Posted.ToString(),
+                        DateAdded = appt.DateAdded,
+                        DeliveryTypeId = appt.DeliveryTypeId
+
+                    };
+
+                    var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket && string.IsNullOrEmpty(x.PathPOD)).FirstOrDefault();
+                    if (orderAppt != null)
+                    {
+                        thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
+                        thisAppointment.Pieces = orderAppt.Pieces.Value;
+                        thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
+                        thisAppointment.ShipTo = orderAppt.ShipTo;
+                        thisAppointment.BillOfLading = orderAppt.BillOfLading;
+                        thisAppointment.pathPOD = orderAppt.PathPOD;
+
+                        appointments.Add(thisAppointment);
+                    }
+
+                    
+                }
+            }
+
+
+            return PartialView("_LogReport_Overdue", appointments);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Reschedule()
+        {
+            var model = new LogReportIndex_ViewModel();
+            model.SelectedDay = DateTime.Today.AddDays(-1);
+
+            return await this.Reschedule(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Reschedule(LogReportIndex_ViewModel model)
+        {
+
+            using (var logic = Kernel.Get<ICustomerLogic>())
+            {
+
+
+
+                Dictionary<string, string> result = new Dictionary<string, string>();
+                List<Model.Customer> cust = new List<Model.Customer>();
+                if (model.AvailableClientIds != null && model.AvailableClientIds.Any())
+                {
+                    cust = await logic.ToListAsync(new CustomerQuery() { CustomerIds = model.AvailableClientIds });
+                }
+                else
+                {
+                    cust = await logic.ToListAsync();
+                }
+                var clients = cust.OrderBy(x => x.CompanyName).Select(x => new { Id = x.CustomerId, Name = x.CompanyName }).ToList();
+              
+
+                clients.ForEach(x => result.Add(x.Id, x.Name));
+
+                ViewBag.Customers = new SelectList(result, "Key", "Value", null);
+
+                Dictionary<int, string> result2 = new Dictionary<int, string>();
+                result2.Add(7777, "Select a Customer");
+                
+                ViewBag.Divisions = new SelectList(result2, "Key", "Value", null);
+
+                return this.View("LogReportReSchedule", model);
+            }
+        }
+
 
         private class data
         {

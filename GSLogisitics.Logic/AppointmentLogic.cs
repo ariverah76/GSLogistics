@@ -23,7 +23,7 @@ namespace GSLogistics.Logic
             return await Repository.ToListAsync(query);
         }
 
-        public async Task<int> Update(Appointment appointment)
+        public async Task<string> Update(Appointment appointment)
         {
             return await Repository.Update(appointment);
         }
@@ -41,6 +41,11 @@ namespace GSLogistics.Logic
         public async Task<int> UpdateScript(Appointment appointment)
         {
             return await Repository.UpdateScript(appointment);
+        }
+
+        public async Task<string> SetAppointment(Appointment appointment, string purchaseOrder)
+        {
+            return await Repository.SetAppointment(appointment, purchaseOrder);
         }
     }
 }

@@ -1,0 +1,173 @@
+﻿@using GSLogistics.Website.Admin.Models
+@using GSLogistics.Website.Common
+
+@model LogReportIndex_ViewModel
+
+@{
+    ViewBag.Title = "Re-Schedule";
+    AjaxOptions ajaxOptions = new AjaxOptions { UpdateTargetId = "panelBody", LoadingElementId = "pnlLogReportOverdue" };
+
+}
+
+@{
+    var customers = this.ViewBag.Customers as SelectList;
+    var divisions = this.ViewBag.Divisions as SelectList;
+}
+
+<style type="text/css">
+    div.container {
+        width: 80%;
+    }
+
+    .blocking {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: rgba(255,255,255,.8) url("/8.gif") 50% 50% no-repeat;
+    }
+
+    body.loading {
+        overflow: hidden;
+    }
+
+        body.loading .blocking {
+            display: block;
+        }
+</style>
+
+<div class="panel panel-title">
+    <h2>Re-Schedule</h2>
+</div>
+
+
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+
+        </div>
+        @using (Ajax.BeginForm("GetLogReportOverDue", ajaxOptions))
+        {
+            <div class="btn-group btn-group-justified">
+                 @Html.ActionLink("Back to LogReport", "LogReport", "OrderAppointment", new { @class = "btn btn-info" })
+
+                <a href="#" class="btn btn-info" id="btnRefresh">Refresh</a>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Search</div>
+                <div class="panel-body">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.SelectedDay)
+                                @Html.DatePicker(x => x.SelectedDay, minDateDays: 0, maxDateDays: 1)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.SelectedClientId)
+                                @Html.DropDownListFor(m => m.SelectedClientId, customers, "Select", new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.SelectedDivisionId)
+                                @Html.DropDownListFor(m => m.SelectedDivisionId, divisions, "Select", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                  
+                </div>
+            </div>
+        }
+        <div class="panel-body" id="panelBody">
+            <div id="pnlLogReportOverdue" class="load" style="display:none">
+                <p>Loading Data...</p>
+            </div>
+            @Html.Action("GetLogReportOverdue", Model)
+        </div>
+    </div>
+</div>
+<div class="blocking"></div>
+@Scripts.Render("~/bundles/datetimepicker")
+@Scripts.Render("~/bundles/dataTables")
+@Scripts.Render("~/bundles/jqueryval")
+<script src="~/Scripts/DataTables/dataTables.select.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $(document).ajaxStop(function () {
+            $body = $("body");
+            $body.removeClass("loading");
+
+        });
+
+        $(document).ajaxStart(function () {
+            $body = $("body");
+            $body.addClass("loading")
+        });
+
+
+        $("#SelectedClientId").select2();
+        $("#SelectedDivisionId").select2();
+
+        $("#btnRefresh").click(function () {
+            $(this).closest("form").submit();
+        });
+
+        
+
+
+
+
+
+        $("#SelectedClientId").change(function () {
+            var selectedItem = $(this).val();
+            var ddDivisions = $("#SelectedDivisionId");
+            $.ajax({
+                cache: false,
+                type: 'GET',
+                url: '@Url.Action("GetDivisionByClient","OrderAppointment")',
+                data: {"customerId": selectedItem },
+                success: function (data) {
+                    ddDivisions.html('');
+                    $.each(data, function (id, option) {
+                        ddDivisions.append($('<option></option>').val(option.Id).html(option.Name));
+
+                    });
+                    $("#btnRefresh").trigger('click');
+
+
+                }
+                ,  error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.Error('Failed to get Divisions');
+                }
+            });
+
+
+        });
+
+
+
+        $("#SelectedDivisionId").change(function () {
+            $("#btnRefresh").trigger('click');
+        });
+
+
+
+    });
+
+
+
+</script>
+
+@Styles.Render("~/Content/datetimepicker")
+@Styles.Render("~/Content/datatables")

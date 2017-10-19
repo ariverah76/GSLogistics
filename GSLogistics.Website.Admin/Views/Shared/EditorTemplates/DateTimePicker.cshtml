@@ -8,7 +8,9 @@
     var startView = (int)ViewData["StartView"];
     var htmlAttributes = ViewData["HtmlAttributes"] as IDictionary<string, object>;
     var minDateDays = (int)ViewData["MinDateDays"];
+    var maxDateDays = (int)ViewData["MaxDateDays"];
     DateTime minDate = DateTime.Today;
+    DateTime maxDate = DateTime.Today;
     if (htmlAttributes == null)
     {
         htmlAttributes = new Dictionary<string, object>();
@@ -24,6 +26,11 @@
     {
         minDate =  minDate.AddDays(minDateDays);
     }
+
+    if (maxDateDays != 0)
+    {
+        maxDate = maxDate.AddDays(maxDateDays * -1) ;
+    }
 }
 
 @Html.TextBox(string.Empty, value, htmlAttributes)
@@ -32,13 +39,18 @@
 
     $(document).ready(function () {
         var today =  new Date(2000,1,1);
+        var maxEndDate = new Date(2100, 12,31);
         if (@(minDateDays) != 0){
             today = new Date("@(minDate.ToString(cFormat))");
+        }
+        if (@(maxDateDays) != 0){
+            maxEndDate = new Date("@(maxDate.ToString(cFormat))");
         }
         console.log(today);
         $("#" + "@(propertyName)").datetimepicker({
             format: "@(jsFormat)"
             , startDate: today
+            , endDate:  maxEndDate
             , autoclose: @(autoClose.ToString().ToLower())
             , todayHighlight: @(todayHighlight.ToString().ToLower())
             , minView: @(minView)
