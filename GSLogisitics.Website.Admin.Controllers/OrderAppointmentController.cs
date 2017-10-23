@@ -382,6 +382,7 @@ namespace GSLogistics.Website.Admin.Controllers
                     appointment.AppointmentNumber = model.AppointmentNumber;
                     appointment.DeliveryTypeId = model.DeliveryTypeId;
                     appointment.UserName = User.Identity.Name;
+                    appointment.Pallets = (short) model.Pallets;
 
                     if (model.ShippingTimeLimit.HasValue)
                     {
@@ -397,6 +398,7 @@ namespace GSLogistics.Website.Admin.Controllers
                         PickTicketId = order.PickTicketId,
                         PtBulk = order.PtBulk,
                         CustomerId = order.CustomerId,
+                        ShipFor = model.ShippingDate,
                         Status = 1
                     };
                     
@@ -505,8 +507,8 @@ namespace GSLogistics.Website.Admin.Controllers
                         ScacCode = model.ScacCode,
                         DateAdded = appt.DateAdded,
                         DeliveryTypeId = model.DeliveryTypeId,
-                        ReScheduleDate = model.ReScheduleDate
-                        
+                        ReScheduleDate = model.ReScheduleDate,
+                        Pallets = model.Pallets
                     };
 
                     if (model.ShippingTimeLimit.HasValue)
@@ -625,7 +627,8 @@ namespace GSLogistics.Website.Admin.Controllers
                         DivisionId = appt.DivisionId,
                         DivisionName = appt.DivisionName,
                         DivisionNameId = appt.DivisionNameId,
-                        ReScheduleDate = appt.ReScheduleDate
+                        ReScheduleDate = appt.ReScheduleDate,
+                        Pallets  = appt.Pallets
                         
                     };
 
@@ -703,7 +706,8 @@ namespace GSLogistics.Website.Admin.Controllers
                         ShipTime = appt.ShippingTime.Value,
                         Posted = appt.Posted.ToString(),
                         DateAdded = appt.DateAdded,
-                        DeliveryTypeId = appt.DeliveryTypeId
+                        DeliveryTypeId = appt.DeliveryTypeId,
+                        Pallets = appt.Pallets
 
                     };
 
@@ -715,6 +719,10 @@ namespace GSLogistics.Website.Admin.Controllers
                         thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
                         thisAppointment.ShipTo = orderAppt.ShipTo;
                         thisAppointment.BillOfLading = orderAppt.BillOfLading;
+                        if (orderAppt.ShipFor.HasValue)
+                        {
+                            thisAppointment.ShipDate = orderAppt.ShipFor.Value;
+                        }
                     }
 
                     appointments.Add(thisAppointment);

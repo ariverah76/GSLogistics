@@ -25,7 +25,7 @@ namespace GSLogistics.Entities
         [Column(Order = 4), Key]
         public string PickTicketId { get; set; }
 
-        [Column(Order = 17), Key]
+        [Column(Order = 17)]
         public string PtBulk { get; set; }
 
         [Column(Order = 5)]
@@ -85,6 +85,6 @@ namespace GSLogistics.Entities
 
         [Column("ExternalBol", Order = 25)]
         public bool ExternalBol { get; set; }
-
+        
     }
 }

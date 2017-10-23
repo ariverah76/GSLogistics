@@ -300,6 +300,11 @@
                                 @Html.DropDownListFor(m => m.ShippingCompanyId, scacCodes, null, new { @class = "form-control" })
                                 @Html.ValidationMessageFor(m => m.ShippingCompanyId)
                             </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Pallets)
+                                @Html.TextBoxFor(model => model.Pallets)
+                                @Html.ValidationMessageFor(m => m.Pallets)
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -1006,10 +1011,11 @@
             $("#ShippingDate").val(selected[0]["ShipDate"]);
             $("#ShippingTime").val(selected[0]["ShipTime"]);
             $("#ShippingCompanyId").val(selected[0]["ScaccCode"]).change();
+            $("#Pallets").val(selected[0]["Pallets"]);
           //  $("#RescheduleDate").hide();
 
             $('#totalOrdersLabel').hide();
-            $("#ShippingDate").prop('disabled', true);
+          //  $("#ShippingDate").prop('disabled', true);
 
             var shippingDate = new Date(selected[0]["ShipDate"]);
 
@@ -1029,7 +1035,7 @@
                
                 $("#ShippingCompanyId").prop('disabled', true)
                 $('input[name = DeliveryTypeId]').attr('disabled', 'disabled');
-                $("#ShippingDate").prop('disabled', true);
+               // $("#ShippingDate").prop('disabled', true);
             }
             else {
                 $("#ShippingCompanyId").prop('disabled', false)
@@ -1079,8 +1085,17 @@
             model.ScacCode = $("#ShippingCompanyId").val(); 
             model.ShippingTimeLimit = $('#ShippingTimeLimit').val();
             model.DeliveryTypeId = $('input[name = DeliveryTypeId]:checked').val();
-           // model.ReScheduleDate = $("#ReScheduleDate").val();
+            // model.ReScheduleDate = $("#ReScheduleDate").val();
+            
+            var pallets = $("#Pallets").val();
 
+            if (pallets.length > 0) {
+                pallets = parseInt(pallets);
+            }
+            else {
+                pallets = null;
+            }
+            model.Pallets = pallets;
             model.Orders = orders;
 
             $.ajax({
@@ -1285,6 +1300,7 @@
         $('#ShippingTime').val('');
         $("#ShippingCompanyId")[0].selectedIndex = 0;
         $("#AppointmentNumber").val('');
+        $("#Pallets").val('');
         $("#ShippingTimeLimit").val('');
         $("#ShippingCompanyId").val('').trigger('change');
         $('input[name = DeliveryTypeId]').attr('checked', false);
@@ -1328,6 +1344,7 @@
                 model.ScacCode = $("#ShippingCompanyId").val();
                 model.ShippingTimeLimit = $('#ShippingTimeLimit').val();
                 model.DeliveryTypeId = $('input[name = DeliveryTypeId]:checked').val();
+                model.Pallets = $("#Pallets").val();
 
                 model.Orders = orders;
 

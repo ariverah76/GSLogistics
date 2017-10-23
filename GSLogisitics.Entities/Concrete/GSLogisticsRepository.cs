@@ -114,7 +114,7 @@ namespace GSLogistics.Entities.Concrete
         {
             try
             {
-                var entity = context.Appointments.Where(x => x.AppointmentNumber == appointment.AppointmentNumber && x.CustomerId == appointment.CustomerId && x.PickTicket == appointment.PickTicket).FirstOrDefault();
+                var entity = context.Appointments.Where(x => x.AppointmentNumber == appointment.AppointmentNumber && x.CustomerId == appointment.CustomerId && x.PickTicketId == appointment.PickTicket).FirstOrDefault();
                 
                 if (entity != null)
                 {
@@ -137,7 +137,9 @@ namespace GSLogistics.Entities.Concrete
                     }
                     if(appointment.ShippingDate.HasValue)
                     {
-                        entity.ShipDate = appointment.ShippingDate.Value;
+                        var order = context.OrderAppointments.Where(x => x.CustomerId == appointment.CustomerId && x.PickTicketId == appointment.PickTicket).FirstOrDefault();
+
+                        order.ShipFor = appointment.ShippingDate.Value;
                     }
                     if (appointment.ShippingTime.HasValue)
                     {

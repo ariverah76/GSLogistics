@@ -63,6 +63,8 @@ namespace GSLogistics.Website.Admin.Models
 
         public bool ExternalBol { get; set; }
 
+        public int? Pallets { get; set; }
+
 
 
     }

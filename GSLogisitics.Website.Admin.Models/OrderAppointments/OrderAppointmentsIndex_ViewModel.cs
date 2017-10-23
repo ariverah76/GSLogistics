@@ -116,6 +116,10 @@ namespace GSLogistics.Website.Admin.Models
         [Required( ErrorMessage = "Please specify type of Delivery")]
         public int? DeliveryTypeId { get; set; }
 
+        [Display(Name = "Number of Pallets")]
+        [RegularExpression("([1-9][0-9]*)", ErrorMessage = "Enter natural number value ")]
+        public int? Pallets { get; set; }
+
         public DateTime? ReScheduleDate { get; set; }
 
         #endregion

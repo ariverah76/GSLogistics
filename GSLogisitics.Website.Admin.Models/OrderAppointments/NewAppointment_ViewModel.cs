@@ -18,6 +18,7 @@ namespace GSLogistics.Website.Admin.Models.OrderAppointments
         public OrderForAppointment[] Orders { get; set; }
         public short DeliveryTypeId { get; set; }
         public DateTime? ReScheduleDate { get; set; }
+        public int? Pallets { get; set; }
 
     }
 

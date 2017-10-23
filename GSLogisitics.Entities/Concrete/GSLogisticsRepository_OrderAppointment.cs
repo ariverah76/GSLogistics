@@ -160,7 +160,8 @@ namespace GSLogistics.Entities.Concrete
                 DeliveryTypeId = string.IsNullOrEmpty(x.Delivery) ? default(short?) : x.Delivery == "P" ? (short)1 : (short)2,
                 Shipping = GetShippingDescription(x.Shipping),
                 PathPOD = x.PathPOD,
-                ExternalBol = x.ExternalBol
+                ExternalBol = x.ExternalBol,
+
             });
 
             return result.ToList();

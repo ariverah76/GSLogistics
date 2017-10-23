@@ -24,16 +24,18 @@ namespace GSLogistics.Entities
         [Column(Order =1)]
         public DateTime DateAdd { get; set; }
 
-        [Column(Order = 2), Key]
-        public string PickTicket { get; set; }
-        [Column(Order = 3), Key]
+        [Column("PickTicket", Order = 2), Key]
+        public string PickTicketId { get; set; }
+        [Column(Order = 3)]
         public string PtBulk { get; set; }
 
-        [Column("AppointmentNo", Order = 4), Key]
+        [Column("AppointmentNo", Order = 4)]
         public string AppointmentNumber { get; set; }
 
-        [Column("ShippDate", Order = 5)]
+        //[Column("ShippDate", Order = 5)]
+        [NotMapped]
         public DateTime ShipDate { get; set; }
+
         [Column("ShippTime", Order = 6)]
         public DateTime ShipTime { get; set; }
 
@@ -67,6 +69,9 @@ namespace GSLogistics.Entities
         [Column("IsReSchedule", Order = 16)]
         public bool IsReSchedule { get; set; }
 
+        [Column("Pallets", Order = 17)]
+        public int? Pallets { get; set; }
+
         [ForeignKey("ScacCode")]
         public virtual ScacCode CatScacCode { get; set; }
 
@@ -75,7 +80,6 @@ namespace GSLogistics.Entities
 
         [ForeignKey("DivisionId")]
         public virtual CustomerDivision Division { get; set; }
-
 
 
     }

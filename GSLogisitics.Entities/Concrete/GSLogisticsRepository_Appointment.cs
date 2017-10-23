@@ -10,79 +10,103 @@ namespace GSLogistics.Entities.Concrete
 {
     public partial class GSLogisticsRepository
     {
-        private IQueryable<GSLogistics.Entities.Appointment> Appointment_BuildQuery(AppointmentQuery query)
+        private IQueryable<dynamic> Appointment_BuildQuery(AppointmentQuery query)
         {
-            var q = context.Appointments.Where(x => true)
-              .Include("Customer")
-              .Include("Division");
+            //var q = context.Appointments.Where(x => true)
+            //  .Include("Customer")
+            //  .Include("Division");
+
+            var q = (from a in context.Appointments
+                         join orders in context.OrderAppointments on new { a.CustomerId, a.PickTicketId } equals new { orders.CustomerId , orders.PickTicketId }
+                         join customer in context.Customers on a.CustomerId equals customer.CustomerId
+                         join division in context.CustomerDivisions on a.DivisionId equals division.DivisionId
+                         into y
+                         from z in y.DefaultIfEmpty()
+                         select new { a.PickTicketId, a.Pallets, a.IsReSchedule, a.Posted, a.AppointmentNumber, a.CustomerId,a.DivisionId, a.UserName, a.PtBulk, a.DeliveryTypeId, a.DateAdd,  a.ReScheduleDate, a.ScacCode, a.ShippingTimeLimit, a.ShipTime, a.Status, a.Transferred, ShipDate = orders.ShipFor, DivisionName = z != null? z.Description : string.Empty, DivisionNameId = z != null ? z.NameId : string.Empty, Customer = customer, a.CatScacCode});
+
+            
 
             if (!string.IsNullOrEmpty(query.PickTicketId))
             {
-                q = q.Where(x => x.PickTicket == query.PickTicketId);
+                q = q.Where(x => x.PickTicketId == query.PickTicketId);
+               // anotherq = anotherq.Where(x => x.PickTicketId == query.PickTicketId);
             }
             else if (query.PickTicketsIds != null && query.PickTicketsIds.Any())
             {
-                q = q.Where(x => query.PickTicketsIds.Contains(x.PickTicket));
+                q = q.Where(x => query.PickTicketsIds.Contains(x.PickTicketId));
+               // anotherq = anotherq.Where(x => query.PickTicketsIds.Contains(x.PickTicketId));
             }
 
 
             if (!string.IsNullOrEmpty(query.AppointmentNumber))
             {
                 q = q.Where(x => x.AppointmentNumber == query.AppointmentNumber);
+                //anotherq = anotherq.Where(x => x.AppointmentNumber == query.AppointmentNumber);
             }
 
 
             if (!string.IsNullOrEmpty(query.CustomerId))
             {
                 q = q.Where(x => x.CustomerId == query.CustomerId);
+                //anotherq = anotherq.Where(x => x.CustomerId == query.CustomerId);
             }
             else if (query.CustomerIds != null && query.CustomerIds.Any())
             {
                 q = q.Where(x => query.CustomerIds.Contains(x.CustomerId));
+                //anotherq = anotherq.Where(x => query.CustomerIds.Contains(x.CustomerId));
             }
 
 
             if (query.Posted.HasValue)
             {
                 q = q.Where(x => x.Posted == query.Posted.Value);
+               // anotherq = anotherq.Where(x => x.Posted == query.Posted.Value);
             }
 
             if (query.ShippingDateStart.HasValue)
             {
                 q = q.Where(x => x.ShipDate >= query.ShippingDateStart.Value);
+                //anotherq = anotherq.Where(x => x.ShipDate >= query.ShippingDateStart.Value);
             }
             if (query.ShippingDateEnd.HasValue)
             {
                 q = q.Where(x => x.ShipDate <= query.ShippingDateEnd.Value);
+                //anotherq = anotherq.Where(x => x.ShipDate <= query.ShippingDateEnd.Value);
             }
             if (query.ShippingDate.HasValue) // TODO : look for reschedule date
             {
-                q = q.Where(x => x.ShipDate.Year == query.ShippingDate.Value.Year && x.ShipDate.Month == query.ShippingDate.Value.Month && x.ShipDate.Day == query.ShippingDate.Value.Day
+                q = q.Where(x => x.ShipDate.Value.Year == query.ShippingDate.Value.Year && x.ShipDate.Value.Month == query.ShippingDate.Value.Month && x.ShipDate.Value.Day == query.ShippingDate.Value.Day
                 || x.ReScheduleDate.Value.Year == query.ShippingDate.Value.Year && x.ReScheduleDate.Value.Month == query.ShippingDate.Value.Month && x.ReScheduleDate.Value.Day == query.ShippingDate.Value.Day);
             }
             if (!string.IsNullOrEmpty(query.Status))
             {
                 q = q.Where(x => x.Status == query.Status);
+              //  anotherq = anotherq.Where(x => x.Status == query.Status);
             }
             if (query.DeliveryTypeId.HasValue)
             {
                 q = q.Where(x => x.DeliveryTypeId == query.DeliveryTypeId.Value);
+               // anotherq = anotherq.Where(x => x.DeliveryTypeId == query.DeliveryTypeId.Value);
             }
             if (query.DivisionId.HasValue)
             {
                 q = q.Where(x => x.DivisionId == query.DivisionId.Value);
+                //anotherq = anotherq.Where(x => x.DivisionId == query.DivisionId.Value);
             }
             else if (query.DivisionIds != null && query.DivisionIds.Any())
             {
                 q = q.Where(x => x.DivisionId.HasValue && query.DivisionIds.Contains(x.DivisionId.Value));
+                //anotherq = anotherq.Where(x => x.DivisionId.HasValue && query.DivisionIds.Contains(x.DivisionId.Value));
             }
 
             if (query.IsReschedule.HasValue)
             {
                 q = q.Where(x => x.IsReSchedule == query.IsReschedule.Value);
+               // anotherq = anotherq.Where(x => x.IsReSchedule == query.IsReschedule.Value);
             }
 
-
+           // var q1 = q.ToList().Count();
+          //  var q2 = anotherq.ToList().Count();
             return q;
 
         }
@@ -99,7 +123,7 @@ namespace GSLogistics.Entities.Concrete
                 CustomerId = x.CustomerId,
                 DivisionId = x.DivisionId,
                 DateAdded = x.DateAdd,
-                PickTicket = x.PickTicket,
+                PickTicket = x.PickTicketId,
                 Posted = x.Posted,
                 PtBulk = x.PtBulk,
                 ScacCode = x.ScacCode,
@@ -111,11 +135,13 @@ namespace GSLogistics.Entities.Concrete
                 UserName = x.UserName,
                 Carrier = x.CatScacCode.ScacCodeName,
                 CustomerName = x.Customer != null ? x.Customer.CompanyName : string.Empty,
-                DivisionName = x.Division != null ? x.Division.Description : string.Empty,
-                DivisionNameId = x.Division != null ? x.Division.NameId : null,
+                //DivisionName = x.Division != null ? x.Division.Description : string.Empty,
+                DivisionName = x.DivisionName,// != null ? x.Division.Description : string.Empty,
+                DivisionNameId = x.DivisionNameId,// != null ? x.Division.NameId : null,
                 DeliveryTypeId = x.DeliveryTypeId,
                 ReScheduleDate = x.ReScheduleDate,
-                IsReSchedule =x.IsReSchedule
+                IsReSchedule =x.IsReSchedule,
+                Pallets = x.Pallets
 
             });
 
@@ -135,7 +161,7 @@ namespace GSLogistics.Entities.Concrete
                 CustomerId = x.CustomerId,
                 DivisionId = x.DivisionId,
                 DateAdded = x.DateAdd,
-                PickTicket = x.PickTicket,
+                PickTicket = x.PickTicketId,
                 Posted = x.Posted,
                 PtBulk = x.PtBulk,
                 ScacCode = x.ScacCode,
@@ -147,13 +173,13 @@ namespace GSLogistics.Entities.Concrete
                 UserName = x.UserName,
                 Carrier = x.CatScacCode.ScacCodeName,
                 CustomerName = x.Customer != null ? x.Customer.CompanyName : string.Empty,
-                DivisionName = x.Division != null ? x.Division.Description : string.Empty,
-                DivisionNameId = x.Division != null ? x.Division.NameId : string.Empty,
+                //DivisionName = x.Division != null ? x.Division.Description : string.Empty,
+                DivisionName = x.DivisionName,// != null ? x.Division.Description : string.Empty,
+                DivisionNameId = x.DivisionNameId,// != null ? x.Division.NameId : null,
                 DeliveryTypeId = x.DeliveryTypeId,
                 ReScheduleDate = x.ReScheduleDate,
-                IsReSchedule = x.IsReSchedule
-                
-
+                IsReSchedule = x.IsReSchedule,
+                Pallets = x.Pallets
             });
 
             return result.ToList();
@@ -164,7 +190,7 @@ namespace GSLogistics.Entities.Concrete
             Entities.Appointment appointment = new Entities.Appointment();
             appointment.CustomerId = appointmentModel.CustomerId;
             appointment.DateAdd = DateTime.Now;
-            appointment.PickTicket = appointmentModel.PickTicket;
+            appointment.PickTicketId = appointmentModel.PickTicket;
             appointment.DivisionId = appointmentModel.DivisionId;
 
             appointment.ScacCode = appointmentModel.ScacCode;
@@ -183,7 +209,7 @@ namespace GSLogistics.Entities.Concrete
             if (!string.IsNullOrEmpty(appointmentModel.PtBulk))
             {
                 appointment.PtBulk = appointmentModel.PtBulk;
-                appointment.PickTicket = appointmentModel.PtBulk;
+                appointment.PickTicketId = appointmentModel.PtBulk;
             }
 
             context.Appointments.Add(appointment);
@@ -206,7 +232,7 @@ namespace GSLogistics.Entities.Concrete
             {
                 try
                 {
-                    var existingAppt = context.Appointments.Where(x => x.CustomerId == appointmentModel.CustomerId && x.PickTicket == appointmentModel.PickTicket && x.Status == "D").FirstOrDefault();
+                    var existingAppt = context.Appointments.Where(x => x.CustomerId == appointmentModel.CustomerId && x.PickTicketId == appointmentModel.PickTicket && x.Status == "D").FirstOrDefault();
 
                     if (existingAppt != null)
                     {
@@ -218,11 +244,11 @@ namespace GSLogistics.Entities.Concrete
                     Entities.Appointment appointment = new Entities.Appointment();
                     appointment.CustomerId = appointmentModel.CustomerId;
                     appointment.DateAdd = DateTime.Now;
-                    appointment.PickTicket = appointmentModel.PickTicket;
+                    appointment.PickTicketId = appointmentModel.PickTicket;
                     appointment.DivisionId = appointmentModel.DivisionId;
 
                     appointment.ScacCode = appointmentModel.ScacCode;
-                    appointment.ShipDate = appointmentModel.ShippingDate.Value;
+                   // appointment.ShipDate = appointmentModel.ShippingDate.Value;
                     appointment.ShipTime = new DateTime(appointmentModel.ShippingDate.Value.Year, appointmentModel.ShippingDate.Value.Month, appointmentModel.ShippingDate.Value.Day, appointmentModel.ShippingTime.Value.Hour, appointmentModel.ShippingTime.Value.Minute, 0);
                     appointment.AppointmentNumber = appointmentModel.AppointmentNumber;
                     appointment.DeliveryTypeId = appointmentModel.DeliveryTypeId.Value;
@@ -237,19 +263,20 @@ namespace GSLogistics.Entities.Concrete
                     if (!string.IsNullOrEmpty(appointmentModel.PtBulk))
                     {
                         appointment.PtBulk = appointmentModel.PtBulk;
-                        appointment.PickTicket = appointmentModel.PtBulk;
+                        appointment.PickTicketId = appointmentModel.PtBulk;
                     }
 
                     context.Appointments.Add(appointment);
 
 
                     var ptBulk = string.IsNullOrEmpty(appointment.PtBulk) ? "" : appointment.PtBulk;
-                    var entity = context.OrderAppointments.Where(x => x.PurchaseOrderId == purchaseOrder && x.PickTicketId == appointment.PickTicket && x.CustomerId == appointment.CustomerId && x.PtBulk == ptBulk).FirstOrDefault();
+                    var entity = context.OrderAppointments.Where(x => x.PurchaseOrderId == purchaseOrder && x.PickTicketId == appointment.PickTicketId && x.CustomerId == appointment.CustomerId && x.PtBulk == ptBulk).FirstOrDefault();
 
                     if (entity != null)
                     {
 
                         entity.Status = 1;
+                        entity.ShipFor = appointmentModel.ShippingDate.Value;
                     }
 
                     await context.SaveChangesAsync();
@@ -274,22 +301,28 @@ namespace GSLogistics.Entities.Concrete
             var reschDate = appointment.ReScheduleDate.HasValue ? appointment.ReScheduleDate.Value.ToShortDateString() : string.Empty;
             var timeLimit = appointment.ShippingTimeLimit.HasValue ? appointment.ShippingTimeLimit.Value.ToShortTimeString() : string.Empty;
             var shippingTime = appointment.ShippingTime.Value.ToString("yyyy-MM-dd HH:mm:ss.fff");
-            var script = @"UPDATE dbo.Appointments SET AppointmentNo = {0}, ShippTime = CAST({1} AS DATETIME), ShippingTimeLimit = {2}, DeliveryTypeId = {3}, ReScheduleDate = {4} WHERE CustomerId = {5} AND PickTicket = {6} ";
-
+            var script = @"UPDATE dbo.Appointments SET AppointmentNo = {0}, ShippTime = CAST({1} AS DATETIME), ShippingTimeLimit = {2}, DeliveryTypeId = {3}, ReScheduleDate = {4}, Pallets = {7} WHERE CustomerId = {5} AND PickTicket = {6} ";
+            var scriptOrder = @"UPDATE dbo.OrderAppointment SET ShipFor = CAST({0} AS DATETIME) WHERE CustomerId = {1} AND PickTicketId = {2} ";
 
             try
             {
+
                 if (context.Database.Connection.ConnectionString.ToLower().Contains("diavolo"))
                 {
-                    context.Database.ExecuteSqlCommand("SET LANGUAGE us_english;");
-                    script = "SET LANGUAGE us_english; " + string.Format(script, $"'{appointment.AppointmentNumber}'", $"'{shippingTime}'", string.IsNullOrEmpty(timeLimit) ? "NULL" : $"'{timeLimit}'", $"{appointment.DeliveryTypeId}", string.IsNullOrEmpty(reschDate) ? "NULL" : $"'{reschDate}'", $"'{appointment.CustomerId}'", $"'{appointment.PickTicket}'");
+                    //context.Database.ExecuteSqlCommand("SET LANGUAGE us_english;");
+                //    script = "SET LANGUAGE us_english; " + string.Format(script, $"'{appointment.AppointmentNumber}'", $"'{shippingTime}'", string.IsNullOrEmpty(timeLimit) ? "NULL" : $"'{timeLimit}'", $"{appointment.DeliveryTypeId}", string.IsNullOrEmpty(reschDate) ? "NULL" : $"'{reschDate}'", $"'{appointment.CustomerId}'", $"'{appointment.PickTicket}'", appointment.Pallets.HasValue ? $"{appointment.Pallets.Value}": "NULL");
+                    script = "SET LANGUAGE us_english; " + script;
+                    scriptOrder = "SET LANGUAGE us_english; " + scriptOrder;
                 }
                 else
                 {
-                    script = string.Format(script, $"'{appointment.AppointmentNumber}'", $"'{shippingTime}'", string.IsNullOrEmpty(timeLimit) ? "NULL" : $"'{timeLimit}'", $"{appointment.DeliveryTypeId}", string.IsNullOrEmpty(reschDate) ? "NULL" : $"'{reschDate}'", $"'{appointment.CustomerId}'", $"'{appointment.PickTicket}'");
+                    
                 }
+                script = string.Format(script, $"'{appointment.AppointmentNumber}'", $"'{shippingTime}'", string.IsNullOrEmpty(timeLimit) ? "NULL" : $"'{timeLimit}'", $"{appointment.DeliveryTypeId}", string.IsNullOrEmpty(reschDate) ? "NULL" : $"'{reschDate}'", $"'{appointment.CustomerId}'", $"'{appointment.PickTicket}'", appointment.Pallets.HasValue ? $"{appointment.Pallets.Value}" : "NULL");
+                scriptOrder = string.Format(scriptOrder, $"'{shippingTime}'", $"'{appointment.CustomerId}'", $"'{appointment.PickTicket}'");
 
                 var result = await context.Database.ExecuteSqlCommandAsync(script);
+                result = await context.Database.ExecuteSqlCommandAsync(scriptOrder);
             }
             catch (Exception exc)
             {
@@ -303,7 +336,7 @@ namespace GSLogistics.Entities.Concrete
         {
             try
             {
-                var entity = context.Appointments.Where(x => x.CustomerId == appointment.CustomerId && x.PickTicket == appointment.PickTicket).FirstOrDefault();
+                var entity = context.Appointments.Where(x => x.CustomerId == appointment.CustomerId && x.PickTicketId == appointment.PickTicket).FirstOrDefault();
 
                 if (entity != null)
                 {
