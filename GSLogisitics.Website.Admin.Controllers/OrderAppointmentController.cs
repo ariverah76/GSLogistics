@@ -295,24 +295,27 @@ namespace GSLogistics.Website.Admin.Controllers
                     PurchaseOrder = purchaseOrder
                 });
 
-                IList<string> pickticketIds = new List<string>();
-                foreach(var o  in orders)
+                if (orders.Any())
                 {
-                    pickticketIds.Add(o.PickTicketId);
+                    IList<string> pickticketIds = new List<string>();
+                    foreach (var o in orders)
+                    {
+                        pickticketIds.Add(o.PickTicketId);
+                    }
+
+                    var appts = await appointmentLogic.ToListAsync(new AppointmentQuery()
+                    {
+                        PickTicketsIds = pickticketIds.ToArray()
+                    });
+                    var pt = appts.FirstOrDefault();
+
+                    if (pt != null)
+                    {
+                        return Json(new { result = "Success", appointmentNumber = pt.AppointmentNumber, IsPosted = pt.Posted, shippingDate = pt.ShippingDate, carrier = pt.Carrier, pickTicketId = pt.PickTicket }, JsonRequestBehavior.AllowGet);
+                    }
                 }
 
-                var appts = await appointmentLogic.ToListAsync(new AppointmentQuery()
-                {
-                    PickTicketsIds = pickticketIds.ToArray()
-                });
-                var pt = appts.FirstOrDefault();
-
-                if (pt != null)
-                {
-                    return Json(new { result = "Success", appointmentNumber = pt.AppointmentNumber, IsPosted = pt.Posted, shippingDate = pt.ShippingDate, carrier = pt.Carrier, pickTicketId = pt.PickTicket }, JsonRequestBehavior.AllowGet);
-                }
-
-                return Json(new { result = "NotFound", pickTicketId = purchaseOrder }, JsonRequestBehavior.AllowGet);
+                return Json(new { result = "NotFound", purchaseOrder = purchaseOrder }, JsonRequestBehavior.AllowGet);
             }
         }
 

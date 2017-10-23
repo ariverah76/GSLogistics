@@ -422,9 +422,13 @@
 
             var title = $(this).text();
             if (title == "PO#" || title == "PT#") {
+                if (title == "PO#") {
+                    var id = 'btnSearchPO';
+                } else {
+                    id = 'btnSearchPT';
+                }
 
-
-                $(this).html('<input type="text" style="width:80px" placeholder="Search ' + title + '" />');
+                $(this).html('<input type="text" style="width:80px" id='+ id + ' placeholder="Search ' + title + '" />');
             }
         });
         $('#tableAppointments tbody').on('click', 'tr.group', function () {
@@ -620,6 +624,7 @@
                         .search(this.value)
                         .draw();
                     var str = this.placeholder;
+                    console.log(this.value);
                     if (str.includes("PT#")) {
                         console.log('search by pt');
                         if (table.page.info().recordsDisplay == 0) {
@@ -630,12 +635,15 @@
                                 data: { "pickTicketId": this.value },
                                 success: function (result) {
                                     if (result.result == "NotFound") {
+                                        $("#btnSearchPT").val('').change();
+                                        table.search('').draw();
                                         toastr.options = {
                                             "closeButton": true,
                                             "positionClass": "toast-bottom-full-width",
                                             "preventDuplicates": true
                                         };
                                         toastr.warning("Pick Ticket # " + result.pickTicketId + " has not been transferred to the database");
+                                        
                                     }
                                     else {
                                         var dateString = result.shippingDate.substr(6);
@@ -669,12 +677,16 @@
                                 data: { "purchaseOrder": this.value },
                                 success: function (result) {
                                     if (result.result == "NotFound") {
+                                        $("#btnSearchPO").val('');
+                                        table.search('').draw();
+
                                         toastr.options = {
                                             "closeButton": true,
                                             "positionClass": "toast-bottom-full-width",
                                             "preventDuplicates": true
                                         };
                                         toastr.warning("PO # " + result.purchaseOrder + " has not been transferred to the database");
+                                        
                                     }
                                     else {
                                         var dateString = result.shippingDate.substr(6);
