@@ -297,13 +297,15 @@
                 dataType: "json",
 
             }).done(function (returnValue) {
-                if (returnValue.success) {
-                    window.location.href = "/OrderAppointment/DownloadReport?reportName=" + returnValue.fName + "&format=" + returnValue.mimeType + "&fileExtension=" + returnValue.ReportFormat;
-                    toastr.success("Report downloaded!");
+                if (returnValue.result.length == 0) {
+                    toastr.success("Re-Schedule succesful!");
                     $("#btnRefresh").trigger('click');
                 }
+                else {
+                    toastr.error("Error trying to set re-schedule: " +  returnValue.result);
+                }
             }).fail(function () {
-                toastr.error("Error downloading the report");
+                toastr.error("Error trying to set re-schedule");
             });
         }
 

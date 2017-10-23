@@ -807,20 +807,20 @@ namespace GSLogistics.Website.Admin.Controllers
             using (var aLogic = Kernel.Get<IAppointmentLogic>())
             {
                // List<Model.OrderAppointment> orders = new List<Model.OrderAppointment>();
-                OrderAppointmentQuery query = new OrderAppointmentQuery();
-                if (!string.IsNullOrEmpty(bol))
-                {
-                    query.BillOfLading = bol;
-                }
-                else
-                {
-                    query.EmptyBol = true;
-                }
+                //OrderAppointmentQuery query = new OrderAppointmentQuery();
+                //if (!string.IsNullOrEmpty(bol))
+                //{
+                //    query.BillOfLading = bol;
+                //}
+                //else
+                //{
+                //    query.EmptyBol = true;
+                //}
 
                 //var orders = await oLogic.ToListAsync(query);
                 var appointments = await aLogic.ToListAsync(new AppointmentQuery() { AppointmentNumber = appointmentnumber, Posted = true, Status = "A" });
 
-                bool found = false;
+              //  bool found = false;
                 foreach(var appt in appointments)
                 {
 
