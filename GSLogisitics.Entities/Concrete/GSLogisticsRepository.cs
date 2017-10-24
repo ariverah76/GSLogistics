@@ -58,6 +58,8 @@ namespace GSLogistics.Entities.Concrete
 
         public IEnumerable<UserInfo> UserInfos { get { return context.UserInfos; } }
         public IEnumerable<UserCustomer> UserCustomers { get { return context.UserCustomers; } }
+        public IEnumerable<Driver> Drivers { get { return context.Drivers; } }
+        public IEnumerable<Truck> Trucks { get { return context.Trucks; } }
 
         public void SaveAppointment(Appointment appointment)
         {

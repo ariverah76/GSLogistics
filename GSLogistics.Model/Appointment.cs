@@ -33,6 +33,9 @@ namespace GSLogistics.Model
         public DateTime? ReScheduleDate { get; set; }
         public bool IsReSchedule { get; set; }
         public int? Pallets { get; set; }
-
+        public short? TruckId { get; set; }
+        public short? DriverId { get; set; }
+        public string TruckDescription { get; set; }
+        public string DriverName { get; set; }
     }
 }

@@ -65,6 +65,9 @@ namespace GSLogistics.Website.Admin.Models
 
         public int? Pallets { get; set; }
 
+        public short? DriverId { get; set; }
+        public short? TruckId { get; set; }
+
 
 
     }

@@ -16,6 +16,8 @@
     var divisions = this.ViewBag.Divisions as SelectList;
     var scacCodes = this.ViewBag.ScacCodes as SelectList;
     var appointmentStatus = this.ViewBag.AppointmentStatus as SelectList;
+    var drivers = this.ViewBag.Drivers as SelectList;
+    var trucks = this.ViewBag.Trucks as SelectList;
 }
 <style type="text/css">
     div.container {
@@ -263,7 +265,7 @@
             <div class="modal-body">
                 <form role="form" class="validate">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.DeliveryTypeId)
                                 <div class="radio-inline">
@@ -300,10 +302,25 @@
                                 @Html.DropDownListFor(m => m.ShippingCompanyId, scacCodes, null, new { @class = "form-control" })
                                 @Html.ValidationMessageFor(m => m.ShippingCompanyId)
                             </div>
+                            
+                        </div>
+                        <div class="col-md-6">
                             <div class="form-group">
                                 @Html.LabelFor(model => model.Pallets)
                                 @Html.TextBoxFor(model => model.Pallets)
                                 @Html.ValidationMessageFor(m => m.Pallets)
+                            </div>
+                            <div id="panelTruckInfo" style="display:none">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.DriverId)
+                                    @Html.DropDownListFor(m => m.DriverId, drivers, "Select", new { @class = "form-control" })
+
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.TruckId)
+                                    @Html.DropDownListFor(m => m.TruckId, trucks, "Select", new { @class = "form-control" })
+
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -381,536 +398,20 @@
 
         $(".select2-container").width(300);
 
-        //var tableSelectedOrders = $("tableSelectedOrders").DataTable({
-        //});
 
-        //$("#tableSelectedOrders").DataTable({
-        //    dom: 'Bfrtip',
-        //    responsive: true,
-        //    columns: [
-        //        {
-        //            data: 'ShipTo'
-        //        }
-        //        ,
-        //        {
-        //            data: 'StartDate'
-        //        }
-        //        ,
-        //        {
-        //            data: 'EndDate'
-        //        }
-        //        ,
-        //        {
-        //            data: 'PurchaseOrderId'
-        //        }
-        //        ,
-        //        {
-        //            data: 'PickTicketId'
-        //        }
-        //        ,
-        //        {
-        //            data: 'Pieces'
-        //        }
-        //        ,
-        //        {
-        //            data: 'Weigth'
-        //        }
-        //        ,
-        //        {
-        //            data: 'BoxesCount'
-        //        }
-        //        ,
-        //        {
-        //            data : 'Size'
-        //        }
-        //        ,
-        //        {
-        //            data: 'BoxSize'
-        //        }
-        //        ,
-        //        {
-        //            data: 'BillOfLading', visible:false
-        //        }
-        //        ,
-        //        {
-        //            data: 'DeliveryTypeId', visible:false
-        //        }
-        //        ,
-        //        {
-        //            data: 'ScacCode', visible:false
-        //        }
-        //        ,
-        //        {
-        //            data: 'ShipFor', visible:false
-        //        }
-        //    ]
+        $("input:radio").change(function () {
             
-        //});
-
-        //$("#tableAppointments").DataTable({
-        //    dom: 'Bfrtip',
-        //    responsive: true,
-        //    "displayLength": 15,
-        //    "deferRender": true,
-        //    processing: true,
-        //    columnDefs: [{
-        //        orderable: false,
-        //        className: 'select-checkbox',
-        //        targets: 0
-        //    }],
-        //    oLanguage: {
-        //        sProcessing: "<img src='8.gif'>"
-        //    },
-        //    columns: [
-        //        {
-        //            orderable: false
-        //        },
-        //        {
-        //            data: 'StoreName'
-        //        }
-        //        ,
-        //        {
-
-        //        }
-        //        ,
-        //        {
-
-        //        }
-        //        ,
-        //        {
-        //            data: 'PurchaseOrderId'
-        //        }
-        //        ,
-        //        {
-        //            data: 'PickTicketId'
-        //        }
-        //        ,
-        //        {
-
-        //        }
-        //        ,
-        //        {
-
-        //        }
-        //        ,
-        //        {
-
-        //        }
-        //        ,
-        //        {
-
-        //        }
-        //        ,
-        //        {
-
-        //        }
-        //        ,
-        //        {
-
-        //        }
-        //        ,
-        //        {
-        //            visible: false
-        //        }
-        //        ,
-        //        {
-        //            visible: false
-        //        }
-        //        ,
-        //        {
-        //            visible: false
-        //        }
-        //        ,
-        //        {
-        //            data: 'Notes', className: 'editable'
-        //        }
-        //        ,
-        //        {
-        //            data: 'ConfirmationNumber'
-        //        }
-        //        ,
-        //        {
-        //            data: 'DivisionId', visible :false
-        //        }
-        //        ,
-        //        {
-        //            data: 'BillOfLading', visible: false
-        //        }
-        //        ,
-        //        {
-        //            data : 'DeliveryTypeId', visible: false
-        //        }
-        //        ,
-        //        {
-        //            data : 'ScacCode', visible: false
-        //        }
-        //        ,
-        //        {
-        //            data : 'ShipFor', visible: false
-        //        }
-        //        ,
-        //        {
-        //            data : 'Shipping'
-        //        }
-
-
-
-
-        //        ]
-        //        ,
-        //        select: {
-        //            style: 'multi',
-        //        },
-        //        "drawCallback": function (settings) {
-        //            var api = this.api();
-        //            var rows = api.rows({ page: 'current' }).nodes();
-        //            var last = null;
-
-        //            api.column(14, { page: 'current' }).data().each(function (group, i) {
-        //                val = api.row(api.row($(rows).eq(i)).index()).data();
-        //                var client = val[13];
-        //                if (last !== group) {
-        //                    api.column
-        //                    $(rows).eq(i).before(
-        //                        '<tr class="group"><td colspan="15">' + client + ' - ' + group + '</td></tr>'
-        //                    );
-
-        //                    last = group;
-        //                }
-
-        //            });
-        //        },
-        //        "createdRow": function (row, data, dataIndex) {
-        //            if (data['ConfirmationNumber'].length > 0) {
-        //                $(row).css("background-color", "#EBE566");
-        //            }
-        //        }
-
-        //});
-
-
-        /// This was already commented out
-        //var tableorders = $("#tableAppointments").DataTable();
-
-        //tableorders.on('select', function (e, dt, type, indexes) {
-        //    var row = tableorders.row($(this).parents('tr'));
-        //    var rowNode = dt.node();
-        //   // row.remove();
-
-        //    tableSelectedOrders
-        //        .row.add(rowNode)
-        //        .draw();
-        //});
-
-            //$('#tableAppointments tfoot th').each(function () {
-
-            //    var title = $(this).text();
-            //    if (title == "PO#" || title == "PT#") {
-
-
-            //        $(this).html('<input type="text" style="width:80px" placeholder="Search ' + title + '" />');
-            //    }
-            //});
-            //$('#tableAppointments tbody').on('click', 'tr.group', function () {
-            //    var currentOrder = table.order()[0];
-            //    if (currentOrder[0] === 2 && currentOrder[1] === 'asc') {
-            //        table.order([14, 'desc']).draw();
-            //    }
-            //    else {
-            //        table.order([14, 'asc']).draw();
-            //    }
-            //});
-
-
-            // DataTable
-            @*var table = $("#tableAppointments").DataTable();
-
-            // Apply the search
-            table.columns().every(function () {
-                var that = this;
-
-                $('input', this.footer()).on('keyup change', function () {
-                    if (that.search() !== this.value) {
-                        that
-                            .search(this.value)
-                            .draw();
-                        var str = this.placeholder;
-                        if (str.includes("PT#")) {
-                            console.log('search by pt');
-                            if (table.page.info().recordsDisplay == 0) {
-                                $.ajax({
-                                    type: "GET",
-                                    url: '@Url.Action("SearchPickTicket", "OrderAppointment")',
-                                    contentType: "application/json; charset=utf-8",
-                                    data: { "pickTicketId": this.value },
-                                    success: function (result) {
-                                        if (result.result == "NotFound") {
-                                            toastr.options = {
-                                                "closeButton": true,
-                                                "positionClass": "toast-bottom-full-width",
-                                                "preventDuplicates": true
-                                            };
-                                            toastr.warning("Pick Ticket # " + result.pickTicketId + " has not been transferred to the database");
-                                        }
-                                        else {
-                                            var dateString = result.shippingDate.substr(6);
-                                            var currentTime = new Date(parseInt(dateString));
-                                            var month = currentTime.getMonth() + 1;
-                                            var day = currentTime.getDate();
-                                            var year = currentTime.getFullYear();
-                                            var date = month + "/" + day + "/" + year;
-                                            var msg = "Pick Ticket has been set for ";
-                                            msg = msg + "</br>" + " Appointment #: " + result.appointmentNumber;
-                                            msg = msg + "</br>" + " Carrier: " + result.carrier;
-                                            msg = msg + "</br>" + " Shipping Date: " + date;
-                                            toastr.info(msg, "Pick Ticket found", {
-                                                "closeButton": true, "positionClass": "toast-bottom-full-width", "preventDuplicates": true, "showDuration": "300",
-                                                "hideDuration": "1000",
-                                                "timeOut": "25000"
-                                            });
-                                        }
-                                    }
-                                });
-                            }
-
-                        }
-                        if (str.includes("PO#")) {
-                            console.log('search by po');
-                            if (table.page.info().recordsDisplay == 0) {
-                                $.ajax({
-                                    type: "GET",
-                                    url: '@Url.Action("SearchPurchaseOrder", "OrderAppointment")',
-                                    contentType: "application/json; charset=utf-8",
-                                    data: { "purchaseOrder": this.value },
-                                    success: function (result) {
-                                        if (result.result == "NotFound") {
-                                            toastr.options = {
-                                                "closeButton": true,
-                                                "positionClass": "toast-bottom-full-width",
-                                                "preventDuplicates": true
-                                            };
-                                            toastr.warning("PO # " + result.purchaseOrder + " has not been transferred to the database");
-                                        }
-                                        else {
-                                            var dateString = result.shippingDate.substr(6);
-                                            var currentTime = new Date(parseInt(dateString));
-                                            var month = currentTime.getMonth() + 1;
-                                            var day = currentTime.getDate();
-                                            var year = currentTime.getFullYear();
-                                            var date = month + "/" + day + "/" + year;
-                                            var msg = "Purchase Order has been set for ";
-                                            msg = msg + "</br>" + " Appointment #: " + result.appointmentNumber;
-                                            msg = msg + "</br>" + " Carrier: " + result.carrier;
-                                            msg = msg + "</br>" + " Shipping Date: " + date;
-                                            toastr.info(msg, "Purchase Order found", {
-                                                "closeButton": true, "positionClass": "toast-bottom-full-width", "preventDuplicates": true, "showDuration": "300",
-                                                "hideDuration": "1000",
-                                                "timeOut": "25000"
-                                            });
-                                        }
-                                    }
-                                });
-                            }
-
-                        }
-
-                    }
-                });
-            });*@
-            //table.on('search.dt', function () {
-            //    console.log(table.page.info());
-            //});
-
-        //$('#tableAppointments tbody tr').on('click', function (e) {
-        //    var $row = $(this);
-
-        //    if ($row.hasClass('selected')) {
-        //        $row.removeClass('selected');
-        //        e.stopPropagation();
-        //        var existingRow = table
-        //            .rows(function (idx, info, node) {
-        //                return info["PurchaseOrderId"] == $row[0].cells[4].innerText && info["PickTicketId"] == $row[0].cells[5].innerText  ?
-        //                true : false;
-        //            });
-        //        if (existingRow != null) {
-        //            console.log('true');
-        //            table.rows(existingRow).deselect();
-        //        }
-
-        //    } else {
-        //        $row.addClass('selected');
-        //    }
-
-        //});
-
-
-           // var tableSelected = $("#tableSelectedOrders").DataTable();
-
-            @*table.on('select', function (e, dt, type, indexes) {
-                if (type == "row") {
-                   $("#selectedPanel").show(100);
-                   var data = table.rows(indexes).data();
-                   if (table.rows(indexes).nodes().to$().hasClass('selected') == false) {
-                   //   // table.rows(indexes).nodes().to$().removeClass('selected');
-                       return false;
-                   }
-                   console.log(table.rows(indexes).nodes().to$().hasClass('selected'));
-                    //tableSelected.row.add({
-                    //    "ShipTo": data[0]["StoreName"],
-                    //    "StartDate":data[0][2],
-                    //    "EndDate":data[0][3],
-                    //    "PurchaseOrderId": data[0]["PurchaseOrderId"],
-                    //    "PickTicketId": data[0]["PickTicketId"],
-                    //    "Pieces": data[0][6],
-                    //    "Weigth": data[0][7],
-                    //    "BoxesCount": data[0][8],
-                    //    "Size": data[0][9],
-                    //    "BoxSize": data[0][10],
-                    //    "BillOfLading": data[0]["BillOfLading"],
-                    //    "DeliveryTypeId": data[0]["DeliveryTypeId"],
-                    //    "ScacCode": data[0]["ScacCode"]
-                    //}).draw(false);
-
-                        var count = 0;
-                        $.ajax({
-                            type: "GET",
-                            url: '@Url.Action("SearchByBol", "OrderAppointment")',
-                            contentType: "application/json; charset=utf-8",
-                            data: { "bol": data[0]["BillOfLading"] },
-                            success: function (result) {
-
-                                 
-                                if (result.result == "Success" ) {
-                                    var orders = result.orders;
-                                    if (orders != null) {
-
-                                        count = orders.length;
-                                    }
-                                    for (var i = 0; i < orders.length; i++) {
-                                        //if (orders[i]["PurchaseOrderId"] != data[0]["PurchaseOrderId"]) {
-                                            tableSelected.row.add({
-                                                "ShipTo": orders[i].ShipTo,
-                                                "StartDate": ToDate(orders[i].StartDate),
-                                                "EndDate": ToDate(orders[i].EndDate),
-                                                "PurchaseOrderId": orders[i].PurchaseOrderId,
-                                                "PickTicketId": orders[i].PickTicketId,
-                                                "Pieces": orders[i].Pieces,
-                                                "Weigth": orders[i].Weigth,
-                                                "BoxesCount": orders[i].BoxesCount,
-                                                "Size": orders[i].Size,
-                                                "BoxSize": orders[i].BoxSize,
-                                                "BillOfLading": orders[i].BillOfLading,
-                                                "DeliveryTypeId": orders[i].DeliveryTypeId,
-                                                "ScacCode": orders[i].ScacCode,
-                                                "ShipFor": ToDate(orders[i].ShipFor)
-
-                                                }).draw(false);
-                                            var existingRow = table
-                                                .rows(function (idx, info, node) {
-                                                    return  info["PurchaseOrderId"] == orders[i].PurchaseOrderId && info["PickTicketId"] == orders[i].PickTicketId ?
-                                                    true : false;
-                                                });
-
-                                            if (existingRow) {
-                                                table.row(existingRow).nodes().to$().addClass('selected');
-                                            }
-                                        //}
-                                    }
-                                }
-                                else {
-                                    tableSelected.row.add({
-                                        "ShipTo": data[0]["StoreName"],
-                                        "StartDate":data[0][2],
-                                        "EndDate":data[0][3],
-                                        "PurchaseOrderId": data[0]["PurchaseOrderId"],
-                                        "PickTicketId": data[0]["PickTicketId"],
-                                        "Pieces": data[0][6],
-                                        "Weigth": data[0][7],
-                                        "BoxesCount": data[0][8],
-                                        "Size": data[0][9],
-                                        "BoxSize": data[0][10],
-                                        "BillOfLading": data[0]["BillOfLading"],
-                                        "DeliveryTypeId": data[0]["DeliveryTypeId"],
-                                        "ScacCode": data[0]["ScacCode"],
-                                        "ShipFor": ToDate(data[0]["ShipFor"])
-                                    }).draw(false);
-            
-                                }
-                                if (count > 1) {
-                                    toastr.info(count + " orders were found associated to Bill of Lading '" + data[0]["BillOfLading"] + "', and they are being added automatically for appointment", "Order associated to BOL", {
-                                        "closeButton": true, "positionClass": "toast-top-center", "preventDuplicates": true, "showDuration": "300",
-                                        "hideDuration": "1000",
-                                        "timeOut": "25000"
-                                    });
-                                   
-                                }
-                            }
-                        });
-
-                }
-            });*@
-            //table.on('deselect', function (e, dt, type, indexes) {
-            //    if (type === 'row') {
-            //        var unselected = table.rows(indexes).data();
-
-            //        var existingRow = tableSelected
-            //                .rows(function (idx, data, node) {
-            //                    return  data["PurchaseOrderId"] == unselected[0]["PurchaseOrderId"] && data["PickTicketId"] == unselected[0]["PickTicketId"] ?
-            //                    true : false;
-            //                });
-            //        if (existingRow) {
-            //            tableSelected.row(existingRow).remove().draw();
-            //            if (tableSelected.data().count() == 0) {
-            //                $("#selectedPanel").hide(500);
-            //            }
-
-            //        }
-
-
-            //    }
-            //});
-
-            @*function myCallbackFunction(updatedCell, updatedRow, oldValue) {
-                console.log("The new value for the cell is: " + updatedCell.data());
-                console.log("The values for each cell in that row are: " + updatedRow.data());
-
-
-
-                var model = {
-                    PurchaseOrderId: updatedRow.data()["PurchaseOrderId"],
-                    PickTicketId: updatedRow.data()["PickTicketId"],
-                    PtBulk: updatedRow.data()[12],
-                    CustomerId: updatedRow.data()[13],
-                    Notes: updatedCell.data()
-                };
-
-                $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("UpdateOrderAppointment", "OrderAppointment")',
-                    contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify(model),
-                    dataType: "json",
-                    success: function (result) {
-                        toastr.success('Notes updated!')
-                        //window.location.href = result.url;
-                    }
-                });
-
-            }*@
-
-            //table.MakeCellsEditable({
-            //    "onUpdate": myCallbackFunction,
-            //    "columns": [15],
-            //    "confirmationButton" : true,
-            //    "inputTypes": [
-            //        {
-            //            "column":0,
-            //            "type":"text",
-            //            "options":null
-            //        }]
-
-            //});
-
+            var deliveryType = $('input[name = DeliveryTypeId]:checked').val();
+            if (deliveryType == 2) {
+                $("#panelTruckInfo").show();
+            }
+            else {
+                $("#panelTruckInfo").hide();
+                $("#TruckId").val('').change();
+                $("#DriverId").val('').change();
+            }
+        });
+       
             $('.datetimepicker-minutes .switch').attr('style', 'visibility:hidden;');
             $('.datetimepicker-hours .switch').attr('style', 'visibility:hidden;');
 
@@ -1012,6 +513,8 @@
             $("#ShippingTime").val(selected[0]["ShipTime"]);
             $("#ShippingCompanyId").val(selected[0]["ScaccCode"]).change();
             $("#Pallets").val(selected[0]["Pallets"]);
+            $("#TruckId").val(selected[0]["TruckId"]).change();
+            $("#DriverId").val(selected[0]["DriverId"]).change();
           //  $("#RescheduleDate").hide();
 
             $('#totalOrdersLabel').hide();
@@ -1046,11 +549,13 @@
             var dt = selected[0]["DeliveryTypeId"];
             if (dt == "1") {
                 $("#IsPickup").prop("checked", true);
+                $("#panelTruckInfo").hide();
             }
             else if (dt == "2") {
                 $("#IsDelivery").prop("checked", true);
+                $("#panelTruckInfo").show();
             }
-
+            
             $("#summary").hide();
 
             $('#btnSave').html("Save");
@@ -1086,7 +591,8 @@
             model.ShippingTimeLimit = $('#ShippingTimeLimit').val();
             model.DeliveryTypeId = $('input[name = DeliveryTypeId]:checked').val();
             // model.ReScheduleDate = $("#ReScheduleDate").val();
-            
+            model.DriverId = $("#DriverId").val();
+            model.TruckId = $("#TruckId").val();
             var pallets = $("#Pallets").val();
 
             if (pallets.length > 0) {
@@ -1258,30 +764,35 @@
             });
         }
         else {
-            //$('#summary li:last').remove();
             $(".list-group li:has(span[id='totalgohs'])").remove();
            
         }
-
-//        $("#ReScheduleDate").hide();
         $("#ShippingDate").show();
 
+        var dt = selected2[0]["DeliveryTypeId"];
+        if (dt == "") {
+            $("#panelTruckInfo").hide()
+        }
         if (hasBol == true) {
             $("#ShippingCompanyId").val(selected2[0]["ScacCode"]).change();
             $("#ShippingCompanyId").prop('disabled', true)
-            var dt = selected2[0]["DeliveryTypeId"];
-            console.log(dt);
+           
+           
             if (dt == "1") {
                 $("#IsPickup").prop("checked", true);
+                $("#panelTruckInfo").hide();
             }
             else if (dt == "2") {
                 $("#IsDelivery").prop("checked", true);
+                $("#panelTruckInfo").show();
             }
             $('input[name = DeliveryTypeId]').attr('disabled', 'disabled');
 
             $("#ShippingDate").val(selected2[0]["ShipFor"]);
             $("#ShippingDate").prop('disabled', true);
         }
+
+        
 
 
         $('#setAppointmentModal form').validate();
@@ -1308,7 +819,11 @@
         $('input[name = DeliveryTypeId]').removeAttr('disabled');
 
         $("#ShippingCompanyId").prop('disabled', false)
-        $("#ShippingDate").prop('disabled',false);
+        $("#ShippingDate").prop('disabled', false);
+
+        $("#DriverId").val('').trigger('change');
+        $("#TruckId").val('').trigger('change');
+        $("#panelTruckInfo").hide();
 
     }
 
@@ -1345,6 +860,8 @@
                 model.ShippingTimeLimit = $('#ShippingTimeLimit').val();
                 model.DeliveryTypeId = $('input[name = DeliveryTypeId]:checked').val();
                 model.Pallets = $("#Pallets").val();
+                model.TruckId = $("#TruckId").val();
+                model.DriverId = $("#DriverId").val();
 
                 model.Orders = orders;
 

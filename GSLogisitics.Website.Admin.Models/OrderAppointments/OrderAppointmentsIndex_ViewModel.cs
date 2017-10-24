@@ -122,6 +122,12 @@ namespace GSLogistics.Website.Admin.Models
 
         public DateTime? ReScheduleDate { get; set; }
 
+        [Display(Name ="Driver")]
+        public short? DriverId { get;set;}
+
+        [Display(Name ="Truck")]
+        public short? TruckId { get; set; }
+
         #endregion
     }
 }

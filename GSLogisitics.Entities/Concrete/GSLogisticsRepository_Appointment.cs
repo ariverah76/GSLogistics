@@ -22,7 +22,7 @@ namespace GSLogistics.Entities.Concrete
                          join division in context.CustomerDivisions on a.DivisionId equals division.DivisionId
                          into y
                          from z in y.DefaultIfEmpty()
-                         select new { a.PickTicketId, a.Pallets, a.IsReSchedule, a.Posted, a.AppointmentNumber, a.CustomerId,a.DivisionId, a.UserName, a.PtBulk, a.DeliveryTypeId, a.DateAdd,  a.ReScheduleDate, a.ScacCode, a.ShippingTimeLimit, a.ShipTime, a.Status, a.Transferred, ShipDate = orders.ShipFor, DivisionName = z != null? z.Description : string.Empty, DivisionNameId = z != null ? z.NameId : string.Empty, Customer = customer, a.CatScacCode});
+                         select new { a.PickTicketId, a.Pallets, a.IsReSchedule, a.Posted, a.AppointmentNumber, a.CustomerId,a.DivisionId, a.UserName, a.PtBulk, a.DeliveryTypeId, a.DateAdd,  a.ReScheduleDate, a.ScacCode, a.ShippingTimeLimit, a.ShipTime, a.Status, a.Transferred, ShipDate = orders.ShipFor, DivisionName = z != null? z.Description : string.Empty, DivisionNameId = z != null ? z.NameId : string.Empty, Customer = customer, a.CatScacCode, a.DriverId, a.TruckId, a.Driver, a.Truck});
 
             
 
@@ -141,7 +141,13 @@ namespace GSLogistics.Entities.Concrete
                 DeliveryTypeId = x.DeliveryTypeId,
                 ReScheduleDate = x.ReScheduleDate,
                 IsReSchedule =x.IsReSchedule,
-                Pallets = x.Pallets
+                Pallets = x.Pallets,
+                DriverId = x.DriverId,
+                DriverName = x.Driver?.FirstName,
+                TruckId = x.TruckId,
+                TruckDescription = x.Truck?.Description
+
+
 
             });
 
@@ -179,7 +185,11 @@ namespace GSLogistics.Entities.Concrete
                 DeliveryTypeId = x.DeliveryTypeId,
                 ReScheduleDate = x.ReScheduleDate,
                 IsReSchedule = x.IsReSchedule,
-                Pallets = x.Pallets
+                Pallets = x.Pallets,
+                DriverId = x.DriverId,
+                DriverName  =  x.Driver?.Name,
+                TruckId = x.TruckId,
+                TruckDescription = x.Truck?.Description
             });
 
             return result.ToList();
@@ -253,6 +263,9 @@ namespace GSLogistics.Entities.Concrete
                     appointment.AppointmentNumber = appointmentModel.AppointmentNumber;
                     appointment.DeliveryTypeId = appointmentModel.DeliveryTypeId.Value;
                     appointment.UserName = appointmentModel.UserName;
+                    appointment.Pallets = appointmentModel.Pallets;
+                    appointment.DriverId = appointmentModel.DriverId;
+                    appointment.TruckId = appointmentModel.TruckId;
 
                     if (appointmentModel.ShippingTimeLimit.HasValue)
                     {

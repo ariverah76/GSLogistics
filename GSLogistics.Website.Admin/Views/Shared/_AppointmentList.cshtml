@@ -59,6 +59,8 @@
                 <th style="visibility:hidden"></th>
                 <th style="visibility:hidden"></th>
                 <th style="visibility:hidden"></th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tfoot>
@@ -82,6 +84,8 @@
                 <th style="visibility:hidden"></th>
                 <th style="visibility:hidden"></th>
                 <th style="visibility:hidden"></th>
+                <th></th>
+                <th></th>
             </tr>
         </tfoot>
         <tbody>
@@ -142,6 +146,12 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.BillOfLading)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TruckId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DriverId)
                     </td>
                     
                 </tr>
@@ -246,6 +256,18 @@
                 {
                     data: 'BillOfLading',
                     visible: false
+                }
+                ,
+                {
+                    data: 'TruckId',
+                    visible: false
+
+                }
+                ,
+                {
+                    data: 'DriverId',
+                    visible: false
+
                 }
             ],
             select: {

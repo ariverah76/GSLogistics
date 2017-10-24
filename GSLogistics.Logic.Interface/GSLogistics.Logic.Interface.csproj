@@ -44,9 +44,11 @@
     <Compile Include="IAuthProvider.cs" />
     <Compile Include="ICustomerLogic.cs" />
     <Compile Include="IDivisionLogic.cs" />
+    <Compile Include="IDriverLogic.cs" />
     <Compile Include="IGSLogisticsLogic.cs" />
     <Compile Include="IOrderAppointmentLogic.cs" />
     <Compile Include="IScacCodeLogic.cs" />
+    <Compile Include="ITruckLogic.cs" />
     <Compile Include="IUserLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -100,6 +100,37 @@ namespace GSLogistics.Website.Admin.Controllers
             status.Add("1", "Posted");
             status.Add("2", "Pending");
 
+            using(var tLogic = Kernel.Get<ITruckLogic>())
+            {
+                var listTrucks = await tLogic.GetTrucks();
+                Dictionary<int, string> trucks = new Dictionary<int, string>();
+                foreach (var truck in listTrucks)
+                {
+                    if (!trucks.ContainsKey(truck.TruckId))
+                    {
+                        trucks.Add(truck.TruckId, $"{truck.Plates} {truck.Description}");
+                    }
+                }
+
+                ViewBag.Trucks = new SelectList(trucks, "Key", "Value", null);
+
+            }
+            using (var driverLogic = Kernel.Get<IDriverLogic>())
+            {
+                var listDrivers = await driverLogic.GetDrivers();
+                Dictionary<int, string> drivers = new Dictionary<int, string>();
+                foreach (var driver in listDrivers)
+                {
+                    if (!drivers.ContainsKey(driver.DriverId))
+                    {
+                        drivers.Add(driver.DriverId, $"{driver.Name} {driver.SurName}");
+                    }
+                }
+
+                ViewBag.Drivers = new SelectList(drivers, "Key", "Value", null);
+
+            }
+
             ViewBag.AppointmentStatus = new SelectList(status, "Key", "Value", null);
             using (var orderLogic = Kernel.Get<IOrderAppointmentLogic>())
             using (var divLogic = orderLogic.GetLogic<IDivisionLogic>())
@@ -385,7 +416,9 @@ namespace GSLogistics.Website.Admin.Controllers
                     appointment.AppointmentNumber = model.AppointmentNumber;
                     appointment.DeliveryTypeId = model.DeliveryTypeId;
                     appointment.UserName = User.Identity.Name;
-                    appointment.Pallets = (short) model.Pallets;
+                    appointment.Pallets = model.Pallets;
+                    appointment.DriverId = model.DriverId;
+                    appointment.TruckId = model.TruckId;
 
                     if (model.ShippingTimeLimit.HasValue)
                     {
@@ -511,7 +544,9 @@ namespace GSLogistics.Website.Admin.Controllers
                         DateAdded = appt.DateAdded,
                         DeliveryTypeId = model.DeliveryTypeId,
                         ReScheduleDate = model.ReScheduleDate,
-                        Pallets = model.Pallets
+                        Pallets = model.Pallets,
+                        TruckId = model.TruckId,
+                        DriverId = model.DriverId
                     };
 
                     if (model.ShippingTimeLimit.HasValue)
@@ -631,7 +666,9 @@ namespace GSLogistics.Website.Admin.Controllers
                         DivisionName = appt.DivisionName,
                         DivisionNameId = appt.DivisionNameId,
                         ReScheduleDate = appt.ReScheduleDate,
-                        Pallets  = appt.Pallets
+                        Pallets  = appt.Pallets,
+                        TruckId = appt.TruckId,
+                        DriverId =appt.DriverId
                         
                     };
 
@@ -710,7 +747,10 @@ namespace GSLogistics.Website.Admin.Controllers
                         Posted = appt.Posted.ToString(),
                         DateAdded = appt.DateAdded,
                         DeliveryTypeId = appt.DeliveryTypeId,
-                        Pallets = appt.Pallets
+                        Pallets = appt.Pallets,
+                        TruckId = appt.TruckId,
+                        DriverId = appt.DriverId
+
 
                     };
 

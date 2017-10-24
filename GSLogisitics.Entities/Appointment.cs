@@ -72,6 +72,17 @@ namespace GSLogistics.Entities
         [Column("Pallets", Order = 17)]
         public int? Pallets { get; set; }
 
+        [Column("TruckNo", Order = 18)]
+        public short? TruckId { get; set; }
+
+        [Column("DriverNo", Order =19)]
+        public short? DriverId { get; set; }
+
+        [ForeignKey("TruckId")]
+        public virtual Truck Truck { get; set; }
+        [ForeignKey("DriverId")]
+        public virtual Driver Driver { get; set; }
+
         [ForeignKey("ScacCode")]
         public virtual ScacCode CatScacCode { get; set; }
 

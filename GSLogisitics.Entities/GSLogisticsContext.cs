@@ -48,6 +48,8 @@ namespace GSLogistics.Entities
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<UserInfo> UserInfos { get; set; }
         public DbSet<UserCustomer> UserCustomers { get; set; }
+        public DbSet<Driver> Drivers { get; set; }
+        public DbSet<Truck> Trucks { get; set; }
 
     }
 

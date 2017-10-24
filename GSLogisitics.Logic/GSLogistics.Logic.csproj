@@ -51,10 +51,12 @@
     <Compile Include="AppointmentLogic.cs" />
     <Compile Include="CustomerLogic.cs" />
     <Compile Include="DivisionLogic.cs" />
+    <Compile Include="DriverLogic.cs" />
     <Compile Include="LogicBase.cs" />
     <Compile Include="OrderAppointmentLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScacCodeLogic.cs" />
+    <Compile Include="TruckLogic.cs" />
     <Compile Include="UserLogic.cs" />
   </ItemGroup>
   <ItemGroup>
