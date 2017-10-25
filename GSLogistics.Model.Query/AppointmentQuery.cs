@@ -29,6 +29,7 @@ namespace GSLogistics.Model.Query
         public short? DeliveryTypeId { get; set; }
 
         public bool? hasBool { get; set; }
+        public string BillOfLading { get; set; }
 
         public int? DivisionId { get; set; }
 

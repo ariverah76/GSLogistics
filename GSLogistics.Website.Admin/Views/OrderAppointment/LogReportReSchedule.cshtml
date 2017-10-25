@@ -37,6 +37,14 @@
         body.loading .blocking {
             display: block;
         }
+
+    td.details-control {
+        cursor: pointer;
+        background: url("../../Content/details_open.png") no-repeat center center;
+    }
+    tr.details td.details-control {
+        background: url('../../Content/details_close.png') no-repeat center center;
+    }
 </style>
 
 <div class="panel panel-title">
@@ -94,6 +102,52 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="rescheduleAppointmentsModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dissmiss="modal" aria-hidden="true"></button>
+                <h3 class="modal-title">Re-Schedule Appointment</h3>
+            </div>
+            <div class="modal-body">
+                <form role="form" class="validate">
+                    <div class="row">
+                        <div class="col-md-12">
+                            
+                            
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.NewShippingDate)
+                                @Html.DatePicker(m => m.NewShippingDate, minDateDays: -2, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.NewShippingDate)
+                                @Html.DatePicker(m => m.NewReScheduleDate, minDateDays: -2, htmlAttributes: new { @class = "form-control" })
+
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.NewShippingTime)
+                                @Html.DateTimePicker(model => model.NewShippingTime, null, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight: false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
+                                @Html.ValidationMessageFor(m => m.NewShippingTime)
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.NewShippingTimeLimit)
+                                @Html.DateTimePicker(model => model.NewShippingTimeLimit, null, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight: false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
+                            </div>
+                            
+
+                        </div>
+                       
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                
+                <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSave" onclick="reScheduleAppointments()" class="btn btn-info">Reschedule</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="blocking"></div>
 @Scripts.Render("~/bundles/datetimepicker")
 @Scripts.Render("~/bundles/dataTables")

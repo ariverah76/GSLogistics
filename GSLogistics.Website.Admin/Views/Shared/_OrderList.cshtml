@@ -677,7 +677,7 @@
                                 data: { "purchaseOrder": this.value },
                                 success: function (result) {
                                     if (result.result == "NotFound") {
-                                        $("#btnSearchPO").val('');
+                                        $("#btnSearchPO").val('').change();
                                         table.search('').draw();
 
                                         toastr.options = {

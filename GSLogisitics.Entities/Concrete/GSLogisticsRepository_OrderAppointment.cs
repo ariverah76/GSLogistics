@@ -31,7 +31,7 @@ namespace GSLogistics.Entities.Concrete
 
             if (query.CancelDateStartDate.HasValue)
             {
-                q = q.Where(x => x.EndDate >= query.CancelDateStartDate.Value);
+                q = q.Where(x => x.StartDate >= query.CancelDateStartDate.Value);
             }
             if (query.CancelDateEndDate.HasValue)
             {

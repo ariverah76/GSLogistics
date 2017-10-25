@@ -6,8 +6,12 @@
 <table class="table display-compact table-striped table-bordered" id="tableLogReportOverdue" style="width:100%">
     <thead>
         <tr>
+            <th></th>
             <th class="text-center">
 
+            </th>
+            <th>
+                BOL
             </th>
             <th>
                 Appt#
@@ -17,24 +21,6 @@
             </th>
             <th>
                 Ship To
-            </th>
-            <th>
-                Div ID
-            </th>
-            <th>
-                Division
-            </th>
-            <th>
-                PO#
-            </th>
-            <th>
-                Order#
-            </th>
-            <th>
-                Pieces
-            </th>
-            <th>
-                Boxes
             </th>
             <th>
                 S. Date
@@ -48,9 +34,6 @@
             <th>
                 Carrier
             </th>
-            <th></th>
-            <th></th>
-
         </tr>
     </thead>
     <tbody>
@@ -58,6 +41,10 @@
         {
             <tr>
                 <td></td>
+                <td></td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BillOfLading)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.AppointmentNo)
                 </td>
@@ -66,24 +53,6 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ShipTo)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DivisionNameId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DivisionName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PurchaseOrder)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PickTicket)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Pieces)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BoxesNumber)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ShipDate)
@@ -97,12 +66,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Carrier)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BillOfLading)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.pathPOD)
-                </td>
+                
             </tr>
         }
     </tbody>
@@ -110,21 +74,87 @@
 </table>
 
 <script type="text/javascript">
+    function format(d) {
+        var count = 0;
+        var htmlraw;
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetAppointmentsByBol", "OrderAppointment")',
+            contentType: "application/json; charset=utf-8",
+            data: { "bol": d },
+           
+        }).done(function (returnValue) {
+            callback(returnValue);
+        }).fail(function () {
+            callback('failed :(');
+        });
+        
 
+        //console.log(htmlraw);
+      //  return 'Alex';
+    //    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+    //    '<tr>' +
+    //        '<td>Full name:</td>' +
+    //        '<td>' + d.BillOfLading + '</td>' +
+    //    '</tr>' +
+    //    '<tr>' +
+    //        '<td>Extension number:</td>' +
+    //        '<td></td>' +
+    //    '</tr>' +
+    //    '<tr>' +
+    //        '<td>Extra info:</td>' +
+    //        '<td>And any further details here (images etc)...</td>' +
+    //    '</tr>' +
+    //'</table>';
+    }
+
+    function loadAjaxInfo(data, callback) {
+        console.log('data info');
+        console.log(data);
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetAppointmentsByBol", "OrderAppointment")',
+            contentType: "application/json; charset=utf-8",
+            data: { "bol": data.BillOfLading },
+
+        }).done(function (returnValue) {
+            callback(returnValue);
+        }).fail(function () {
+            callback('failed :(');
+        });
+
+    }
     $(document).ready(function () {
 
-        $("#tableLogReportOverdue").DataTable({
+       var dt = $("#tableLogReportOverdue").DataTable({
             dom: 'lfTrtip',
 
             paging: false,
             columnDefs: [{
                 orderable: false,
                 className: 'select-checkbox',
+                targets: 1
+            }
+            ,
+            {
+                "class":          "details-control",
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": "",
                 targets: 0
-            }],
+            },
+            ],
             columns: [
                 {
 
+                }
+                ,
+                {
+
+                }
+                ,
+                {
+                    data: 'BillOfLading'
                 }
                 ,
                 {
@@ -137,31 +167,6 @@
                 ,
                 {
                     data: 'ShipTo'
-                }
-                ,
-                {
-                    data: 'DivisionNameId'
-                }
-                ,
-                {
-                    data: 'DivisionName'
-                }
-                ,
-                {
-                    data: 'PurchaseOrder'
-                }
-                ,
-                {
-                    data: 'PickTicket'
-                }
-                ,
-
-                {
-                    data: 'Pieces'
-                }
-                ,
-                {
-                    data: 'BoxesNumber'
                 }
                 ,
                 {
@@ -179,83 +184,50 @@
                 {
                     data: 'Carrier'
                 }
-                ,
-                {
-                    data: 'BillOfLading',
-                    visible: false
-                }
-                ,
-                {
-                    data: 'pathPOD',
-                    visible: false
-                }
+
             ]
             ,
             select: {
                 style: 'multi'
             }
-            ,
-            "drawCallback": function (settings) {
-                var api = this.api();
-                var rows = api.rows({ page: 'current' }).nodes();
-                var last = null;
-                var columna = api.row(0).data.length;
-               // var total = new Array();
-                // total['Total']
-                var groupid = -1;
-                var subtotal = new Array();
-
-                api.column(13, { page: 'current' }).data().each(function (group, i) {
-                    if (last !== group) {
-                        groupid++;
-                        val = api.row(api.row($(rows).eq(i)).index()).data();
-                        var bol = val['AppointmentNo'];
-
-
-                        $(rows).eq(i).before(
-                        '<tr class="group"><td colspan=8> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
-                        );
-
-                        last = group;
-                    }
-                    val = api.row(api.row($(rows).eq(i)).index()).data();      //current order index
-                    $.each(val, function (index2, val2) {
-                        if (index2 == "Pieces" || index2 == "BoxesNumber") {
-                            if (typeof subtotal[groupid] == 'undefined') {
-                                subtotal[groupid] = new Array();
-                            }
-                            if (typeof subtotal[groupid][index2] == 'undefined') {
-                                subtotal[groupid][index2] = 0;
-                            }
-                            valore = Number(val2.replace('€', "").replace('.', "").replace(',', "."));
-                            subtotal[groupid][index2] += valore;
-                        }
-                    });
-
-                    console.log(subtotal);
-
-                });
-                $('tbody').find('.group').each(function (i,v) {
-                    var rowCount = $(this).nextUntil('.group').length;
-                    //If we need to check all the orders has a pathPOD this is where we can inject the button instead
-                    $(this).find('td:nth-child(2)').append($('<span />', { 'class': 'rowCount-grid' }).append($('<b />', { 'text': ' ( Total Orders '+rowCount+')' })));
-                    var subtd = '';
-                    //for (var a=2;a<columna;a++)
-                    //{
-                    //    subtd += '<td> Total'+subtotal[i][a] +'</td>';
-                    //}
-                    subtd += '<td> <span><strong> ' + subtotal[i]["Pieces"] + '</strong></span></td>';
-                    subtd += '<td colspan=6><span><strong>' + subtotal[i]["BoxesNumber"] + '</strong></span></td>';
-                    $(this).append(subtd);
-
-                });
-
-
-            },
+            
 
         });
 
-       
+        var detailRows = [];
+
+        $('#tableLogReportOverdue tbody').on('click', 'tr td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = dt.row(tr);
+            var idx = $.inArray(tr.attr('id'), detailRows);
+
+            if (row.child.isShown()) {
+                tr.removeClass('details');
+                row.child.hide();
+
+                // Remove from the 'open' array
+                detailRows.splice(idx, 1);
+            }
+            else {
+                tr.addClass('details');
+                loadAjaxInfo(row.data(), function (result) {
+                    row.child(result).show();
+                });
+                
+
+                // Add to the 'open' array
+                if (idx === -1) {
+                    detailRows.push(tr.attr('id'));
+                }
+            }
+        });
+
+        // On each draw, loop over the `detailRows` array and show any child rows
+        dt.on('draw', function () {
+            $.each(detailRows, function (i, id) {
+                $('#' + id + ' td.details-control').trigger('click');
+            });
+        });
 
     });
 

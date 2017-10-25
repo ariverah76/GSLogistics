@@ -1166,14 +1166,14 @@ namespace GSLogistics.Website.Admin.Controllers
         public PartialViewResult GetLogReportOverdue(LogReportIndex_ViewModel model)
         {
             List<Models.Appointment> appointments = new List<Models.Appointment>();
-
-
+           
 
             var query = new AppointmentQuery()
             {
                 Posted = true,
-                ShippingDateEnd = DateTime.Today,
-                IsReschedule = true
+                //ShippingDateEnd = DateTime.Today,
+                IsReschedule = true,
+                hasBool = true,
                 
             };
 
@@ -1202,7 +1202,7 @@ namespace GSLogistics.Website.Admin.Controllers
             {
 
                 var orderAppts = oLogic.ToList(new OrderAppointmentQuery());
-                var ordersWithPOD = orderAppts.Where(x => string.IsNullOrEmpty(x.PathPOD) || string.IsNullOrWhiteSpace(x.PathPOD)).ToList();
+               // var ordersWithPOD = orderAppts.Where(x => string.IsNullOrEmpty(x.PathPOD) || string.IsNullOrWhiteSpace(x.PathPOD)).ToList();
                 var list = aLogic.ToList(query);
 
                 foreach (var appt in list )
@@ -1239,7 +1239,6 @@ namespace GSLogistics.Website.Admin.Controllers
 
                         appointments.Add(thisAppointment);
                     }
-
                     
                 }
             }
@@ -1290,6 +1289,88 @@ namespace GSLogistics.Website.Admin.Controllers
 
                 return this.View("LogReportReSchedule", model);
             }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetAppointmentsByBol(string bol)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            List<Appointment> appointments = new List<Appointment>();
+
+            sb.AppendLine("<table cellpadding=\"10\" cellspacing=\"0\" border=\"0\" style=\"padding-left:50px; \">'");
+            sb.AppendLine("<thead>");
+            sb.AppendLine("<tr>");
+            sb.AppendLine("<th>PO#</th>");
+            sb.AppendLine("<th>PT#</th>");
+            sb.AppendLine("<th>Pieces</th>");
+            sb.AppendLine("<th>Boxes</th>");
+            sb.AppendLine("</tr>");
+            sb.AppendLine("</thead>");
+
+            using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
+            using (var logic = Kernel.Get<IAppointmentLogic>())
+            {
+                var appts = await logic.ToListAsync(new AppointmentQuery()
+                {
+                    BillOfLading = bol,
+                    IsReschedule = true
+                });
+                var orderAppts = oLogic.ToList(new OrderAppointmentQuery());
+
+                //TODO: move to his own function and re-use it
+                foreach (var appt in appts)
+                {
+                    var thisAppointment = new Models.Appointment()
+                    {
+                        AppointmentNo = appt.AppointmentNumber,
+                        CustomerName = appt.CustomerName,
+                        CustomerId = appt.CustomerId,
+                        Carrier = appt.Carrier,
+                        PickTicket = appt.PickTicket,
+                        PtBulk = appt.PtBulk,
+                        ScaccCode = appt.ScacCode,
+                        ShipDate = appt.ShippingDate.Value,
+                        ShipTime = appt.ShippingTime.Value,
+                        Posted = appt.Posted.ToString(),
+                        DateAdded = appt.DateAdded,
+                        ShipTimeLimit = appt.ShippingTimeLimit,
+                        DeliveryTypeId = appt.DeliveryTypeId,
+                        DivisionId = appt.DivisionId,
+                        DivisionName = appt.DivisionName,
+                        DivisionNameId = appt.DivisionNameId,
+                        ReScheduleDate = appt.ReScheduleDate,
+                        Pallets = appt.Pallets,
+                        TruckId = appt.TruckId,
+                        DriverId = appt.DriverId
+
+                    };
+
+                    var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
+                    if (orderAppt != null)
+                    {
+                        thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
+                        thisAppointment.Pieces = orderAppt.Pieces.Value;
+                        thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
+                        thisAppointment.ShipTo = orderAppt.ShipTo;
+                        thisAppointment.BillOfLading = orderAppt.BillOfLading;
+                    }
+
+                    appointments.Add(thisAppointment);
+                }
+
+
+                foreach (var a in appointments)
+                {
+                    sb.AppendLine("<tr>");
+                    sb.AppendLine($"<td>{a.PurchaseOrder}</td><td>{a.PickTicket}</td><td>{a.Pieces}</td><td>{a.BoxesNumber}</td>");
+                    sb.AppendLine("</tr>");
+                }
+            }
+
+            sb.AppendLine("</table>");
+
+            return Json(sb.ToString(), JsonRequestBehavior.AllowGet);
         }
 
 

@@ -22,7 +22,7 @@ namespace GSLogistics.Entities.Concrete
                          join division in context.CustomerDivisions on a.DivisionId equals division.DivisionId
                          into y
                          from z in y.DefaultIfEmpty()
-                         select new { a.PickTicketId, a.Pallets, a.IsReSchedule, a.Posted, a.AppointmentNumber, a.CustomerId,a.DivisionId, a.UserName, a.PtBulk, a.DeliveryTypeId, a.DateAdd,  a.ReScheduleDate, a.ScacCode, a.ShippingTimeLimit, a.ShipTime, a.Status, a.Transferred, ShipDate = orders.ShipFor, DivisionName = z != null? z.Description : string.Empty, DivisionNameId = z != null ? z.NameId : string.Empty, Customer = customer, a.CatScacCode, a.DriverId, a.TruckId, a.Driver, a.Truck});
+                         select new { a.PickTicketId, a.Pallets, a.IsReSchedule, a.Posted, a.AppointmentNumber, a.CustomerId,a.DivisionId, a.UserName, a.PtBulk, a.DeliveryTypeId, a.DateAdd,  a.ReScheduleDate, a.ScacCode, a.ShippingTimeLimit, a.ShipTime, a.Status, a.Transferred, ShipDate = orders.ShipFor, DivisionName = z != null? z.Description : string.Empty, DivisionNameId = z != null ? z.NameId : string.Empty, Customer = customer, a.CatScacCode, a.DriverId, a.TruckId, a.Driver, a.Truck, BillOfLading = orders.BillOfLading});
 
             
 
@@ -75,8 +75,8 @@ namespace GSLogistics.Entities.Concrete
             }
             if (query.ShippingDate.HasValue) // TODO : look for reschedule date
             {
-                q = q.Where(x => x.ShipDate.Value.Year == query.ShippingDate.Value.Year && x.ShipDate.Value.Month == query.ShippingDate.Value.Month && x.ShipDate.Value.Day == query.ShippingDate.Value.Day
-                || x.ReScheduleDate.Value.Year == query.ShippingDate.Value.Year && x.ReScheduleDate.Value.Month == query.ShippingDate.Value.Month && x.ReScheduleDate.Value.Day == query.ShippingDate.Value.Day);
+                q = q.Where(x => (x.ShipDate.Value.Year == query.ShippingDate.Value.Year && x.ShipDate.Value.Month == query.ShippingDate.Value.Month && x.ShipDate.Value.Day == query.ShippingDate.Value.Day)
+                || (x.ReScheduleDate.Value.Year == query.ShippingDate.Value.Year && x.ReScheduleDate.Value.Month == query.ShippingDate.Value.Month && x.ReScheduleDate.Value.Day == query.ShippingDate.Value.Day));
             }
             if (!string.IsNullOrEmpty(query.Status))
             {
@@ -103,6 +103,23 @@ namespace GSLogistics.Entities.Concrete
             {
                 q = q.Where(x => x.IsReSchedule == query.IsReschedule.Value);
                // anotherq = anotherq.Where(x => x.IsReSchedule == query.IsReschedule.Value);
+            }
+
+            if (query.hasBool.HasValue)
+            {
+                if (query.hasBool.Value)
+                {
+                    q = q.Where(x => !string.IsNullOrEmpty(x.BillOfLading));
+                }
+                else
+                {
+                    q = q.Where(x => string.IsNullOrEmpty(x.BillOfLading));
+                }
+                
+            }
+            if (!String.IsNullOrEmpty(query.BillOfLading))
+            {
+                q = q.Where(x => x.BillOfLading == query.BillOfLading);
             }
 
            // var q1 = q.ToList().Count();
