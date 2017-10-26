@@ -1166,7 +1166,7 @@ namespace GSLogistics.Website.Admin.Controllers
         public PartialViewResult GetLogReportOverdue(LogReportIndex_ViewModel model)
         {
             List<Models.Appointment> appointments = new List<Models.Appointment>();
-           
+            List<RescheduleBillOfLading_ViewModel> bolList = new List<RescheduleBillOfLading_ViewModel>();
 
             var query = new AppointmentQuery()
             {
@@ -1239,12 +1239,34 @@ namespace GSLogistics.Website.Admin.Controllers
 
                         appointments.Add(thisAppointment);
                     }
-                    
+                }
+
+                var grouped = appointments.GroupBy(x => x.BillOfLading);
+                foreach (var g in grouped)
+                {
+                    var groupelement = g.First();
+                    bolList.Add(new RescheduleBillOfLading_ViewModel()
+                    {
+                        BillOfLading = g.Key,
+                        AppointmentNumber = groupelement.AppointmentNo,
+                        Carrier = groupelement.Carrier,
+                        CustomerId = groupelement.CustomerId,
+                        CustomerName = groupelement.CustomerName,
+                        DivisionId = groupelement.DivisionId,
+                        DivisionName = groupelement.DivisionName,
+                        SaccCode = groupelement.ScaccCode,
+                        ShippingTime = groupelement.ShipTime,
+                        ShippingDate = groupelement.ShipDate,
+                        ShippingTimeLimit = groupelement.ShipTimeLimit,
+                        TotalBoxes = g.Sum(x => x.BoxesNumber),
+                        TotalOrders = g.Count(),
+                        TotalPieces = g.Sum(x => x.Pieces)
+                    });
                 }
             }
 
 
-            return PartialView("_LogReport_Overdue", appointments);
+            return PartialView("_LogReport_Overdue", bolList);
         }
 
         [HttpGet]
@@ -1303,7 +1325,7 @@ namespace GSLogistics.Website.Admin.Controllers
             sb.AppendLine("<tr>");
             sb.AppendLine("<th>PO#</th>");
             sb.AppendLine("<th>PT#</th>");
-            sb.AppendLine("<th>Pieces</th>");
+            sb.AppendLine("<th style=\"text-align: right \">Pieces</th>");
             sb.AppendLine("<th>Boxes</th>");
             sb.AppendLine("</tr>");
             sb.AppendLine("</thead>");
@@ -1363,16 +1385,75 @@ namespace GSLogistics.Website.Admin.Controllers
                 foreach (var a in appointments)
                 {
                     sb.AppendLine("<tr>");
-                    sb.AppendLine($"<td>{a.PurchaseOrder}</td><td>{a.PickTicket}</td><td>{a.Pieces}</td><td>{a.BoxesNumber}</td>");
+                    sb.AppendLine($"<td>{a.PurchaseOrder}</td><td>{a.PickTicket}</td><td style=\"text-align: right \">{a.Pieces.ToString("N")}</td><td style=\"text-align: right \">{a.BoxesNumber.ToString("N")}</td>");
                     sb.AppendLine("</tr>");
                 }
             }
-
+            var totalBoxes = appointments.Sum(x => x.BoxesNumber);
+            var totalPieces = appointments.Sum(x => x.Pieces);
+            sb.AppendLine("<tfoot>");
+            sb.AppendLine("<td colspan=\"2\"></td>");
+            sb.AppendLine($"<td>{totalPieces}</td>");
+            sb.AppendLine($"<td>{totalBoxes.ToString("F")}</td>");
+            sb.AppendLine("</tfoot>");
             sb.AppendLine("</table>");
 
             return Json(sb.ToString(), JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public async Task<ActionResult> RescheduleBillOfLading(NewReschedule_ViewModel model)
+        {
+            using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
+            using (var logic = Kernel.Get<IAppointmentLogic>())
+            {
+                var appts = await logic.ToListAsync(new AppointmentQuery()
+                {
+                    BillOfLading = model.BillOfLading,
+                    AppointmentNumber = model.AppointmentNumber,
+                    IsReschedule = true
+                });
+
+                var orders = await oLogic.ToListAsync(new OrderAppointmentQuery()
+                {
+                    BillOfLading = model.BillOfLading
+                });
+
+                string result = string.Empty;
+                foreach(var appt in appts)
+                {
+                    DateTime actualShippingDate = model.ReScheduleDate.HasValue ? model.ReScheduleDate.Value : model.ShippingDate;
+                    appt.IsReSchedule = false;
+                    appt.ReScheduleDate = model.ReScheduleDate;
+                    appt.ShippingTime = new DateTime(actualShippingDate.Year, actualShippingDate.Month, actualShippingDate.Day, model.ShippingTime.Hour, model.ShippingTime.Minute, 0);
+                    appt.ShippingTime = model.ShippingTime;
+                    if (model.ShippingTimeLimit.HasValue)
+                    {
+                        appt.ShippingTimeLimit = new DateTime(actualShippingDate.Year, actualShippingDate.Month, actualShippingDate.Day, model.ShippingTimeLimit.Value.Hour, model.ShippingTimeLimit.Value.Minute, 0);
+                    }
+                    
+
+                    var order = orders.FirstOrDefault(x => x.CustomerId == appt.CustomerId && x.PickTicketId == appt.PickTicket);
+
+                    if(order.ShipFor != model.ShippingDate)
+                    {
+                        order.ShippingDateChanged = true;
+                        order.ShipFor = model.ShippingDate;
+                    }
+
+                    await oLogic.Update(order);
+                    result += await logic.Update(appt);
+
+                   
+
+
+                }
+
+                return Json(new { Success = result.Length == 0, Error = result });
+            }
+
+            
+        }
 
         private class data
         {

@@ -61,7 +61,7 @@
         {
             <div class="btn-group btn-group-justified">
                  @Html.ActionLink("Back to LogReport", "LogReport", "OrderAppointment", new { @class = "btn btn-info" })
-
+                <a href="#" class="btn btn-info" onclick="reSchedule()">Re-Schedule</a>
                 <a href="#" class="btn btn-info" id="btnRefresh">Refresh</a>
             </div>
             <div class="panel panel-default">
@@ -142,7 +142,7 @@
             <div class="modal-footer">
                 
                 <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-                <button type="button" id="btnSave" onclick="reScheduleAppointments()" class="btn btn-info">Reschedule</button>
+                <button type="button" id="btnSave" onclick="saveReschedule()" class="btn btn-info">Reschedule</button>
             </div>
         </div>
     </div>
@@ -155,6 +155,81 @@
 <script src="~/Scripts/DataTables/dataTables.select.min.js"></script>
 
 <script type="text/javascript">
+
+    function reSchedule() {
+        var table = $("#tableLogReportOverdue").DataTable();
+        var selected = table.rows('.selected').data();
+        if (selected.length == 0) {
+            toastr.warning("Please select at least an Order");
+            return false;
+        }
+        if (selected.length > 1 ) {
+            toastr.warning("Please select only one Bill Of Lading at time");
+            return false;
+        }
+        console.log(selected[0]["ShippingTimeLimit"]);
+        $("#NewShippingDate").val(selected[0]["ShipDate"]);
+        $("#NewShippingTime").val(selected[0]["ShipTime"]);
+        $("#NewShippingTimeLimit").val(selected[0]["ShippingTimeLimit"]);
+
+        if (confirm("Do you want to overwrite the original shipping date ?")) {
+            
+            $("#NewShippingDate").show();
+            $("#NewReScheduleDate").hide();
+        }
+        else {
+            $("#NewShippingDate").hide();
+            $("#NewReScheduleDate").show();
+            $("#NewReScheduleDate").val(selected[0]["ShipDate"]);
+
+        }
+
+        
+
+        $('#rescheduleAppointmentsModal form').validate();
+
+        $('#rescheduleAppointmentsModal').modal({
+            show: true,
+            backdrop: "static"
+        });
+
+    }
+
+    function saveReschedule() {
+        var table = $("#tableLogReportOverdue").DataTable();
+        var selected = table.rows('.selected').data();
+        if ($('#rescheduleAppointmentsModal form').valid()) {
+
+            var model = {};
+
+            model.AppointmentNumber = selected[0]["AppointmentNo"];
+            model.BillOfLading = selected[0]["BillOfLading"];
+            model.ShippingDate = $("#NewShippingDate").val();
+            model.ShippingTime = $("#NewShippingTime").val();
+            model.ShippingTimeLimit = $('#NewShippingTimeLimit').val();
+            model.ReScheduleDate = $("#NewReScheduleDate").val();
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("RescheduleBillOfLading", "OrderAppointment")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(model),
+                dataType: "json",
+                success: function (result) {
+                    if (result.Success == true) {
+                        toastr.success('Re-Schedule set successfully');
+                        $("#btnRefresh").trigger("click");
+                    }
+                    else {
+                        toastr.error('Re-Schedule failed : ' + result.Error);
+                        $("#btnRefresh").trigger("click");
+                    }
+                }
+            });
+
+            $('#rescheduleAppointmentsModal form').modal("hide");
+        }
+    }
 
     $(document).ready(function () {
 

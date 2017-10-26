@@ -71,7 +71,10 @@
 
                     </ul>
                 </div>
-
+                @if (!User.IsInRole("Clients"))
+                {
+                    @Html.ActionLink("Orders Re-Scheduled ", "Reschedule", "OrderAppointment", new { @class = "btn btn-info" })
+                }
                 <a href="#" class="btn btn-info" id="btnRefresh">Refresh</a>
             </div>
             <div class="panel panel-default">

@@ -22,5 +22,6 @@ namespace GSLogistics.Model.Query
         public int[] DivisionIds { get; set; }
 
         public bool EmptyBol { get; set; }
+
     }
 }

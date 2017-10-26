@@ -1,7 +1,7 @@
 ﻿
 
 @using GSLogistics.Website.Admin.Models
-@model List<Appointment>
+@model List<RescheduleBillOfLading_ViewModel>
 
 <table class="table display-compact table-striped table-bordered" id="tableLogReportOverdue" style="width:100%">
     <thead>
@@ -29,10 +29,22 @@
                 S. Time
             </th>
             <th>
+                Total Boxes
+            </th>
+            <th>
+                Total Pieces
+            </th>
+            <th>
+                Total Orders
+            </th>
+            <th>
                 Scac
             </th>
             <th>
                 Carrier
+            </th>
+            <th>
+
             </th>
         </tr>
     </thead>
@@ -46,26 +58,37 @@
                     @Html.DisplayFor(modelItem => item.BillOfLading)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.AppointmentNo)
+                    @Html.DisplayFor(modelItem => item.AppointmentNumber)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CustomerId)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ShipTo)
+                    @Html.DisplayFor(modelItem => item.DivisionName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ShipDate)
+                    @Html.DisplayFor(modelItem => item.ShippingDate)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ShippingTimeFriendly)
                 </td>
+                <td style="text-align:right">
+                    @Html.DisplayFor(modelItem => item.TotalBoxes)
+                    
+                </td>
+                <td style="text-align:right">
+                    @Html.DisplayFor(modelItem => item.TotalPieces)
+                </td>
+                <td style="text-align:right">
+                    @Html.DisplayFor(modelItem => item.TotalOrders)
+                </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ScaccCode)
+                    @Html.DisplayFor(modelItem => item.SaccCode)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Carrier)
                 </td>
+                <td></td>
                 
             </tr>
         }
@@ -178,11 +201,27 @@
                 }
                 ,
                 {
+                    data : 'TotalBoxes'
+                }
+                ,
+                {
+                    data: 'TotalPieces'
+                }
+                ,
+                {
+                    data: 'TotalOrders'
+                }
+                ,
+                {
                     data: 'ScaccCode'
                 }
                 ,
                 {
                     data: 'Carrier'
+                }
+                ,
+                {
+                    data: 'ShippingTimeLimit'
                 }
 
             ]

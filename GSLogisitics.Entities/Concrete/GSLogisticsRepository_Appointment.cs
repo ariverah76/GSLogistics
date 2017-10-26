@@ -160,7 +160,7 @@ namespace GSLogistics.Entities.Concrete
                 IsReSchedule =x.IsReSchedule,
                 Pallets = x.Pallets,
                 DriverId = x.DriverId,
-                DriverName = x.Driver?.FirstName,
+                DriverName = x.Driver?.Name,
                 TruckId = x.TruckId,
                 TruckDescription = x.Truck?.Description
 
@@ -327,6 +327,7 @@ namespace GSLogistics.Entities.Concrete
         public async Task<int> UpdateScript(Model.Appointment appointment)
         {
             //   var result = woContext.Database.SqlQuery<OrderStatus>(scriptToRun).ToList();
+            //TODO : update truck and driver
 
             var reschDate = appointment.ReScheduleDate.HasValue ? appointment.ReScheduleDate.Value.ToShortDateString() : string.Empty;
             var timeLimit = appointment.ShippingTimeLimit.HasValue ? appointment.ShippingTimeLimit.Value.ToShortTimeString() : string.Empty;

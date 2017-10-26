@@ -45,24 +45,24 @@ namespace GSLogistics.Website.Admin.Models
 
         public string ReportFormat { get; set; }
 
-        [DataType(DataType.Date)]
+       
         [Display(Name = "Shipping Date")]
         [Required]
-        public DateTime NewShippingDate { get; set; }
+        public DateTime? NewShippingDate { get; set; }
 
-        public DateTime NewReScheduleDate { get; set; }
+        public DateTime? NewReScheduleDate { get; set; }
 
 
         [DataType(DataType.Time)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
         [Display(Name = "Shipping Time")]
         [Required]
-        public DateTime NewShippingTime { get; set; }
+        public DateTime? NewShippingTime { get; set; }
 
         [DataType(DataType.Time)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
         [Display(Name = "Shipping Time Limit")]
-        public DateTime NewShippingTimeLimit { get; set; }
+        public DateTime? NewShippingTimeLimit { get; set; }
 
 
 

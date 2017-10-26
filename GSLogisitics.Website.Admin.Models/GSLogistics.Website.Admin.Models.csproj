@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account\LoginViewModel.cs" />
+    <Compile Include="NewReschedule_ViewModel.cs" />
     <Compile Include="OrderAppointments\Appointment.cs" />
     <Compile Include="OrderAppointments\AppointmentsForReschedule_Model.cs" />
     <Compile Include="OrderAppointments\LogReportIndex_ViewModel.cs" />
@@ -50,6 +51,7 @@
     <Compile Include="OrderAppointments\OrderAppointmentsIndex_ViewModel.cs" />
     <Compile Include="OrderAppointments\OrderStatus.cs" />
     <Compile Include="OrderAppointments\PostAppointment.cs" />
+    <Compile Include="OrderAppointments\RescheduleBillOfLading_ViewModel.cs" />
     <Compile Include="OrderAppointments\UpdateAppointment.cs" />
     <Compile Include="OrderAppointments\UpdateOrderAppointment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

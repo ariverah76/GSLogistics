@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,11 @@ namespace GSLogistics.Website.Admin.Models.OrderAppointments
         public string PickTicketId { get; set; }
         public string CustomerId { get; set; }
         public string CustomerName { get; set; }
+
+
+        [Display(Name = "End Date")]
+        [DataType(DataType.Date)]
+        [UIHint("Date")]
         public DateTime ShippingDate { get; set; }
         public DateTime ShippingTime { get; set; }
         public int? DivisionId { get; set; }

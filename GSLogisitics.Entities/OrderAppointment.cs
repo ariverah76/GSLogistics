@@ -85,6 +85,10 @@ namespace GSLogistics.Entities
 
         [Column("ExternalBol", Order = 25)]
         public bool ExternalBol { get; set; }
-        
+
+        [Column("ShippingDateChanged", Order = 26)]
+        public bool ShippingDateChanged { get; set; }
+
+
     }
 }

@@ -109,7 +109,9 @@ namespace GSLogistics.Entities.Concrete
                 DeliveryTypeId = string.IsNullOrEmpty(x.Delivery) ? default(short?) : x.Delivery == "P" ? (short)1 : (short)2,
                 Shipping  = GetShippingDescription(x.Shipping),
                 PathPOD = x.PathPOD, 
-                ExternalBol = x.ExternalBol
+                ExternalBol = x.ExternalBol,
+                ShippingDateChanged = x.ShippingDateChanged
+                
             });
 
             return result.ToList();
@@ -161,6 +163,7 @@ namespace GSLogistics.Entities.Concrete
                 Shipping = GetShippingDescription(x.Shipping),
                 PathPOD = x.PathPOD,
                 ExternalBol = x.ExternalBol,
+                ShippingDateChanged = x.ShippingDateChanged
 
             });
 
@@ -240,6 +243,16 @@ namespace GSLogistics.Entities.Concrete
                     if (!string.IsNullOrEmpty(orderAppointment.ConfirmationNumber))
                     {
                         entity.ConfirmationNumber = orderAppointment.ConfirmationNumber;
+                    }
+
+                    if (orderAppointment.ShippingDateChanged.HasValue)
+                    {
+                        entity.ShippingDateChanged = orderAppointment.ShippingDateChanged.Value;
+                    }
+
+                    if (orderAppointment.ShipFor.HasValue)
+                    {
+                        entity.ShipFor = orderAppointment.ShipFor.Value;
                     }
 
                     return await context.SaveChangesAsync();
