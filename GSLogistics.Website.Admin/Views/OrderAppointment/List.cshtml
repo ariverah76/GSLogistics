@@ -691,6 +691,7 @@
 
     function setAppointment() {
         clearAppointmentForm();
+        var shippingDateValidation = @ViewBag.ValidateShippingDate.ToString().ToLower();
         var table = $("#tableAppointments").DataTable();
         
         $("#summary").show();
@@ -789,7 +790,10 @@
             $('input[name = DeliveryTypeId]').attr('disabled', 'disabled');
 
             $("#ShippingDate").val(selected2[0]["ShipFor"]);
-            $("#ShippingDate").prop('disabled', true);
+
+            if(shippingDateValidation == true) {
+               $("#ShippingDate").prop('disabled', true);
+            }
         }
 
         

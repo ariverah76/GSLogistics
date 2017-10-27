@@ -19,7 +19,7 @@ namespace GSLogistics.Website.Admin.Controllers
     public class OrderAppointmentController :  BaseController
     {
 
-      //  private IRepository repository;
+        private const string kValidateShippingDateSetting = "DisableShippingDateValidation";
 
         public OrderAppointmentController(IKernel kernel)
             :base(kernel)
@@ -66,10 +66,7 @@ namespace GSLogistics.Website.Admin.Controllers
         public async  Task<ActionResult> List()
         {
             var model = new OrderAppointmentsIndex_ViewModel();
-            //model.CancelDateStartDate = DateTime.Today.AddDays(-60);
-            //model.CancelDateEndDate = DateTime.Today;
-            //model.ShippingDateStart = DateTime.Today.AddDays(-60);
-            //model.ShippingDateEnd = DateTime.Today.AddDays(15);
+          
 
             return await this.List(model);
 
@@ -95,6 +92,15 @@ namespace GSLogistics.Website.Admin.Controllers
 
                 ViewBag.ScacCodes = new SelectList(result2, "Key", "Value", null);
             }
+
+            var shippingDateSetting = Utility.Utility.ReadSetting(kValidateShippingDateSetting);
+
+            bool disableShippingDateValidation = true;
+
+            bool.TryParse(shippingDateSetting, out disableShippingDateValidation);
+
+            ViewBag.ValidateShippingDate = !disableShippingDateValidation;
+
 
             var status = new Dictionary<string, string>();
             status.Add("1", "Posted");
@@ -647,40 +653,8 @@ namespace GSLogistics.Website.Admin.Controllers
 
                 foreach (var appt in list2)
                 {
-                    var thisAppointment = new Models.Appointment()
-                    {
-                        AppointmentNo = appt.AppointmentNumber,
-                        CustomerName = appt.CustomerName,
-                        CustomerId = appt.CustomerId,
-                        Carrier = appt.Carrier,
-                        PickTicket = appt.PickTicket,
-                        PtBulk = appt.PtBulk,
-                        ScaccCode = appt.ScacCode,
-                        ShipDate = appt.ShippingDate.Value,
-                        ShipTime = appt.ShippingTime.Value,
-                        Posted = appt.Posted.ToString(),
-                        DateAdded = appt.DateAdded,
-                        ShipTimeLimit = appt.ShippingTimeLimit,
-                        DeliveryTypeId = appt.DeliveryTypeId,
-                        DivisionId = appt.DivisionId,
-                        DivisionName = appt.DivisionName,
-                        DivisionNameId = appt.DivisionNameId,
-                        ReScheduleDate = appt.ReScheduleDate,
-                        Pallets  = appt.Pallets,
-                        TruckId = appt.TruckId,
-                        DriverId =appt.DriverId
-                        
-                    };
-
-                    var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
-                    if (orderAppt != null)
-                    {
-                        thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
-                        thisAppointment.Pieces = orderAppt.Pieces.Value;
-                        thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
-                        thisAppointment.ShipTo = orderAppt.ShipTo;
-                        thisAppointment.BillOfLading = orderAppt.BillOfLading;
-                    }
+                    var thisAppointment = this.GetAppointmentWebModel(appt, orderAppts);
+                    
 
                     appointments.Add(thisAppointment);
                 }
@@ -1340,43 +1314,12 @@ namespace GSLogistics.Website.Admin.Controllers
                 });
                 var orderAppts = oLogic.ToList(new OrderAppointmentQuery());
 
-                //TODO: move to his own function and re-use it
+                
                 foreach (var appt in appts)
                 {
-                    var thisAppointment = new Models.Appointment()
-                    {
-                        AppointmentNo = appt.AppointmentNumber,
-                        CustomerName = appt.CustomerName,
-                        CustomerId = appt.CustomerId,
-                        Carrier = appt.Carrier,
-                        PickTicket = appt.PickTicket,
-                        PtBulk = appt.PtBulk,
-                        ScaccCode = appt.ScacCode,
-                        ShipDate = appt.ShippingDate.Value,
-                        ShipTime = appt.ShippingTime.Value,
-                        Posted = appt.Posted.ToString(),
-                        DateAdded = appt.DateAdded,
-                        ShipTimeLimit = appt.ShippingTimeLimit,
-                        DeliveryTypeId = appt.DeliveryTypeId,
-                        DivisionId = appt.DivisionId,
-                        DivisionName = appt.DivisionName,
-                        DivisionNameId = appt.DivisionNameId,
-                        ReScheduleDate = appt.ReScheduleDate,
-                        Pallets = appt.Pallets,
-                        TruckId = appt.TruckId,
-                        DriverId = appt.DriverId
 
-                    };
+                    var thisAppointment = this.GetAppointmentWebModel(appt, orderAppts);
 
-                    var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
-                    if (orderAppt != null)
-                    {
-                        thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
-                        thisAppointment.Pieces = orderAppt.Pieces.Value;
-                        thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
-                        thisAppointment.ShipTo = orderAppt.ShipTo;
-                        thisAppointment.BillOfLading = orderAppt.BillOfLading;
-                    }
 
                     appointments.Add(thisAppointment);
                 }
@@ -1399,6 +1342,47 @@ namespace GSLogistics.Website.Admin.Controllers
             sb.AppendLine("</table>");
 
             return Json(sb.ToString(), JsonRequestBehavior.AllowGet);
+        }
+
+
+        private Appointment GetAppointmentWebModel(Model.Appointment appt, IList<Model.OrderAppointment> orders)
+        {
+            var thisAppointment = new Models.Appointment()
+            {
+                AppointmentNo = appt.AppointmentNumber,
+                CustomerName = appt.CustomerName,
+                CustomerId = appt.CustomerId,
+                Carrier = appt.Carrier,
+                PickTicket = appt.PickTicket,
+                PtBulk = appt.PtBulk,
+                ScaccCode = appt.ScacCode,
+                ShipDate = appt.ShippingDate.Value,
+                ShipTime = appt.ShippingTime.Value,
+                Posted = appt.Posted.ToString(),
+                DateAdded = appt.DateAdded,
+                ShipTimeLimit = appt.ShippingTimeLimit,
+                DeliveryTypeId = appt.DeliveryTypeId,
+                DivisionId = appt.DivisionId,
+                DivisionName = appt.DivisionName,
+                DivisionNameId = appt.DivisionNameId,
+                ReScheduleDate = appt.ReScheduleDate,
+                Pallets = appt.Pallets,
+                TruckId = appt.TruckId,
+                DriverId = appt.DriverId
+
+            };
+
+            var orderAppt = orders.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
+            if (orderAppt != null)
+            {
+                thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
+                thisAppointment.Pieces = orderAppt.Pieces.Value;
+                thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
+                thisAppointment.ShipTo = orderAppt.ShipTo;
+                thisAppointment.BillOfLading = orderAppt.BillOfLading;
+            }
+
+            return thisAppointment;
         }
 
         [HttpPost]

@@ -73,7 +73,7 @@ namespace GSLogistics.Entities.Concrete
                 q = q.Where(x => x.ShipDate <= query.ShippingDateEnd.Value);
                 //anotherq = anotherq.Where(x => x.ShipDate <= query.ShippingDateEnd.Value);
             }
-            if (query.ShippingDate.HasValue) // TODO : look for reschedule date
+            if (query.ShippingDate.HasValue) 
             {
                 q = q.Where(x => (x.ShipDate.Value.Year == query.ShippingDate.Value.Year && x.ShipDate.Value.Month == query.ShippingDate.Value.Month && x.ShipDate.Value.Day == query.ShippingDate.Value.Day)
                 || (x.ReScheduleDate.Value.Year == query.ShippingDate.Value.Year && x.ReScheduleDate.Value.Month == query.ShippingDate.Value.Month && x.ReScheduleDate.Value.Day == query.ShippingDate.Value.Day));
@@ -326,9 +326,7 @@ namespace GSLogistics.Entities.Concrete
         }
         public async Task<int> UpdateScript(Model.Appointment appointment)
         {
-            //   var result = woContext.Database.SqlQuery<OrderStatus>(scriptToRun).ToList();
-            //TODO : update truck and driver
-
+         
             var reschDate = appointment.ReScheduleDate.HasValue ? appointment.ReScheduleDate.Value.ToShortDateString() : string.Empty;
             var timeLimit = appointment.ShippingTimeLimit.HasValue ? appointment.ShippingTimeLimit.Value.ToShortTimeString() : string.Empty;
             var shippingTime = appointment.ShippingTime.Value.ToString("yyyy-MM-dd HH:mm:ss.fff");

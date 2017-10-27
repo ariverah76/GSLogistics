@@ -55,6 +55,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSLogistics.Interface", "GS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSLogistics.UserSecurity", "GSLogistics.UserSecurity\GSLogistics.UserSecurity.csproj", "{79963F2B-24B0-4FC8-98A4-BCF7541158DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSLogistics.Website.Utility", "GSLogistics.Website.Utility\GSLogistics.Website.Utility.csproj", "{8AB961BB-7EEC-4064-96F2-8B91035EF893}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +135,10 @@ Global
 		{79963F2B-24B0-4FC8-98A4-BCF7541158DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79963F2B-24B0-4FC8-98A4-BCF7541158DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79963F2B-24B0-4FC8-98A4-BCF7541158DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AB961BB-7EEC-4064-96F2-8B91035EF893}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AB961BB-7EEC-4064-96F2-8B91035EF893}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AB961BB-7EEC-4064-96F2-8B91035EF893}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AB961BB-7EEC-4064-96F2-8B91035EF893}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -158,5 +164,6 @@ Global
 		{64DDDA9B-D0B0-467A-86A9-5E398A1C6330} = {83E0C2C7-C0AE-45FF-A7BF-123DEEFD02F3}
 		{3258DCFF-3339-4B21-9134-F26BF38691FF} = {13C09F75-BC19-4162-816B-74D02452D87C}
 		{79963F2B-24B0-4FC8-98A4-BCF7541158DA} = {4921FCF2-E3E8-4B6C-8FA0-3A17E3E8C474}
+		{8AB961BB-7EEC-4064-96F2-8B91035EF893} = {4921FCF2-E3E8-4B6C-8FA0-3A17E3E8C474}
 	EndGlobalSection
 EndGlobal

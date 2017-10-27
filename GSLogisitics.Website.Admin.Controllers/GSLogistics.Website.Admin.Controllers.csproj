@@ -188,6 +188,10 @@
       <Project>{a470a34b-39e1-484d-a781-92895b492f0f}</Project>
       <Name>GSLogistics.Website.Customers.Controllers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GSLogistics.Website.Utility\GSLogistics.Website.Utility.csproj">
+      <Project>{8ab961bb-7eec-4064-96f2-8b91035ef893}</Project>
+      <Name>GSLogistics.Website.Utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
