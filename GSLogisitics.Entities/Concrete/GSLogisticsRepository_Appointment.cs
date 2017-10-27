@@ -332,7 +332,17 @@ namespace GSLogistics.Entities.Concrete
             var reschDate = appointment.ReScheduleDate.HasValue ? appointment.ReScheduleDate.Value.ToShortDateString() : string.Empty;
             var timeLimit = appointment.ShippingTimeLimit.HasValue ? appointment.ShippingTimeLimit.Value.ToShortTimeString() : string.Empty;
             var shippingTime = appointment.ShippingTime.Value.ToString("yyyy-MM-dd HH:mm:ss.fff");
-            var script = @"UPDATE dbo.Appointments SET AppointmentNo = {0}, ShippTime = CAST({1} AS DATETIME), ShippingTimeLimit = {2}, DeliveryTypeId = {3}, ReScheduleDate = {4}, Pallets = {7} WHERE CustomerId = {5} AND PickTicket = {6} ";
+            var script = @"UPDATE dbo.Appointments SET AppointmentNo = {0}, 
+                        ShippTime = CAST({1} AS DATETIME), 
+                        ShippingTimeLimit = {2}, 
+                        DeliveryTypeId = {3}, 
+                        Pallets = {6}, 
+                        TruckNo = {7}, 
+                        DriverNo = {8} 
+                        WHERE CustomerId = {4} 
+                            AND PickTicket = {5} 
+                            AND Posted = 0";
+
             var scriptOrder = @"UPDATE dbo.OrderAppointment SET ShipFor = CAST({0} AS DATETIME) WHERE CustomerId = {1} AND PickTicketId = {2} ";
 
             try
@@ -340,16 +350,20 @@ namespace GSLogistics.Entities.Concrete
 
                 if (context.Database.Connection.ConnectionString.ToLower().Contains("diavolo"))
                 {
-                    //context.Database.ExecuteSqlCommand("SET LANGUAGE us_english;");
-                //    script = "SET LANGUAGE us_english; " + string.Format(script, $"'{appointment.AppointmentNumber}'", $"'{shippingTime}'", string.IsNullOrEmpty(timeLimit) ? "NULL" : $"'{timeLimit}'", $"{appointment.DeliveryTypeId}", string.IsNullOrEmpty(reschDate) ? "NULL" : $"'{reschDate}'", $"'{appointment.CustomerId}'", $"'{appointment.PickTicket}'", appointment.Pallets.HasValue ? $"{appointment.Pallets.Value}": "NULL");
                     script = "SET LANGUAGE us_english; " + script;
                     scriptOrder = "SET LANGUAGE us_english; " + scriptOrder;
                 }
-                else
-                {
-                    
-                }
-                script = string.Format(script, $"'{appointment.AppointmentNumber}'", $"'{shippingTime}'", string.IsNullOrEmpty(timeLimit) ? "NULL" : $"'{timeLimit}'", $"{appointment.DeliveryTypeId}", string.IsNullOrEmpty(reschDate) ? "NULL" : $"'{reschDate}'", $"'{appointment.CustomerId}'", $"'{appointment.PickTicket}'", appointment.Pallets.HasValue ? $"{appointment.Pallets.Value}" : "NULL");
+
+                script = string.Format(script, 
+                    $"'{appointment.AppointmentNumber}'", 
+                    $"'{shippingTime}'", 
+                    string.IsNullOrEmpty(timeLimit) ? "NULL" : $"'{timeLimit}'", 
+                    $"{appointment.DeliveryTypeId}", 
+                    $"'{appointment.CustomerId}'", $"'{appointment.PickTicket}'", 
+                    appointment.Pallets.HasValue ? $"{appointment.Pallets.Value}" : "NULL", 
+                    appointment.TruckId.HasValue ? $"{appointment.TruckId.Value}": "NULL", 
+                    appointment.DriverId.HasValue ? $"{appointment.DriverId.Value}" : "NULL");
+
                 scriptOrder = string.Format(scriptOrder, $"'{shippingTime}'", $"'{appointment.CustomerId}'", $"'{appointment.PickTicket}'");
 
                 var result = await context.Database.ExecuteSqlCommandAsync(script);
