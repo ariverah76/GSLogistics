@@ -49,6 +49,9 @@
             <th></th>
             <th></th>
             <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -103,6 +106,18 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.ExternalBol)
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DriverName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pallets)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DeliveryTypeId)
+                </td>
+
+
+
             </tr>
         }
     </tbody>
@@ -186,6 +201,22 @@
                     data: 'ExternalBol',
                     visible: false
                 }
+                ,
+                {
+                    data: 'DriverName',
+                    visible: true
+                }
+                ,
+                {
+                    data: 'Pallets',
+                    visible: true
+                }
+                ,
+                {
+                    data: 'DeliveryTypeId',
+                    visible: true
+
+                }
             ]
             ,
             "drawCallback": function (settings) {
@@ -203,31 +234,42 @@
                         groupid++;
                         val = api.row(api.row($(rows).eq(i)).index()).data();
                         var bol = val['AppointmentNo'];
+                        var deliveryTypeId = val['DeliveryTypeId'];
+                        var pallets = val['Pallets'];
+                        var driverName = val['DriverName'];
                         
-                        console.log(val['ExternalBol'])
-                        //$(rows).eq(i).before(
-                        //    '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
-                        //);
-                        //  '<tr class="group"><td>&nbsp;</td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
+                        var textHeader = '<tr class="group"><td colspan=1>{button}</td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '                {DriverName} {Pallets}</td></tr>';
+                        var textButton = '<button class="btn btn-info" type="button" data-toggle="tooltip" title="Re-Schedule" onclick="reschedule(\'' + group + '\',\'' + bol + '\')" id=btnresch_' + group + '><i class="fa fa-calendar-plus-o"/></button> '
+                        console.log('driverName : ')
+                        console.log(val['Pallets']);
+                        if (val['DeliveryTypeId'] == 2) {
+                            textHeader = textHeader.replace("{DriverName}", "Driver: " + val['DriverName']);
+                            textHeader = textHeader.replace("{Pallets}", " Pallets: " + val['Pallets'] );
+                        }
+                        else {
+                            textHeader = textHeader.replace("{DriverName}", "");
+                            textHeader = textHeader.replace("{Pallets}", "");
+                        }
                         if (val['pathPOD'].length == 0) {
+                            textHeader = textHeader.replace("{button}", textButton);
                             $(rows).eq(i).before(
-                            '<tr class="group"><td colspan=1><button class="btn btn-info" type="button" data-toggle="tooltip" title="Re-Schedule" onclick="reschedule(\'' + group + '\',\'' + bol + '\')" id=btnresch_' + group + '><i class="fa fa-calendar-plus-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
+                             textHeader
                             );
+                            //'<tr class="group"><td colspan=1><button class="btn btn-info" type="button" data-toggle="tooltip" title="Re-Schedule" onclick="reschedule(\'' + group + '\',\'' + bol + '\')" id=btnresch_' + group + '><i class="fa fa-calendar-plus-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
                         }
                         else {
                             var header = '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
                             var extcol = val['ExternalBol'];
+                            textButton = '<button class="btn btn-warning" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> ';
                             if (extcol.search("checked") > 0 ) {
                                 
-                                header = header.replace("btn btn-danger", "btn btn-warning");
-                                header = header.replace("See POD", "See External POD");
-                                header = header.replace("</button>", 'E</button>');
-                                header = header.replace("fa fa-file-pdf-o", "fa fa-file-pdf-o pull-left");
+                                textButton = textButton.replace("btn btn-danger", "btn btn-warning");
+                                textButton = textButton.replace("See POD", "See External POD");
+                                textButton = textButton.replace("</button>", 'E</button>');
+                                textButton = textButton.replace("fa fa-file-pdf-o", "fa fa-file-pdf-o pull-left");
                             }
-                            else {
-
-                            }
-                            $(rows).eq(i).before(header);
+                            textHeader = textHeader.replace("{button}", textButton);
+                            $(rows).eq(i).before(textHeader);
                         }
                             
                         
@@ -289,16 +331,7 @@
             }
         });
 
-        //$('#tableLogReport tbody').on('click', 'tr.group', function () {
-        //    var currentOrder = table.order()[0];
-        //    if (currentOrder[0] === 2 && currentOrder[1] === 'asc') {
-        //        table.order([0, 'desc']).draw();
-        //    }
-        //    else {
-        //        table.order([0, 'asc']).draw();
-        //    }
-        //});
-
+    
     });
 
     

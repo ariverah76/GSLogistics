@@ -741,7 +741,8 @@ namespace GSLogistics.Website.Admin.Controllers
                         DeliveryTypeId = appt.DeliveryTypeId,
                         Pallets = appt.Pallets,
                         TruckId = appt.TruckId,
-                        DriverId = appt.DriverId
+                        DriverId = appt.DriverId,
+                        DriverName = appt.DriverName
 
 
                     };
@@ -1011,8 +1012,11 @@ namespace GSLogistics.Website.Admin.Controllers
                         ShipTime = appt.ShippingTime.Value,
                         Posted = appt.Posted.ToString(),
                         DateAdded = appt.DateAdded,
-                        DeliveryTypeId = appt.DeliveryTypeId
-                        
+                        DeliveryTypeId = appt.DeliveryTypeId,
+                        DriverName = appt.DriverName,
+                        DriverId = appt.DriverId,
+                        Pallets = appt.Pallets,
+                       
                     };
 
                     var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();

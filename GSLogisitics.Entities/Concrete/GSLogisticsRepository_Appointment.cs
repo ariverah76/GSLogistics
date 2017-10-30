@@ -204,7 +204,7 @@ namespace GSLogistics.Entities.Concrete
                 IsReSchedule = x.IsReSchedule,
                 Pallets = x.Pallets,
                 DriverId = x.DriverId,
-                DriverName  =  x.Driver?.Name,
+                DriverName  =  x.Driver != null ? $"{x.Driver.Name} {x.Driver.SurName}" : null,
                 TruckId = x.TruckId,
                 TruckDescription = x.Truck?.Description
             });
