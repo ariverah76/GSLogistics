@@ -406,53 +406,64 @@ namespace GSLogistics.Website.Admin.Controllers
 
             // TODO: Bring all the appts  with same BOL and post them all at once (just in case something were missing on the client side)
             StringBuilder sb = new StringBuilder();
-            using (var ol = Kernel.Get<IOrderAppointmentLogic>())
-            using (var apptLogic = ol.GetLogic<IAppointmentLogic>())
-            {
 
-                foreach (var order in model.Orders)
+            foreach(var order in model.Orders)
+            {
+                if (string.IsNullOrEmpty(order.CustomerId) || order.DivisionId == 0 || string.IsNullOrEmpty(order.PickTicketId) || string.IsNullOrEmpty(order.PurchaseOrderId))
+                {
+                    sb.AppendLine($"Order has missing info. Purchase Order: {order.PurchaseOrderId}, PickTicket: {order.PickTicketId} Customer: {order.CustomerId} Division: {order.DivisionId}");
+                }
+            }
+            if (sb.Length == 0)
+            {
+                using (var ol = Kernel.Get<IOrderAppointmentLogic>())
+                using (var apptLogic = ol.GetLogic<IAppointmentLogic>())
                 {
 
-                    Model.Appointment appointment = new Model.Appointment();
-                    appointment.CustomerId = order.CustomerId;
-                    appointment.PickTicket = order.PickTicketId;
-                    appointment.DivisionId = order.DivisionId == 0 ? default(int?): order.DivisionId;
-
-                    appointment.ScacCode = model.ScacCode;
-                    appointment.ShippingDate = model.ShippingDate;
-                    appointment.ShippingTime = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTime.Hour, model.ShippingTime.Minute, 0);
-                    appointment.AppointmentNumber = model.AppointmentNumber;
-                    appointment.DeliveryTypeId = model.DeliveryTypeId;
-                    appointment.UserName = User.Identity.Name;
-                    appointment.Pallets = model.Pallets;
-                    appointment.DriverId = model.DriverId;
-                    appointment.TruckId = model.TruckId;
-
-                    if (model.ShippingTimeLimit.HasValue)
+                    foreach (var order in model.Orders)
                     {
-                        appointment.ShippingTimeLimit = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTimeLimit.Value.Hour, model.ShippingTimeLimit.Value.Minute, 0);
+
+                        Model.Appointment appointment = new Model.Appointment();
+                        appointment.CustomerId = order.CustomerId;
+                        appointment.PickTicket = order.PickTicketId;
+                        appointment.DivisionId = order.DivisionId == 0 ? default(int?) : order.DivisionId;
+
+                        appointment.ScacCode = model.ScacCode;
+                        appointment.ShippingDate = model.ShippingDate;
+                        appointment.ShippingTime = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTime.Hour, model.ShippingTime.Minute, 0);
+                        appointment.AppointmentNumber = model.AppointmentNumber;
+                        appointment.DeliveryTypeId = model.DeliveryTypeId;
+                        appointment.UserName = User.Identity.Name;
+                        appointment.Pallets = model.Pallets;
+                        appointment.DriverId = model.DriverId;
+                        appointment.TruckId = model.TruckId;
+
+                        if (model.ShippingTimeLimit.HasValue)
+                        {
+                            appointment.ShippingTimeLimit = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTimeLimit.Value.Hour, model.ShippingTimeLimit.Value.Minute, 0);
+                        }
+
+                        appointment.PtBulk = order.PtBulk;
+
+
+                        Model.OrderAppointment oappt = new Model.OrderAppointment()
+                        {
+                            PurchaseOrderId = order.PurchaseOrderId,
+                            PickTicketId = order.PickTicketId,
+                            PtBulk = order.PtBulk,
+                            CustomerId = order.CustomerId,
+                            ShipFor = model.ShippingDate,
+                            Status = 1
+                        };
+
+                        var result = await apptLogic.SetAppointment(appointment, order.PurchaseOrderId);
+
+                        if (!string.IsNullOrEmpty(result))
+                        {
+                            sb.AppendLine($"Order: {order.PickTicketId} Purchase Order: {order.PurchaseOrderId}, got the follow error: {result}");
+                        }
+
                     }
-
-                    appointment.PtBulk = order.PtBulk;
-
-
-                    Model.OrderAppointment oappt = new Model.OrderAppointment()
-                    {
-                        PurchaseOrderId = order.PurchaseOrderId,
-                        PickTicketId = order.PickTicketId,
-                        PtBulk = order.PtBulk,
-                        CustomerId = order.CustomerId,
-                        ShipFor = model.ShippingDate,
-                        Status = 1
-                    };
-                    
-                    var result = await apptLogic.SetAppointment(appointment, order.PurchaseOrderId);
-
-                    if (!string.IsNullOrEmpty(result))
-                    {
-                        sb.AppendLine($"Order: {order.PickTicketId} Purchase Order: {order.PurchaseOrderId}, got the follow error: {result}");
-                    }
-
                 }
             }
 

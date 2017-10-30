@@ -455,6 +455,29 @@
                     //   // table.rows(indexes).nodes().to$().removeClass('selected');
                     return false;
                 }
+                if (data[0].CustomerId == ""){
+                    toastr.error("Missing Customer!")
+                    return false;
+
+                }
+                if (data[0].PurchaseOrderId == "") {
+                    toastr.error("Missing Purchase Order!")
+                    return false;
+
+                }
+                if (data[0].PickTicketId == "") {
+                    toastr.error("Missing PickTicket!")
+                    return false;
+
+                }
+                if (data[0].DivisionId == "" || data[0].DivisionId == "0") {
+                    toastr.error("Missing Division!");
+                    table.rows(indexes).deselect();
+                    return false;
+
+                }
+
+    
                 console.log(table.rows(indexes).nodes().to$().hasClass('selected'));
                 //tableSelected.row.add({
                 //    "ShipTo": data[0]["StoreName"],
@@ -747,7 +770,6 @@
                         true : false;
                     });
                 if (existingRow != null) {
-                    console.log('true');
                     table.rows(existingRow).deselect();
                 }
 
