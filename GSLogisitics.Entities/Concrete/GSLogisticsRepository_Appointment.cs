@@ -259,13 +259,22 @@ namespace GSLogistics.Entities.Concrete
             {
                 try
                 {
-                    var existingAppt = context.Appointments.Where(x => x.CustomerId == appointmentModel.CustomerId && x.PickTicketId == appointmentModel.PickTicket && x.Status == "D").FirstOrDefault();
+                    var existingAppt = context.Appointments.Where(x => x.CustomerId == appointmentModel.CustomerId && x.PickTicketId == appointmentModel.PickTicket).FirstOrDefault();
 
                     if (existingAppt != null)
                     {
-                        /// update the existing one, could be a previous cancelation
-                        /// 
-                        context.Appointments.Remove(existingAppt);
+                        if (existingAppt.Status == "D")
+                        {
+                            // update the existing one, could be a previous cancelation
+                            context.Appointments.Remove(existingAppt);
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"Order with picticket {appointmentModel.PickTicket} for client {appointmentModel.CustomerId} already have an appointment {existingAppt.AppointmentNumber}");
+                        }
+
+
+                        
                     }
 
                     Entities.Appointment appointment = new Entities.Appointment();

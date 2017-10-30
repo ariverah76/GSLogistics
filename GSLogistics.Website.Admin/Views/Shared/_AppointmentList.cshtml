@@ -284,6 +284,8 @@
 
         });
 
+        var tableappt1 = $("#tableappt").DataTable();
+
         $('#tableappt tfoot th').each(function () {
             var title = $(this).text();
             if (title == "PO#" || title == "ORDER#" || title == "APPT#") {
@@ -299,16 +301,52 @@
             }
         });
 
-        var tableappt1 = $("#tableappt").DataTable();
+
+        $('#tableappt tbody tr').on('click', function (e) {
+            var $row = $(this);
+
+            if ($row.hasClass('selected')) {
+                $row.removeClass('selected');
+                e.stopPropagation();
+                var existingRow = table
+                    .rows(function (idx, info, node) {
+                        return info["PurchaseOrderId"] == $row[0].cells[3].innerText && info["PickTicketId"] == $row[0].cells[4].innerText ?
+                        true : false;
+                    });
+                if (existingRow != null) {
+                    tableappt1.rows(existingRow).deselect();
+                }
+
+            } else {
+                $row.addClass('selected');
+            }
+
+        });
+
+       
 
         tableappt1.on('select', function (e, dt, type, indexes) {
             if (type === 'row') {
               
                 var total = sumColumn('BoxesNumber');
-                console.log(total);
+
                 $('#totalBoxes').html(total);
                 var totalp = sumColumn('Pieces');
                 $('#totalPieces').html(totalp);
+                var selected = tableappt1.rows('.selected').data();
+                var existingRow = tableappt1
+                                   .rows(function (idx, info, node) {
+                                       return info["BillOfLading"] == selected[0].BillOfLading ?
+                                       true : false;
+                                   });
+
+                if (existingRow) {
+                    for (var i = 0; i < existingRow[0].length; i++) {
+                        tableappt1.row(existingRow[0][i]).nodes().to$().addClass('selected');
+                    }
+                        
+                    
+                }
             }
         });
 

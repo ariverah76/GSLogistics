@@ -335,10 +335,11 @@
                 api.column(14, { page: 'current' }).data().each(function (group, i) {
                     val = api.row(api.row($(rows).eq(i)).index()).data();
                     var client = val['CustomerId'];
+                    var bol = val['BillOfLading'];
                     if (last !== group) {
                         api.column
                         $(rows).eq(i).before(
-                            '<tr class="group"><td colspan="15">' + client + ' - ' + group + '</td></tr>'
+                            '<tr class="group"><td colspan="15">' + client + ' - ' + group + '  BOL: ' + bol +'</td></tr>'
                         );
 
                         last = group;
@@ -670,7 +671,7 @@
                                     }
                                 });
 
-                            }, 300);
+                            }, 2300);
                             
                         }
 
@@ -721,7 +722,7 @@
                                         }
                                     }
                                 });
-                            }, 300);
+                            }, 2300);
                             
                         }
 
