@@ -403,6 +403,8 @@ namespace GSLogistics.Website.Admin.Controllers
 
             //    return Json(new { result = "Error" });
             //}
+
+            // TODO: Bring all the appts  with same BOL and post them all at once (just in case something were missing on the client side)
             StringBuilder sb = new StringBuilder();
             using (var ol = Kernel.Get<IOrderAppointmentLogic>())
             using (var apptLogic = ol.GetLogic<IAppointmentLogic>())
@@ -487,7 +489,7 @@ namespace GSLogistics.Website.Admin.Controllers
         public async Task<ActionResult> ActionAppointments(ActionAppointment model)
         {
             StringBuilder sb = new StringBuilder();
-
+            // TODO: Validate there is not an existing appointment already posted
             using (var appointmentLogic = Kernel.Get<IAppointmentLogic>())
             using (var ol = appointmentLogic.GetLogic<IOrderAppointmentLogic>())
             {
@@ -693,6 +695,11 @@ namespace GSLogistics.Website.Admin.Controllers
             if (model.SelectedDivisionId.HasValue && model.SelectedDivisionId.Value != 0)
             {
                 query.DivisionId = model.SelectedDivisionId.Value;
+            }
+
+            if (!string.IsNullOrEmpty(model.SelectedPickTicket))
+            {
+                query.PickTicketId = model.SelectedPickTicket;
             }
 
             using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
@@ -960,6 +967,12 @@ namespace GSLogistics.Website.Admin.Controllers
             else if (model.AvailableDivisionIds != null && model.AvailableDivisionIds.Any())
             {
                 query.DivisionIds = model.AvailableDivisionIds;
+            }
+
+            if (!string.IsNullOrEmpty(model.SelectedPickTicket))
+            {
+                query.ShippingDate = null;
+                query.PickTicketId = model.SelectedPickTicket;
             }
 
             using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())

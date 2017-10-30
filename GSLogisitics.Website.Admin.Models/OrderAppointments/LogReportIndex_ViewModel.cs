@@ -20,6 +20,9 @@ namespace GSLogistics.Website.Admin.Models
         [Display(Name = "Division")]
         public int? SelectedDivisionId { get; set; }
 
+        [Display (Name = "Pick Ticket")]
+        public string SelectedPickTicket { get; set; }
+
         public string[] AvailableClientIds { get; set; }
         public int[] AvailableDivisionIds { get; set; }
 

@@ -2,6 +2,8 @@
 @using GSLogistics.Website.Admin.Models
 @model List<Appointment>
 
+
+<label id="filterInfo"></label>
 <table class="table display-compact table-striped table-bordered" id="tableLogReport" style="width:100%">
     <thead>
         <tr>
@@ -107,11 +109,12 @@
     
 </table>
 
+
 <script type="text/javascript">
 
     $(document).ready(function () {
 
-        $("#tableLogReport").DataTable({
+       var table = $("#tableLogReport").DataTable({
             dom: 'lfTrtip',
             
             paging: false,
@@ -272,6 +275,18 @@
             
             },
             
+       });
+       var timer;
+
+        table.on('search.dt', function () {
+            //$('#filterInfo').html('Currently applied global search: ' + table.search());
+            if (table.page.info().recordsDisplay == 0) {
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    $('#SelectedPickTicket').val(table.search());
+                    $('#btnRefresh').trigger("click");
+                },3000)
+            }
         });
 
         //$('#tableLogReport tbody').on('click', 'tr.group', function () {
