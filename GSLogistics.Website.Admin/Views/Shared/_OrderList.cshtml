@@ -206,7 +206,7 @@
                
 
 <script type="text/javascript">
-    
+
     $(document).ready(function () {
 
 
@@ -221,7 +221,7 @@
                 className: 'select-checkbox',
                 targets: 0
             }],
-           
+
             "initComplete": function( settings, json ) {
                 $('#loading').hide();
             },
@@ -477,7 +477,7 @@
 
                 }
 
-    
+
                 console.log(table.rows(indexes).nodes().to$().hasClass('selected'));
                 //tableSelected.row.add({
                 //    "ShipTo": data[0]["StoreName"],
@@ -642,27 +642,34 @@
         var timer;
         table.columns().every(function () {
             var that = this;
-            
+
             $('input', this.footer()).on('keyup change', function () {
                 if (that.search() !== this.value) {
                     that
                         .search(this.value)
                         .draw();
                     var str = this.placeholder;
-                    
+
                     if (str.includes("PT#")) {
                         console.log('search by pt');
                         if (table.page.info().recordsDisplay == 0) {
+                            toastr.info("Wait until the search is being performed in our data base", "Searching...", {
+                                "closeButton": true, "positionClass": "toast-bottom-full-width", "preventDuplicates": true
+                            });
+
+                            var param = this.value;
                             clearTimeout(timer);
+                            console.log(this.value);
                             timer = setTimeout(function () {
+
                                 $.ajax({
                                     type: "GET",
                                     url: '@Url.Action("SearchPickTicket", "OrderAppointment")',
                                     contentType: "application/json; charset=utf-8",
-                                    data: { "pickTicketId": this.value },
+                                    data: { pickTicketId: param },
                                     success: function (result) {
                                         if (result.result == "NotFound") {
-
+                                            console.log(result);
                                             toastr.options = {
                                                 "closeButton": true,
                                                 "positionClass": "toast-bottom-full-width",
@@ -678,7 +685,7 @@
                                             var day = currentTime.getDate();
                                             var year = currentTime.getFullYear();
                                             var date = month + "/" + day + "/" + year;
-                                            var msg = "Pick Ticket has been set for ";
+                                            var msg = "Pick Ticket # "+ result.pickTicketId + "  has been set for ";
                                             msg = msg + "</br>" + " Appointment #: " + result.appointmentNumber;
                                             msg = msg + "</br>" + " Carrier: " + result.carrier;
                                             msg = msg + "</br>" + " Shipping Date: " + date;
@@ -691,29 +698,36 @@
                                             $("#btnSearchPT").val('').change();
                                             table.search('').draw();
                                         }
+                                    },
+                                    fail: function (result) {
+                                        alert(result);
                                     }
                                 });
 
-                            }, 2300);
-                            
+                            }, 2000);
+
                         }
 
                     }
-                   
+
                     if (str.includes("PO#")) {
                         console.log('search by po');
                         if (table.page.info().recordsDisplay == 0) {
+
+                            toastr.info("Wait until the search is being performed in our data base", "Searching...", {
+                                "closeButton": true, "positionClass": "toast-bottom-full-width", "preventDuplicates": true
+                            });
                             clearTimeout(timer);
+                            console.log(this.value);
+                            var param = this.value;
                             timer = setTimeout(function () {
                                 $.ajax({
                                     type: "GET",
                                     url: '@Url.Action("SearchPurchaseOrder", "OrderAppointment")',
                                     contentType: "application/json; charset=utf-8",
-                                    data: { "purchaseOrder": this.value },
+                                    data: { purchaseOrder: param },
                                     success: function (result) {
                                         if (result.result == "NotFound") {
-
-
                                             toastr.options = {
                                                 "closeButton": true,
                                                 "positionClass": "toast-bottom-full-width",
@@ -729,7 +743,7 @@
                                             var day = currentTime.getDate();
                                             var year = currentTime.getFullYear();
                                             var date = month + "/" + day + "/" + year;
-                                            var msg = "Purchase Order has been set for ";
+                                            var msg = "Purchase Order # " + param  + " has been set for ";
                                             msg = msg + "</br>" + " Appointment #: " + result.appointmentNumber;
                                             msg = msg + "</br>" + " Carrier: " + result.carrier;
                                             msg = msg + "</br>" + " Shipping Date: " + date;
@@ -746,7 +760,7 @@
                                     }
                                 });
                             }, 2300);
-                            
+
                         }
 
                     }

@@ -72,7 +72,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 @Html.LabelFor(model => model.SelectedDay)
-                                @Html.DatePicker(x => x.SelectedDay, minDateDays: 0, maxDateDays: 1)
+                                @Html.DatePicker(x => x.SelectedDay, minDateDays: 0, maxDateDays: -1)
                             </div>
                         </div>
                     </div>

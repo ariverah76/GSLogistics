@@ -204,17 +204,17 @@
                 ,
                 {
                     data: 'DriverName',
-                    visible: true
+                    visible: false
                 }
                 ,
                 {
                     data: 'Pallets',
-                    visible: true
+                    visible: false
                 }
                 ,
                 {
                     data: 'DeliveryTypeId',
-                    visible: true
+                    visible: false
 
                 }
             ]
@@ -234,9 +234,7 @@
                         groupid++;
                         val = api.row(api.row($(rows).eq(i)).index()).data();
                         var bol = val['AppointmentNo'];
-                        var deliveryTypeId = val['DeliveryTypeId'];
-                        var pallets = val['Pallets'];
-                        var driverName = val['DriverName'];
+                       
                         
                         var textHeader = '<tr class="group"><td colspan=1>{button}</td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '                {DriverName} {Pallets}</td></tr>';
                         var textButton = '<button class="btn btn-info" type="button" data-toggle="tooltip" title="Re-Schedule" onclick="reschedule(\'' + group + '\',\'' + bol + '\')" id=btnresch_' + group + '><i class="fa fa-calendar-plus-o"/></button> '
@@ -273,16 +271,10 @@
                         }
                             
                         
-                        console.log(val['pathPOD']);
-                        // $(rows).eq(i).after(
-                        //    '<tr class="footer"><td> Totals:</td></tr>'
-                       //);
 
                         last = group;
                     }
                     val = api.row(api.row($(rows).eq(i)).index()).data();      //current order index
-                    console.log('Val: ' + val);
-                    console.log(val);
                     $.each(val, function (index2, val2) {
                         if (index2 == "Pieces" || index2 == "BoxesNumber") {
                             if (typeof subtotal[groupid] == 'undefined') {
@@ -295,8 +287,6 @@
                             subtotal[groupid][index2] += valore;
                         }
                     });
-
-                    console.log(subtotal);
 
                 });
                 $('tbody').find('.group').each(function (i,v) {

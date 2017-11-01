@@ -36,5 +36,8 @@ namespace GSLogistics.Model.Query
         public int[] DivisionIds { get; set; }
 
         public bool? IsReschedule { get; set; }
+
+        public bool? KeyColumnSearch { get; set; }
+        public string KeySearch { get; set; }
     }
 }

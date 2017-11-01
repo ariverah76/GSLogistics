@@ -299,7 +299,7 @@ namespace GSLogistics.Website.Admin.Controllers
 
        
 
-        [HttpGet]
+       [HttpGet]
        public async Task<ActionResult> SearchPickTicket(string pickTicketId)
         {
             using (var appointmentLogic = Kernel.Get<IAppointmentLogic>())
@@ -348,7 +348,7 @@ namespace GSLogistics.Website.Admin.Controllers
 
                     if (pt != null)
                     {
-                        return Json(new { result = "Success", appointmentNumber = pt.AppointmentNumber, IsPosted = pt.Posted, shippingDate = pt.ShippingDate, carrier = pt.Carrier, pickTicketId = pt.PickTicket }, JsonRequestBehavior.AllowGet);
+                        return Json(new { result = "Success", appointmentNumber = pt.AppointmentNumber, IsPosted = pt.Posted, shippingDate = pt.ShippingDate, carrier = pt.Carrier, pickTicketId = pt.PickTicket, purchaseOrder = orders.FirstOrDefault().PurchaseOrderId }, JsonRequestBehavior.AllowGet);
                     }
                 }
 
@@ -942,7 +942,8 @@ namespace GSLogistics.Website.Admin.Controllers
             var query = new AppointmentQuery()
             {
                 Posted = true,
-                IsReschedule = false
+                IsReschedule = false,
+                KeyColumnSearch = true,
             };
 
             var userContext = Session["UserContext"] as GSLogisticsUserContext;
@@ -984,7 +985,7 @@ namespace GSLogistics.Website.Admin.Controllers
             if (!string.IsNullOrEmpty(model.SelectedPickTicket))
             {
                 query.ShippingDate = null;
-                query.PickTicketId = model.SelectedPickTicket;
+                query.KeySearch = model.SelectedPickTicket;
             }
 
             using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
@@ -1175,7 +1176,6 @@ namespace GSLogistics.Website.Admin.Controllers
                 Posted = true,
                 //ShippingDateEnd = DateTime.Today,
                 IsReschedule = true,
-                hasBool = true,
                 
             };
 
@@ -1275,7 +1275,7 @@ namespace GSLogistics.Website.Admin.Controllers
         public async Task<ActionResult> Reschedule()
         {
             var model = new LogReportIndex_ViewModel();
-            model.SelectedDay = DateTime.Today.AddDays(-1);
+            model.SelectedDay = DateTime.Today;
 
             return await this.Reschedule(model);
         }

@@ -22,26 +22,34 @@ namespace GSLogistics.Entities.Concrete
                          join division in context.CustomerDivisions on a.DivisionId equals division.DivisionId
                          into y
                          from z in y.DefaultIfEmpty()
-                         select new { a.PickTicketId, a.Pallets, a.IsReSchedule, a.Posted, a.AppointmentNumber, a.CustomerId,a.DivisionId, a.UserName, a.PtBulk, a.DeliveryTypeId, a.DateAdd,  a.ReScheduleDate, a.ScacCode, a.ShippingTimeLimit, a.ShipTime, a.Status, a.Transferred, ShipDate = orders.ShipFor, DivisionName = z != null? z.Description : string.Empty, DivisionNameId = z != null ? z.NameId : string.Empty, Customer = customer, a.CatScacCode, a.DriverId, a.TruckId, a.Driver, a.Truck, BillOfLading = orders.BillOfLading});
+                         select new { a.PickTicketId, a.Pallets, a.IsReSchedule, a.Posted, a.AppointmentNumber, a.CustomerId,a.DivisionId, a.UserName, a.PtBulk, a.DeliveryTypeId, a.DateAdd,  a.ReScheduleDate, a.ScacCode, a.ShippingTimeLimit, a.ShipTime, a.Status, a.Transferred, ShipDate = orders.ShipFor, DivisionName = z != null? z.Description : string.Empty, DivisionNameId = z != null ? z.NameId : string.Empty, Customer = customer, a.CatScacCode, a.DriverId, a.TruckId, a.Driver, a.Truck, BillOfLading = orders.BillOfLading, PurchaseOrder = orders.PurchaseOrderId});
 
-            
 
-            if (!string.IsNullOrEmpty(query.PickTicketId))
+
+            if (string.IsNullOrEmpty(query.KeySearch))
             {
-                q = q.Where(x => x.PickTicketId == query.PickTicketId);
-               // anotherq = anotherq.Where(x => x.PickTicketId == query.PickTicketId);
+
+                if (!string.IsNullOrEmpty(query.PickTicketId))
+                {
+                    q = q.Where(x => x.PickTicketId == query.PickTicketId);
+                    // anotherq = anotherq.Where(x => x.PickTicketId == query.PickTicketId);
+                }
+                else if (query.PickTicketsIds != null && query.PickTicketsIds.Any())
+                {
+                    q = q.Where(x => query.PickTicketsIds.Contains(x.PickTicketId));
+                    // anotherq = anotherq.Where(x => query.PickTicketsIds.Contains(x.PickTicketId));
+                }
+
+
+                if (!string.IsNullOrEmpty(query.AppointmentNumber))
+                {
+                    q = q.Where(x => x.AppointmentNumber == query.AppointmentNumber);
+                    //anotherq = anotherq.Where(x => x.AppointmentNumber == query.AppointmentNumber);
+                }
             }
-            else if (query.PickTicketsIds != null && query.PickTicketsIds.Any())
+            else
             {
-                q = q.Where(x => query.PickTicketsIds.Contains(x.PickTicketId));
-               // anotherq = anotherq.Where(x => query.PickTicketsIds.Contains(x.PickTicketId));
-            }
-
-
-            if (!string.IsNullOrEmpty(query.AppointmentNumber))
-            {
-                q = q.Where(x => x.AppointmentNumber == query.AppointmentNumber);
-                //anotherq = anotherq.Where(x => x.AppointmentNumber == query.AppointmentNumber);
+                q = q.Where(x => x.PickTicketId == query.KeySearch || x.AppointmentNumber == query.KeySearch || x.PurchaseOrder == query.KeySearch);
             }
 
 
