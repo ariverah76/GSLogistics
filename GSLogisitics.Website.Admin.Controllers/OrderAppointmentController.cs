@@ -994,7 +994,7 @@ namespace GSLogistics.Website.Admin.Controllers
 
                 var orderAppts =  oLogic.ToList(new OrderAppointmentQuery());
                 var list = aLogic.ToList(query);
-
+                var count = 1;
                 foreach (var appt in list)
                 {
                     var thisAppointment = new Models.Appointment()
@@ -1027,7 +1027,7 @@ namespace GSLogistics.Website.Admin.Controllers
                         thisAppointment.Pieces = orderAppt.Pieces.Value;
                         thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
                         thisAppointment.ShipTo = orderAppt.ShipTo;
-                        thisAppointment.BillOfLading = orderAppt.BillOfLading;
+                        thisAppointment.BillOfLading =  string.IsNullOrEmpty(orderAppt.BillOfLading)? $"BOL{thisAppointment.AppointmentNo}": orderAppt.BillOfLading;
                         thisAppointment.pathPOD = orderAppt.PathPOD;
                         thisAppointment.ExternalBol = orderAppt.ExternalBol;
                     }
@@ -1035,6 +1035,16 @@ namespace GSLogistics.Website.Admin.Controllers
                     appointments.Add(thisAppointment);
                 }
             }
+            //trick to get grouped by bol and appt#
+            //var grouped = appointments.Where(x => string.IsNullOrEmpty(x.BillOfLading)).GroupBy(x => x.AppointmentNo);
+            //foreach (var g in grouped)
+            //{
+            //    foreach(var o in g.ToList())
+            //    {
+            //        o.BillOfLading 
+            //    }
+            //}
+
             appointments = appointments.OrderBy(x => x.PickTicket).ToList();
 
             return PartialView("_LogReport_AppointmentsPartial", appointments);
@@ -1044,7 +1054,8 @@ namespace GSLogistics.Website.Admin.Controllers
         public async Task<ActionResult> LogReport()
         {
             var model = new LogReportIndex_ViewModel();
-            model.SelectedDay = DateTime.Today;
+            model.SelectedDay = new DateTime;
+            
 
             var userContext = Session["UserContext"] as GSLogisticsUserContext;
             if (userContext !=null)
@@ -1228,8 +1239,8 @@ namespace GSLogistics.Website.Admin.Controllers
                         DeliveryTypeId = appt.DeliveryTypeId
 
                     };
-
-                    var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket && string.IsNullOrEmpty(x.PathPOD)).FirstOrDefault();
+                    //&& string.IsNullOrEmpty(x.PathPOD) not sure if this apply 
+                    var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket ).FirstOrDefault();
                     if (orderAppt != null)
                     {
                         thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;

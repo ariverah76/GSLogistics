@@ -225,6 +225,7 @@
             "initComplete": function( settings, json ) {
                 $('#loading').hide();
             },
+            order: [[18, "asc"], [13,"asc"]],
             columns: [
                 {
                     orderable: false
@@ -332,14 +333,14 @@
                 var rows = api.rows({ page: 'current' }).nodes();
                 var last = null;
 
-                api.column(14, { page: 'current' }).data().each(function (group, i) {
+                api.column(18, { page: 'current' }).data().each(function (group, i) {
                     val = api.row(api.row($(rows).eq(i)).index()).data();
                     var client = val['CustomerId'];
-                    var bol = val['BillOfLading'];
+                    var bol = val['DivisionName'];
                     if (last !== group) {
                         api.column
                         $(rows).eq(i).before(
-                            '<tr class="group"><td colspan="15">' + client + ' - ' + group + '  BOL: ' + bol +'</td></tr>'
+                            '<tr class="group"><td colspan="15">' + client + ' - ' + group + '  BOL: ' + group +'</td></tr>'
                         );
 
                         last = group;
@@ -654,7 +655,7 @@
                         console.log('search by pt');
                         if (table.page.info().recordsDisplay == 0) {
                             toastr.info("Wait until the search is being performed in our data base", "Searching...", {
-                                "closeButton": true, "positionClass": "toast-bottom-full-width", "preventDuplicates": true
+                                "closeButton": true, "positionClass": "toast-bottom-full-width", "preventDuplicates": true, "timeOut": "2000"
                             });
 
                             var param = this.value;
@@ -715,7 +716,7 @@
                         if (table.page.info().recordsDisplay == 0) {
 
                             toastr.info("Wait until the search is being performed in our data base", "Searching...", {
-                                "closeButton": true, "positionClass": "toast-bottom-full-width", "preventDuplicates": true
+                                "closeButton": true, "positionClass": "toast-bottom-full-width", "preventDuplicates": true, "timeOut": "2300"
                             });
                             clearTimeout(timer);
                             console.log(this.value);
@@ -750,7 +751,7 @@
                                             toastr.info(msg, "Purchase Order found", {
                                                 "closeButton": true, "positionClass": "toast-bottom-full-width", "preventDuplicates": true, "showDuration": "300",
                                                 "hideDuration": "1000",
-                                                "timeOut": "25000"
+                                                "timeOut": "25000", "extendedTimeOut": "5000"
                                             });
 
                                             $("#btnSearchPO").val('').change();
