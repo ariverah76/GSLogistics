@@ -994,7 +994,9 @@ namespace GSLogistics.Website.Admin.Controllers
 
                 var orderAppts =  oLogic.ToList(new OrderAppointmentQuery());
                 var list = aLogic.ToList(query);
-                var count = 1;
+
+                
+
                 foreach (var appt in list)
                 {
                     var thisAppointment = new Models.Appointment()
@@ -1030,10 +1032,50 @@ namespace GSLogistics.Website.Admin.Controllers
                         thisAppointment.BillOfLading =  string.IsNullOrEmpty(orderAppt.BillOfLading)? $"BOL{thisAppointment.AppointmentNo}": orderAppt.BillOfLading;
                         thisAppointment.pathPOD = orderAppt.PathPOD;
                         thisAppointment.ExternalBol = orderAppt.ExternalBol;
+                        thisAppointment.MasterBillOfLading = orderAppt.MasterBillOfLading;
                     }
 
                     appointments.Add(thisAppointment);
                 }
+
+                var moveables = appointments.Where(x => !string.IsNullOrEmpty(x.MasterBillOfLading)).ToList();
+
+                List<Models.Appointment> masterBols = new List<Models.Appointment>();
+                masterBols.AddRange(moveables);
+                appointments.RemoveAll(x => !string.IsNullOrEmpty(x.MasterBillOfLading));
+
+                var grouped = masterBols.GroupBy(x => x.MasterBillOfLading);
+                foreach(var g in grouped)
+                {
+
+                    var orders = g.GroupBy(x => x.BillOfLading);
+                    foreach(var o in orders)
+                    {
+                        var singleOrder = o.FirstOrDefault();
+
+                        var thisAppointment = new Models.Appointment()
+                        {
+                            AppointmentNo = singleOrder.AppointmentNo,
+                            CustomerName = singleOrder.CustomerName,
+                            CustomerId = singleOrder.CustomerId,
+                            Carrier = singleOrder.Carrier,
+                            ScaccCode = singleOrder.ScaccCode,
+                            ShipDate = singleOrder.ShipDate,
+                            ShipTime = singleOrder.ShipTime,
+                            Posted = singleOrder.Posted.ToString(),
+                            DateAdded = singleOrder.DateAdded,
+                            Pieces = o.Sum(x => x.Pieces),
+                            BoxesNumber = o.Sum(x => x.BoxesNumber),
+                            PickTicket = $"BOL:{o.Key}",
+                            BillOfLading = g.Key
+                            
+
+                        };
+
+                    }
+
+                }
+
             }
             //trick to get grouped by bol and appt#
             //var grouped = appointments.Where(x => string.IsNullOrEmpty(x.BillOfLading)).GroupBy(x => x.AppointmentNo);
@@ -1054,8 +1096,7 @@ namespace GSLogistics.Website.Admin.Controllers
         public async Task<ActionResult> LogReport()
         {
             var model = new LogReportIndex_ViewModel();
-            model.SelectedDay = new DateTime;
-            
+            model.SelectedDay = DateTime.Today;
 
             var userContext = Session["UserContext"] as GSLogisticsUserContext;
             if (userContext !=null)

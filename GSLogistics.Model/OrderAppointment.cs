@@ -34,6 +34,7 @@ namespace GSLogistics.Model
         public string PathPOD { get; set; }
         public bool ExternalBol { get; set; }
         public bool? ShippingDateChanged { get; set; }
+        public string MasterBillOfLading { get; set; }
 
     }
 }

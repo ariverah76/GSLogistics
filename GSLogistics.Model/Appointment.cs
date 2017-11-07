@@ -37,5 +37,7 @@ namespace GSLogistics.Model
         public short? DriverId { get; set; }
         public string TruckDescription { get; set; }
         public string DriverName { get; set; }
+
+        public string MasterBillOfLading { get; set; }
     }
 }

@@ -69,6 +69,8 @@ namespace GSLogistics.Website.Admin.Models
         public string DriverName { get; set; }
         public short? TruckId { get; set; }
 
+        public string MasterBillOfLading { get; set; }
+
 
 
     }
