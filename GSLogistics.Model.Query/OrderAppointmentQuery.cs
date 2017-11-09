@@ -23,5 +23,7 @@ namespace GSLogistics.Model.Query
 
         public bool EmptyBol { get; set; }
 
+        public string MasterBillOfLading { get; set; }
+
     }
 }

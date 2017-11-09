@@ -767,6 +767,37 @@ namespace GSLogistics.Website.Admin.Controllers
             return appointments;
         }
 
+        [HttpPost]
+        public async Task<ActionResult> RenderMasterPOD(string data)
+        {
+            string bol = data.Trim();
+            using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
+            {
+                var orders = await oLogic.ToListAsync(new OrderAppointmentQuery() { MasterBillOfLading = bol });
+                List<string> renderPods = new List<string>(); 
+                if (orders.Any())
+                {
+                    var childBols = orders.GroupBy(x => x.BillOfLading);
+                    foreach(var g in childBols)
+                    {
+                        var order = g.FirstOrDefault(x => !string.IsNullOrEmpty(x.PathPOD));
+
+                        var fName = this.PutPODFileOnSession(order.PathPOD, order.BillOfLading);
+
+                        if (!string.IsNullOrEmpty(fName))
+                        {
+                            renderPods.Add(fName);
+                        }
+
+                    }
+                     
+                }
+
+                return Json(new { success = true, pods = renderPods.ToArray(), mimeType = "application/pdf", format = "pdf" }, JsonRequestBehavior.AllowGet);
+
+            }
+        }
+
 
         [HttpPost]
         public async Task<ActionResult> RenderPOD(string data)
@@ -813,6 +844,25 @@ namespace GSLogistics.Website.Admin.Controllers
 
                 return Json(new { success = false}, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        private string PutPODFileOnSession(string pathPOD, string bol)
+        {
+            Uri uriAddress = new Uri(pathPOD.Trim());
+            string fName = null;
+            string podPath = $"{uriAddress.Segments[2]}{uriAddress.Segments[3]}";
+
+            var path = Server.MapPath($"~/podfiles/{podPath}");
+
+            if (System.IO.File.Exists(path))
+            {
+                var byteResult = System.IO.File.ReadAllBytes(path);
+
+                fName = string.Format("ProofOfDelivery_BillOfLading_{0}", bol);
+                Session[fName] = byteResult;
+            }
+
+            return fName;
         }
 
         [HttpPost]

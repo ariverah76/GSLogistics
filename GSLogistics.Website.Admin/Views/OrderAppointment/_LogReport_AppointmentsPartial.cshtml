@@ -53,6 +53,7 @@
             <th></th>
             <th></th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -119,6 +120,10 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.MasterBillOfLading)
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AnyChildBolHasPOD)
+                </td>
+
 
 
             </tr>
@@ -318,6 +323,7 @@
                         else {
                            // var header = '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
                             var extcol = val['ExternalBol'];
+                            var childPOD = val['AnyChildBolHasPOD'];
                             textButton = '<button class="btn btn-warning" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> ';
                             if (extcol.search("checked") > 0 ) {
                                 
@@ -326,7 +332,7 @@
                                 textButton = textButton.replace("</button>", 'E</button>');
                                 textButton = textButton.replace("fa fa-file-pdf-o", "fa fa-file-pdf-o pull-left");
                             }
-                            if (val['MasterBillOfLading'] !== "") {
+                            if (val['MasterBillOfLading'] !== "" && childPOD.search("checked") > 0) {
                                 textButton = textButton.replace("downloadPOD", "downloadMasterBOL");
                             }
 

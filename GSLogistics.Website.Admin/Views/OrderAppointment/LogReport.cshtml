@@ -230,9 +230,9 @@
             });
         }
 
-        
 
-        
+
+
 
         $("#SelectedClientId").change(function () {
             var selectedItem = $(this).val();
@@ -261,7 +261,7 @@
         });
 
 
-        
+
         $("#SelectedDivisionId").change(function () {
             $("#btnRefresh").trigger('click');
         });
@@ -285,6 +285,36 @@
             if (obj.success == true) {
                 window.location.href = "/OrderAppointment/DownloadReport?reportName=" + obj.fileName + "&format=" + obj.mimeType + "&fileExtension=" + obj.format
                 toastr.success("Document downloaded!");
+            }
+            else {
+                toastr.error("There was an error processing your request. Try later.");
+            }
+        }).fail(function () {
+            toastr.error("Error downloading the document");
+        });
+
+    }
+
+    function donwloadMasterPOD(bol) {
+        toastr.info("Downloading Document..." + bol);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("RenderMasterPOD", "OrderAppointment")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ "data": bol }),
+            dataType: "text",
+
+        }).done(function (returnValue) {
+            console.log(returnValue);
+            var obj = JSON.parse(returnValue);
+            if (obj.success == true) {
+
+                for (var i = 0; i < obj.pods; i++) {
+                    window.location.href = "/OrderAppointment/DownloadReport?reportName=" + obj.pods[i].fileName + "&format=" + obj.mimeType + "&fileExtension=" + obj.format
+
+                }
+
+                toastr.success("Documents downloaded!");
             }
             else {
                 toastr.error("There was an error processing your request. Try later.");
