@@ -774,21 +774,7 @@ namespace GSLogistics.Website.Admin.Controllers
             string bol = data.Trim();
             string filePath = string.Empty;
             string path;
-           // var mockpath = "\\\\Au-ag1\\Shipping\\E-LO\\609132017110703249.pdf";
-            
-
-           // Uri uriAddress1 = new Uri(mockpath);
-
-            //string podPath = $"{uriAddress1.Segments[2]}{uriAddress1.Segments[3]}";
-
-            
-            //string path = Server.MapPath($"~/podfiles/{podPath}");
-            //var bytes  = System.IO.File.ReadAllBytes(path);
-           // var fName = string.Format("ProofOfDelivery_BillOfLading_{0}", data);
-            //Session[fName] = bytes;
-
-            //return Json(new { success = true, fileName = fName, mimeType = "application/pdf", format = "pdf", uri = uriAddress1 }, JsonRequestBehavior.AllowGet);
-
+        
             using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
             {
                 var orders = await oLogic.ToListAsync(new OrderAppointmentQuery() { BillOfLading = bol });
@@ -804,9 +790,6 @@ namespace GSLogistics.Website.Admin.Controllers
                         string podPath = $"{uriAddress.Segments[2]}{uriAddress.Segments[3]}";
 
                          path = Server.MapPath($"~/podfiles/{podPath}");// order.PathPOD;
-
-                       
-                       // filePath = path;
 
                         if (System.IO.File.Exists(path))
                         {
@@ -1035,8 +1018,14 @@ namespace GSLogistics.Website.Admin.Controllers
                         thisAppointment.pathPOD = orderAppt.PathPOD;
                         thisAppointment.ExternalBol = orderAppt.ExternalBol;
                         thisAppointment.MasterBillOfLading = orderAppt.MasterBillOfLading;
+
+                        //remove this after tests
                         if (orderAppt.BillOfLading == "06799500002077790" || orderAppt.BillOfLading == "06799500002077806" || orderAppt.BillOfLading == "06799500002077820")
                         {
+                            if (orderAppt.BillOfLading  == "06799500002077806")
+                            {
+                                thisAppointment.pathPOD = @"C:\\temp\Alex.pdf";
+                            }
                             thisAppointment.MasterBillOfLading = kMasterBol;
                         }
                     }
@@ -1075,7 +1064,8 @@ namespace GSLogistics.Website.Admin.Controllers
                             PickTicket = $"BOL:{o.Key}",
                             BillOfLading = g.Key,
                             ShipTo = singleOrder.ShipTo, 
-                            MasterBillOfLading = g.Key
+                            MasterBillOfLading = g.Key,
+                            AnyChildBolHasPOD = g.Any(x => !string.IsNullOrEmpty(x.pathPOD))
                         };
 
                         appointments.Add(thisAppointment);

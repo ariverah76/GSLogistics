@@ -71,6 +71,8 @@ namespace GSLogistics.Website.Admin.Models
 
         public string MasterBillOfLading { get; set; }
 
+        public bool AnyChildBolHasPOD {get;set;}
+
 
 
     }

@@ -226,6 +226,11 @@
                     data: 'MasterBillOfLading',
                     visible: false
                 }
+                ,
+                {
+                    data: 'AnyChildBolHasPOD',
+                    visible: false
+                }
             ]
             ,
             "drawCallback": function (settings) {
@@ -275,9 +280,9 @@
                             subtotal[groupid] = new Array();
                         }
 
-                        // Appointment #: ' + bol + ' 
                         var textHeader = '<tr class="group"><td colspan=1>{button}</td><td colspan=6>BOL: ' + groupDisplay + ' Appointment #: </td></tr>';
                         var textButton = '<button class="btn btn-info" type="button" data-toggle="tooltip" title="Re-Schedule" onclick="reschedule(\'' + group + '\',\'' + bol + '\')" id=btnresch_' + group + '><i class="fa fa-calendar-plus-o"/></button> '
+
                         if (val['DeliveryTypeId'] == 2) {
                             //textHeader = textHeader.replace("{DriverName}", " | Driver: " + val['DriverName']);
                             //textHeader = textHeader.replace("{Pallets}", " | Pallets: " + val['Pallets']);
@@ -303,6 +308,7 @@
 
                         }
                         if (val['pathPOD'].length == 0) {
+                            
                             textHeader = textHeader.replace("{button}", textButton);
                             //$(rows).eq(i).before(
                             // textHeader
@@ -310,7 +316,7 @@
                             //'<tr class="group"><td colspan=1><button class="btn btn-info" type="button" data-toggle="tooltip" title="Re-Schedule" onclick="reschedule(\'' + group + '\',\'' + bol + '\')" id=btnresch_' + group + '><i class="fa fa-calendar-plus-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
                         }
                         else {
-                            var header = '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
+                           // var header = '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
                             var extcol = val['ExternalBol'];
                             textButton = '<button class="btn btn-warning" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> ';
                             if (extcol.search("checked") > 0 ) {
@@ -320,6 +326,10 @@
                                 textButton = textButton.replace("</button>", 'E</button>');
                                 textButton = textButton.replace("fa fa-file-pdf-o", "fa fa-file-pdf-o pull-left");
                             }
+                            if (val['MasterBillOfLading'] !== "") {
+                                textButton = textButton.replace("downloadPOD", "downloadMasterBOL");
+                            }
+
                             textHeader = textHeader.replace("{button}", textButton);
                             
                         }
@@ -359,6 +369,14 @@
                             }
 
                         }
+                        if (index2 == "pathPOD") {
+                            if (typeof subtotal[groupid][index2] == 'undefined') {
+                                subtotal[groupid][index2] = "";
+                            }
+                            if (subtotal[groupid][index2].search(val2) == -1) {
+                                subtotal[groupid][index2] += val2 + ","
+                            }
+                        }
                         
                     });
 
@@ -368,11 +386,17 @@
                     console.log(subtotal);
                     var rowCount = $(this).nextUntil('.group').length;
                     //If we need to check all the orders has a pathPOD this is where we can inject the button instead 
+                    //Check if all the bols has a valid path
+                    if (subtotal[groupid]["pathPOD"].length > 0) {
+                        $(this).find('td button').removeClass("btn warning")
+                    }
+
                     $(this).find('td:nth-child(2)').append('<span>' + subtotal[i]["AppointmentNo"] + ' </span>');
 
                     var totalWord = 'Total';
                     if ($(this).hasClass("groupmaster")) {
                         totalWord += ' BOL\'s ';
+
                     }
                     else {
                         totalWord += ' Orders ';
@@ -381,10 +405,7 @@
 
                     $(this).find('td:nth-child(2)').append($('<span />', { 'class': 'rowCount-grid' }).append($('<b />', { 'text': ' ('+ totalWord + rowCount+')' })));
                     var subtd = '';
-                    //for (var a=2;a<columna;a++)
-                    //{ 
-                    //    subtd += '<td> Total'+subtotal[i][a] +'</td>';
-                    //}
+              
                     subtd += '<td> <span><strong> ' + subtotal[i]["Pieces"] + '</strong></span></td>';
                     subtd += '<td><span><strong>' + subtotal[i]["BoxesNumber"] + '</strong></span></td>';
                     if (subtotal[i]["Pallets"] > 0) {
