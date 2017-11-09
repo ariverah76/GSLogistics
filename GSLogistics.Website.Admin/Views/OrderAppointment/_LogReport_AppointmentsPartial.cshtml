@@ -52,6 +52,7 @@
             <th></th>
             <th></th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -115,7 +116,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.DeliveryTypeId)
                 </td>
-
+                <td>
+                    @Html.DisplayFor(modelItem => item.MasterBillOfLading)
+                </td>
 
 
             </tr>
@@ -218,6 +221,11 @@
                     visible: false
 
                 }
+                ,
+                {
+                    data: 'MasterBillOfLading',
+                    visible: false
+                }
             ]
             ,
             "drawCallback": function (settings) {
@@ -262,22 +270,43 @@
                         if (group.search("BOL") > -1) {
                             groupDisplay = "";
                         }
+
+                        if (typeof subtotal[groupid] == 'undefined') {
+                            subtotal[groupid] = new Array();
+                        }
+
                         // Appointment #: ' + bol + ' 
-                        var textHeader = '<tr class="group"><td colspan=1>{button}</td><td colspan=6>BOL: ' + groupDisplay + ' Appointment #: ' + bol + ' | {DriverName} | {Pallets}</td></tr>';
+                        var textHeader = '<tr class="group"><td colspan=1>{button}</td><td colspan=6>BOL: ' + groupDisplay + ' Appointment #: </td></tr>';
                         var textButton = '<button class="btn btn-info" type="button" data-toggle="tooltip" title="Re-Schedule" onclick="reschedule(\'' + group + '\',\'' + bol + '\')" id=btnresch_' + group + '><i class="fa fa-calendar-plus-o"/></button> '
                         if (val['DeliveryTypeId'] == 2) {
-                            textHeader = textHeader.replace("{DriverName}", " | Driver: " + val['DriverName']);
-                            textHeader = textHeader.replace("{Pallets}", " | Pallets: " + val['Pallets'] );
+                            //textHeader = textHeader.replace("{DriverName}", " | Driver: " + val['DriverName']);
+                            //textHeader = textHeader.replace("{Pallets}", " | Pallets: " + val['Pallets']);
+
+                            if (typeof subtotal[groupid]["Driver"] == 'undefined') {
+                                subtotal[groupid]["Driver"] = "";
+                            }
+                            subtotal[groupid]["Driver"] = val['DriverName'];
+                            if (typeof subtotal[groupid]["Pallets"] == 'undefined') {
+                                subtotal[groupid]["Pallets"] = 0;
+                            }
+                            subtotal[groupid]["Pallets"] = val['Pallets'];
+                           
                         }
                         else {
-                            textHeader = textHeader.replace("| {DriverName}", "");
-                            textHeader = textHeader.replace("| {Pallets}", "");
+                            //textHeader = textHeader.replace("| {DriverName}", "");
+                            //textHeader = textHeader.replace("| {Pallets}", "");
+                            if (typeof subtotal[groupid]["Driver"] == 'undefined') {
+                                subtotal[groupid]["Driver"] = "";
+                            }
+
+                           
+
                         }
                         if (val['pathPOD'].length == 0) {
                             textHeader = textHeader.replace("{button}", textButton);
-                            $(rows).eq(i).before(
-                             textHeader
-                            );
+                            //$(rows).eq(i).before(
+                            // textHeader
+                            //);
                             //'<tr class="group"><td colspan=1><button class="btn btn-info" type="button" data-toggle="tooltip" title="Re-Schedule" onclick="reschedule(\'' + group + '\',\'' + bol + '\')" id=btnresch_' + group + '><i class="fa fa-calendar-plus-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
                         }
                         else {
@@ -292,16 +321,23 @@
                                 textButton = textButton.replace("fa fa-file-pdf-o", "fa fa-file-pdf-o pull-left");
                             }
                             textHeader = textHeader.replace("{button}", textButton);
-                            $(rows).eq(i).before(textHeader);
-                        }
                             
+                        }
+                        if (val['MasterBillOfLading'] !== "") {
+                            textHeader = textHeader.replace("group", "group groupmaster")
+                            
+                        }
+
+                        $(rows).eq(i).before(textHeader);
+                          
+                       
                        
 
                         last = group;
                     }
                     val = api.row(api.row($(rows).eq(i)).index()).data();      //current order index
                     $.each(val, function (index2, val2) {
-                        if (index2 == "Pieces" || index2 == "BoxesNumber") {
+                        if (index2 == "Pieces" || index2 == "BoxesNumber" || index2 == "Pallets") {
                             if (typeof subtotal[groupid] == 'undefined') {
                                 subtotal[groupid] = new Array();
                             }
@@ -311,21 +347,59 @@
                             valore = Number(val2.replace('€', "").replace('.', "").replace(',', "."));
                             subtotal[groupid][index2] += valore;
                         }
+                        if (index2 == "AppointmentNo") {
+                            if (typeof subtotal[groupid] == 'undefined') {
+                                subtotal[groupid] = new Array();
+                            }
+                            if (typeof subtotal[groupid][index2] == 'undefined') {
+                                subtotal[groupid][index2] = "";
+                            }
+                            if (subtotal[groupid][index2].search(val2) == -1) {
+                                subtotal[groupid][index2] += val2 + " "
+                            }
+
+                        }
+                        
                     });
 
                 });
 
-                $('tbody').find('.group').each(function (i,v) {
+                $('tbody').find('.group').each(function (i, v) {
+                    console.log(subtotal);
                     var rowCount = $(this).nextUntil('.group').length;
                     //If we need to check all the orders has a pathPOD this is where we can inject the button instead 
-                    $(this).find('td:nth-child(2)').append($('<span />', { 'class': 'rowCount-grid' }).append($('<b />', { 'text': ' ( Total Orders '+rowCount+')' })));
+                    $(this).find('td:nth-child(2)').append('<span>' + subtotal[i]["AppointmentNo"] + ' </span>');
+
+                    var totalWord = 'Total';
+                    if ($(this).hasClass("groupmaster")) {
+                        totalWord += ' BOL\'s ';
+                    }
+                    else {
+                        totalWord += ' Orders ';
+                    }
+
+
+                    $(this).find('td:nth-child(2)').append($('<span />', { 'class': 'rowCount-grid' }).append($('<b />', { 'text': ' ('+ totalWord + rowCount+')' })));
                     var subtd = '';
                     //for (var a=2;a<columna;a++)
                     //{ 
                     //    subtd += '<td> Total'+subtotal[i][a] +'</td>';
                     //}
                     subtd += '<td> <span><strong> ' + subtotal[i]["Pieces"] + '</strong></span></td>';
-                    subtd += '<td colspan=5><span><strong>' + subtotal[i]["BoxesNumber"] + '</strong></span></td>';
+                    subtd += '<td><span><strong>' + subtotal[i]["BoxesNumber"] + '</strong></span></td>';
+                    if (subtotal[i]["Pallets"] > 0) {
+                        subtd += '<td colspan=2><span> Pallets: ' + subtotal[i]["Pallets"] + '</span></td>';
+                    }
+                    else {
+                        subtd += '<td colspan=2></td>';
+                    }
+                    if (subtotal[i]["Driver"] !== "") {
+                        subtd += '<td colspan=2><span> Driver: ' + subtotal[i]["Driver"] + '</span></td>';
+                    }
+                    else {
+                        subtd += '<td colspan=2></td>';
+                    }
+
                     $(this).append(subtd);
 
                 });

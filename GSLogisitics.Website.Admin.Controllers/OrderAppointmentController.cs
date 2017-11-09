@@ -935,6 +935,8 @@ namespace GSLogistics.Website.Admin.Controllers
 
         public PartialViewResult GetLogReport(LogReportIndex_ViewModel model)
         {
+            const string kMasterBol = "M565000009999";
+
             List<Models.Appointment> appointments = new List<Models.Appointment>();
 
 
@@ -1033,6 +1035,10 @@ namespace GSLogistics.Website.Admin.Controllers
                         thisAppointment.pathPOD = orderAppt.PathPOD;
                         thisAppointment.ExternalBol = orderAppt.ExternalBol;
                         thisAppointment.MasterBillOfLading = orderAppt.MasterBillOfLading;
+                        if (orderAppt.BillOfLading == "06799500002077790" || orderAppt.BillOfLading == "06799500002077806" || orderAppt.BillOfLading == "06799500002077820")
+                        {
+                            thisAppointment.MasterBillOfLading = kMasterBol;
+                        }
                     }
 
                     appointments.Add(thisAppointment);
@@ -1067,11 +1073,12 @@ namespace GSLogistics.Website.Admin.Controllers
                             Pieces = o.Sum(x => x.Pieces),
                             BoxesNumber = o.Sum(x => x.BoxesNumber),
                             PickTicket = $"BOL:{o.Key}",
-                            BillOfLading = g.Key
-                            
-
+                            BillOfLading = g.Key,
+                            ShipTo = singleOrder.ShipTo, 
+                            MasterBillOfLading = g.Key
                         };
 
+                        appointments.Add(thisAppointment);
                     }
 
                 }
@@ -1096,7 +1103,7 @@ namespace GSLogistics.Website.Admin.Controllers
         public async Task<ActionResult> LogReport()
         {
             var model = new LogReportIndex_ViewModel();
-            model.SelectedDay = DateTime.Today;
+            model.SelectedDay = new DateTime(2017, 11, 6); // DateTime.Today;
 
             var userContext = Session["UserContext"] as GSLogisticsUserContext;
             if (userContext !=null)
