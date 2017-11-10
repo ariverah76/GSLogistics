@@ -782,16 +782,23 @@ namespace GSLogistics.Website.Admin.Controllers
                         thisAppointment.ShipTo = orderAppt.ShipTo;
                         thisAppointment.BillOfLading = string.IsNullOrEmpty(orderAppt.BillOfLading) ? $"BOL{thisAppointment.AppointmentNo}" : orderAppt.BillOfLading;
                         thisAppointment.pathPOD = orderAppt.PathPOD;
+                        thisAppointment.AnyChildBolHasPOD = !string.IsNullOrEmpty(orderAppt.PathPOD);
                         thisAppointment.ExternalBol = orderAppt.ExternalBol;
                         thisAppointment.MasterBillOfLading = orderAppt.MasterBillOfLading;
 
                         //remove this after tests 
-                        if (orderAppt.BillOfLading == "06799500002077790" || orderAppt.BillOfLading == "06799500002077806" || orderAppt.BillOfLading == "06799500002077820")
+                        //if (orderAppt.BillOfLading == "06799500002077790" || orderAppt.BillOfLading == "06799500002077806" || orderAppt.BillOfLading == "06799500002077820")
+                        //{
+                        //    if (orderAppt.BillOfLading == "06799500002077806")
+                        //    {
+                        //        thisAppointment.pathPOD = @"C:\\temp\Alex.pdf";
+                        //    }
+                        //    thisAppointment.MasterBillOfLading = kMasterBol;
+                        //}
+
+                        if (orderAppt.BillOfLading == "08828880002077934" || orderAppt.BillOfLading == "08828880002077842")
                         {
-                            if (orderAppt.BillOfLading == "06799500002077806")
-                            {
-                                thisAppointment.pathPOD = @"C:\\temp\Alex.pdf";
-                            }
+                           
                             thisAppointment.MasterBillOfLading = kMasterBol;
                         }
                     }

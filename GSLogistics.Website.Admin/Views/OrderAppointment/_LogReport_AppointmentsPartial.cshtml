@@ -300,9 +300,7 @@
                         var textButton = '<button class="btn btn-info" type="button" data-toggle="tooltip" title="Re-Schedule" onclick="reschedule(\'' + group + '\',\'' + bol + '\')" id=btnresch_' + group + '><i class="fa fa-calendar-plus-o"/></button> '
 
                         if (val['DeliveryTypeId'] == 2) {
-                            //textHeader = textHeader.replace("{DriverName}", " | Driver: " + val['DriverName']);
-                            //textHeader = textHeader.replace("{Pallets}", " | Pallets: " + val['Pallets']);
-
+                           
                             if (typeof subtotal[groupid]["Driver"] == 'undefined') {
                                 subtotal[groupid]["Driver"] = "";
                             }
