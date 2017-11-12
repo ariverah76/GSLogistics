@@ -30,6 +30,7 @@ namespace GSLogistics.Model.Query
 
         public bool? hasBool { get; set; }
         public string BillOfLading { get; set; }
+        public string MasterBillOfLading { get; set; }
 
         public int? DivisionId { get; set; }
 

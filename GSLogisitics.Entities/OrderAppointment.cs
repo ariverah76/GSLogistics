@@ -89,6 +89,9 @@ namespace GSLogistics.Entities
         [Column("ShippingDateChanged", Order = 26)]
         public bool ShippingDateChanged { get; set; }
 
+        [Column("MasterBOL", Order = 27)]
+        public string MasterBillOfLading { get; set; }
+
 
     }
 }

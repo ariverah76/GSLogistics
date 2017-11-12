@@ -975,47 +975,47 @@ namespace GSLogistics.Website.Admin.Controllers
             using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
             using (var aLogic = Kernel.Get<IAppointmentLogic>())
             {
-               // List<Model.OrderAppointment> orders = new List<Model.OrderAppointment>();
-                //OrderAppointmentQuery query = new OrderAppointmentQuery();
-                //if (!string.IsNullOrEmpty(bol))
-                //{
-                //    query.BillOfLading = bol;
-                //}
-                //else
-                //{
-                //    query.EmptyBol = true;
-                //}
 
-                //var orders = await oLogic.ToListAsync(query);
-                var appointments = await aLogic.ToListAsync(new AppointmentQuery() { AppointmentNumber = appointmentnumber, Posted = true, Status = "A" });
-
-              //  bool found = false;
-                foreach(var appt in appointments)
+                if (string.IsNullOrEmpty(bol))
+                {
+                    sb.AppendLine("Missing Bill Of Lading Number.");
+                }
+                else
                 {
 
-                    appt.IsReSchedule = true;
 
-                    var result = await aLogic.Update(appt);
 
-                    if (!string.IsNullOrEmpty(result))
+                    IList<Model.Appointment> appointments = new List<Model.Appointment>();
+
+                    // check if it is a master bol
+                    var orders = await oLogic.ToListAsync(new OrderAppointmentQuery() { MasterBillOfLading = bol });
+
+                    if (orders.Any())
                     {
-                        sb.AppendLine($"Picket Ticket {appt.PickTicket}, Bill Of Lading {bol}, could not be re-scheduled. Error: {result}");
+                        appointments = await aLogic.ToListAsync(new AppointmentQuery() { MasterBillOfLading = bol, Posted = true, Status = "A" });
+
+                    }
+                    else
+                    {
+                        appointments = await aLogic.ToListAsync(new AppointmentQuery() { BillOfLading = bol, Posted = true, Status = "A" });
                     }
 
-                    // && string.IsNullOrEmpty(bol) ? true : x.BillOfLading == bol
-                    //found = orders.Any(x => x.CustomerId == appt.CustomerId && x.PickTicketId == appt.PickTicket);
 
-                    //if (!found)
-                    //{
-                    //    throw new Exception("Not match");
-                    //}
-                    //else
-                    //{
-                       
-                    //}
+                    foreach (var appt in appointments)
+                    {
 
+                        appt.IsReSchedule = true;
+
+                        var result = await aLogic.Update(appt);
+
+                        if (!string.IsNullOrEmpty(result))
+                        {
+                            sb.AppendLine($"Picket Ticket {appt.PickTicket}, Bill Of Lading {bol}, could not be re-scheduled. Error: {result}");
+                        }
+
+
+                    }
                 }
-
             }
 
             return Json(new { result = sb.ToString() }, JsonRequestBehavior.AllowGet);

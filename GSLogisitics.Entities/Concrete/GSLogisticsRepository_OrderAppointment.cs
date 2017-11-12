@@ -60,11 +60,11 @@ namespace GSLogistics.Entities.Concrete
             {
                 q = q.Where(x => string.IsNullOrEmpty(x.BillOfLading));
             }
-            //TODO: once we get the masterBOL field
-            //if (!string.IsNullOrEmpty(query.MasterBillOfLading))
-            //{
-            //    q = q.Where(x => x.MasterBillOfLading)
-            //}
+            
+            if (!string.IsNullOrEmpty(query.MasterBillOfLading))
+            {
+                q = q.Where(x => x.MasterBillOfLading == query.MasterBillOfLading);
+            }
 
             return q;
 

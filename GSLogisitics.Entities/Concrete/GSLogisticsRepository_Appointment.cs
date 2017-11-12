@@ -22,7 +22,7 @@ namespace GSLogistics.Entities.Concrete
                          join division in context.CustomerDivisions on a.DivisionId equals division.DivisionId
                          into y
                          from z in y.DefaultIfEmpty()
-                         select new { a.PickTicketId, a.Pallets, a.IsReSchedule, a.Posted, a.AppointmentNumber, a.CustomerId,a.DivisionId, a.UserName, a.PtBulk, a.DeliveryTypeId, a.DateAdd,  a.ReScheduleDate, a.ScacCode, a.ShippingTimeLimit, a.ShipTime, a.Status, a.Transferred, ShipDate = orders.ShipFor, DivisionName = z != null? z.Description : string.Empty, DivisionNameId = z != null ? z.NameId : string.Empty, Customer = customer, a.CatScacCode, a.DriverId, a.TruckId, a.Driver, a.Truck, BillOfLading = orders.BillOfLading, PurchaseOrder = orders.PurchaseOrderId});
+                         select new { a.PickTicketId, a.Pallets, a.IsReSchedule, a.Posted, a.AppointmentNumber, a.CustomerId,a.DivisionId, a.UserName, a.PtBulk, a.DeliveryTypeId, a.DateAdd,  a.ReScheduleDate, a.ScacCode, a.ShippingTimeLimit, a.ShipTime, a.Status, a.Transferred, ShipDate = orders.ShipFor, DivisionName = z != null? z.Description : string.Empty, DivisionNameId = z != null ? z.NameId : string.Empty, Customer = customer, a.CatScacCode, a.DriverId, a.TruckId, a.Driver, a.Truck, BillOfLading = orders.BillOfLading, PurchaseOrder = orders.PurchaseOrderId, MasterBillOfLading = orders.MasterBillOfLading});
 
 
 
@@ -129,9 +129,12 @@ namespace GSLogistics.Entities.Concrete
             {
                 q = q.Where(x => x.BillOfLading == query.BillOfLading);
             }
-
-           // var q1 = q.ToList().Count();
-          //  var q2 = anotherq.ToList().Count();
+            if (!String.IsNullOrEmpty(query.MasterBillOfLading))
+            {
+                q = q.Where(x => x.MasterBillOfLading == query.MasterBillOfLading);
+            }
+            // var q1 = q.ToList().Count();
+            //  var q2 = anotherq.ToList().Count();
             return q;
 
         }
