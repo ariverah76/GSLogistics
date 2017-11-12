@@ -982,9 +982,6 @@ namespace GSLogistics.Website.Admin.Controllers
                 }
                 else
                 {
-
-
-
                     IList<Model.Appointment> appointments = new List<Model.Appointment>();
 
                     // check if it is a master bol
@@ -1000,10 +997,8 @@ namespace GSLogistics.Website.Admin.Controllers
                         appointments = await aLogic.ToListAsync(new AppointmentQuery() { BillOfLading = bol, Posted = true, Status = "A" });
                     }
 
-
                     foreach (var appt in appointments)
                     {
-
                         appt.IsReSchedule = true;
 
                         var result = await aLogic.Update(appt);
@@ -1012,8 +1007,6 @@ namespace GSLogistics.Website.Admin.Controllers
                         {
                             sb.AppendLine($"Picket Ticket {appt.PickTicket}, Bill Of Lading {bol}, could not be re-scheduled. Error: {result}");
                         }
-
-
                     }
                 }
             }
@@ -1071,174 +1064,9 @@ namespace GSLogistics.Website.Admin.Controllers
 
         public PartialViewResult GetLogReport(LogReportIndex_ViewModel model)
         {
-            
-
             List<Models.Appointment> appointments = new List<Models.Appointment>();
 
             appointments = this.GetAppointments(model);
-
-            //var query = new AppointmentQuery()
-            //{
-            //    Posted = true,
-            //    IsReschedule = false,
-            //    KeyColumnSearch = true,
-            //};
-
-            //var userContext = Session["UserContext"] as GSLogisticsUserContext;
-            //if (userContext != null)
-            //{
-            //    query.CustomerIds = userContext.CustomerIds.ToArray();
-            //    query.DivisionIds = userContext.DivisionIds.ToArray();
-            //}
-
-            //if (model.SelectedDay.HasValue)
-            //{
-            //    query.ShippingDate = model.SelectedDay.Value;
-            //}
-
-            //if (model.DeliveryTypeId.HasValue)
-            //{
-            //    query.DeliveryTypeId = model.DeliveryTypeId.Value;
-            //}
-
-            //if (!string.IsNullOrEmpty(model.SelectedClientId))
-            //{
-            //    query.CustomerId = model.SelectedClientId;
-            //}
-            //else if (model.AvailableClientIds!= null && model.AvailableClientIds.Any())
-            //{
-            //    query.CustomerIds = model.AvailableClientIds;
-            //}
-
-
-            //if (model.SelectedDivisionId.HasValue && model.SelectedDivisionId.Value != 0)
-            //{
-            //    query.DivisionId = model.SelectedDivisionId.Value;
-            //}
-            //else if (model.AvailableDivisionIds != null && model.AvailableDivisionIds.Any())
-            //{
-            //    query.DivisionIds = model.AvailableDivisionIds;
-            //}
-
-            //if (!string.IsNullOrEmpty(model.SelectedPickTicket))
-            //{
-            //    query.ShippingDate = null;
-            //    query.KeySearch = model.SelectedPickTicket;
-            //}
-
-            //using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
-            //using (var aLogic = oLogic.GetLogic<IAppointmentLogic>())
-            //{
-
-            //    var orderAppts =  oLogic.ToList(new OrderAppointmentQuery());
-            //    var list = aLogic.ToList(query);
-
-                
-
-            //    foreach (var appt in list)
-            //    {
-            //        var thisAppointment = new Models.Appointment()
-            //        {
-            //            AppointmentNo = appt.AppointmentNumber,
-            //            CustomerName = appt.CustomerName,
-            //            CustomerId = appt.CustomerId,
-            //            DivisionId = appt.DivisionId,
-            //            DivisionName = appt.DivisionName,
-            //            DivisionNameId = appt.DivisionNameId,
-            //            Carrier = appt.Carrier,
-            //            PickTicket = appt.PickTicket,
-            //            PtBulk = appt.PtBulk,
-            //            ScaccCode = appt.ScacCode,
-            //            ShipDate = appt.ShippingDate.Value,
-            //            ShipTime = appt.ShippingTime.Value,
-            //            Posted = appt.Posted.ToString(),
-            //            DateAdded = appt.DateAdded,
-            //            DeliveryTypeId = appt.DeliveryTypeId,
-            //            DriverName = appt.DriverName,
-            //            DriverId = appt.DriverId,
-            //            Pallets = appt.Pallets,
-                       
-            //        };
-
-            //        var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
-            //        if (orderAppt != null)
-            //        {
-            //            thisAppointment.PurchaseOrder = orderAppt.PurchaseOrderId;
-            //            thisAppointment.Pieces = orderAppt.Pieces.Value;
-            //            thisAppointment.BoxesNumber = orderAppt.BoxesCount.Value;
-            //            thisAppointment.ShipTo = orderAppt.ShipTo;
-            //            thisAppointment.BillOfLading =  string.IsNullOrEmpty(orderAppt.BillOfLading)? $"BOL{thisAppointment.AppointmentNo}": orderAppt.BillOfLading;
-            //            thisAppointment.pathPOD = orderAppt.PathPOD;
-            //            thisAppointment.ExternalBol = orderAppt.ExternalBol;
-            //            thisAppointment.MasterBillOfLading = orderAppt.MasterBillOfLading;
-
-            //            //remove this after tests 
-            //            if (orderAppt.BillOfLading == "06799500002077790" || orderAppt.BillOfLading == "06799500002077806" || orderAppt.BillOfLading == "06799500002077820")
-            //            {
-            //                if (orderAppt.BillOfLading  == "06799500002077806")
-            //                {
-            //                    thisAppointment.pathPOD = @"C:\\temp\Alex.pdf";
-            //                }
-            //                thisAppointment.MasterBillOfLading = kMasterBol;
-            //            }
-            //        }
-
-            //        appointments.Add(thisAppointment);
-            //    }
-
-            //    var moveables = appointments.Where(x => !string.IsNullOrEmpty(x.MasterBillOfLading)).ToList();
-
-            //    List<Models.Appointment> masterBols = new List<Models.Appointment>();
-            //    masterBols.AddRange(moveables);
-            //    appointments.RemoveAll(x => !string.IsNullOrEmpty(x.MasterBillOfLading));
-
-            //    var grouped = masterBols.GroupBy(x => x.MasterBillOfLading);
-            //    foreach(var g in grouped)
-            //    {
-
-            //        var orders = g.GroupBy(x => x.BillOfLading);
-            //        foreach(var o in orders)
-            //        {
-            //            var singleOrder = o.FirstOrDefault();
-
-            //            var thisAppointment = new Models.Appointment()
-            //            {
-            //                AppointmentNo = singleOrder.AppointmentNo,
-            //                CustomerName = singleOrder.CustomerName,
-            //                CustomerId = singleOrder.CustomerId,
-            //                Carrier = singleOrder.Carrier,
-            //                ScaccCode = singleOrder.ScaccCode,
-            //                ShipDate = singleOrder.ShipDate,
-            //                ShipTime = singleOrder.ShipTime,
-            //                Posted = singleOrder.Posted.ToString(),
-            //                DateAdded = singleOrder.DateAdded,
-            //                Pieces = o.Sum(x => x.Pieces),
-            //                BoxesNumber = o.Sum(x => x.BoxesNumber),
-            //                PickTicket = $"BOL:{o.Key}",
-            //                BillOfLading = g.Key,
-            //                ShipTo = singleOrder.ShipTo, 
-            //                MasterBillOfLading = g.Key,
-            //                AnyChildBolHasPOD = g.Any(x => !string.IsNullOrEmpty(x.pathPOD)),
-            //                ExternalBol = o.Any(x => x.ExternalBol)
-            //            };
-
-            //            appointments.Add(thisAppointment);
-            //        }
-
-            //    }
-
-            //}
-            ////trick to get grouped by bol and appt#
-            ////var grouped = appointments.Where(x => string.IsNullOrEmpty(x.BillOfLading)).GroupBy(x => x.AppointmentNo);
-            ////foreach (var g in grouped)
-            ////{
-            ////    foreach(var o in g.ToList())
-            ////    {
-            ////        o.BillOfLading 
-            ////    }
-            ////}
-
-            //appointments = appointments.OrderBy(x => x.PickTicket).ToList();
 
             return PartialView("_LogReport_AppointmentsPartial", appointments);
         }
