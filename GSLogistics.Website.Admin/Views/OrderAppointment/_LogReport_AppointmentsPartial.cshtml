@@ -256,7 +256,7 @@
                 var last = null;
                 var lastSub = null;
                 var mySubGroup = null;
-               // var total = new Array();
+                // var total = new Array();
                 // total['Total']
                 var groupid = -1;
                 var subtotal = new Array();
@@ -327,7 +327,7 @@
                             //'<tr class="group"><td colspan=1><button class="btn btn-info" type="button" data-toggle="tooltip" title="Re-Schedule" onclick="reschedule(\'' + group + '\',\'' + bol + '\')" id=btnresch_' + group + '><i class="fa fa-calendar-plus-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
                         }
                         else {
-                           // var header = '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
+                            // var header = '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
                             var extcol = val['ExternalBol'];
                            
                             textButton = '<button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> ';
@@ -444,10 +444,12 @@
                 if (data['ExternalBol'].search("checked") > 0) {
                     btn.removeClass("btn-danger").addClass("btn-warning");
                 }
-                if (data['MasterBillOfLading'].length == 0) {
-                    
-                    
+                if (data['MasterBillOfLading'].length == 0 ) {
                     btn.remove();
+                }
+                else {
+                    if (data['pathPOD'].length == 0)
+                        btn.remove();
                 }
 
             }

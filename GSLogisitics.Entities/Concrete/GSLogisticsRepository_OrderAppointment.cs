@@ -115,7 +115,8 @@ namespace GSLogistics.Entities.Concrete
                 Shipping  = GetShippingDescription(x.Shipping),
                 PathPOD = x.PathPOD, 
                 ExternalBol = x.ExternalBol,
-                ShippingDateChanged = x.ShippingDateChanged
+                ShippingDateChanged = x.ShippingDateChanged,
+                MasterBillOfLading = x.MasterBillOfLading
                 
             });
 
@@ -168,7 +169,8 @@ namespace GSLogistics.Entities.Concrete
                 Shipping = GetShippingDescription(x.Shipping),
                 PathPOD = x.PathPOD,
                 ExternalBol = x.ExternalBol,
-                ShippingDateChanged = x.ShippingDateChanged
+                ShippingDateChanged = x.ShippingDateChanged,
+                MasterBillOfLading = x.MasterBillOfLading
 
             });
 
