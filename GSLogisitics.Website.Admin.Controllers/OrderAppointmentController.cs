@@ -796,11 +796,11 @@ namespace GSLogistics.Website.Admin.Controllers
                         //    thisAppointment.MasterBillOfLading = kMasterBol;
                         //}
 
-                        if (orderAppt.BillOfLading == "08828880002077934" || orderAppt.BillOfLading == "08828880002077842")
-                        {
+                        //if (orderAppt.BillOfLading == "08828880002077934" || orderAppt.BillOfLading == "08828880002077842")
+                        //{
                            
-                            thisAppointment.MasterBillOfLading = kMasterBol;
-                        }
+                        //    thisAppointment.MasterBillOfLading = kMasterBol;
+                        //}
                     }
 
                     appointments.Add(thisAppointment);
@@ -840,7 +840,8 @@ namespace GSLogistics.Website.Admin.Controllers
                             MasterBillOfLading = g.Key,
                             AnyChildBolHasPOD = g.Any(x => !string.IsNullOrEmpty(x.pathPOD)),
                             ExternalBol = o.Any(x => x.ExternalBol),
-                            DeliveryTypeId =singleOrder.DeliveryTypeId
+                            DeliveryTypeId =singleOrder.DeliveryTypeId,
+                            pathPOD = o.FirstOrDefault(x => !string.IsNullOrEmpty(x.pathPOD))?.pathPOD
 
                         };
 
