@@ -66,6 +66,17 @@ namespace GSLogistics.Entities.Concrete
                 q = q.Where(x => x.MasterBillOfLading == query.MasterBillOfLading);
             }
 
+            if (!string.IsNullOrEmpty(query.PickTicketId))
+            {
+                q = q.Where(x => x.PickTicketId == query.PickTicketId);
+            }
+
+            if (!string.IsNullOrEmpty(query.PtBulk))
+            {
+                q = q.Where(x => x.PtBulk == query.PtBulk);
+
+            }
+
             return q;
 
         }

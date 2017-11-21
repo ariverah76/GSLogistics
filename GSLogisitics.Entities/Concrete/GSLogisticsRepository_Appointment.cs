@@ -320,7 +320,9 @@ namespace GSLogistics.Entities.Concrete
 
 
                     var ptBulk = string.IsNullOrEmpty(appointment.PtBulk) ? "" : appointment.PtBulk;
-                    var entity = context.OrderAppointments.Where(x => x.PurchaseOrderId == purchaseOrder && x.PickTicketId == appointment.PickTicketId && x.CustomerId == appointment.CustomerId && x.PtBulk == ptBulk).FirstOrDefault();
+
+                    
+                    var entity = await context.OrderAppointments.Where(x => x.PurchaseOrderId == purchaseOrder && x.PickTicketId == appointment.PickTicketId && x.CustomerId == appointment.CustomerId && x.PtBulk == ptBulk).FirstOrDefaultAsync();
 
                     if (entity != null)
                     {
@@ -339,7 +341,7 @@ namespace GSLogistics.Entities.Concrete
                 {
                     dbTran.Rollback();
 
-                    return exc.Message;
+                    return $"{exc.Message} : { exc.InnerException.Message} ";
                 }
 
             }

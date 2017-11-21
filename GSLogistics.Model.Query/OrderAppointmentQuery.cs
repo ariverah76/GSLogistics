@@ -25,5 +25,8 @@ namespace GSLogistics.Model.Query
 
         public string MasterBillOfLading { get; set; }
 
+
+        public string PtBulk { get; set; }
+        public string PickTicketId { get; set; }
     }
 }
