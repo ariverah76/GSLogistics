@@ -123,9 +123,11 @@ namespace GSLogistics.Website.Admin.Models
         public DateTime? ReScheduleDate { get; set; }
 
         [Display(Name ="Driver")]
+        [Required(ErrorMessage = "Please select a driver")]
         public short? DriverId { get;set;}
 
         [Display(Name ="Truck")]
+        [Required(ErrorMessage = "Please select a truck/vehicle")]
         public short? TruckId { get; set; }
 
         #endregion
