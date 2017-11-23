@@ -9,6 +9,7 @@ using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -457,13 +458,25 @@ namespace GSLogistics.Website.Admin.Controllers
                             ShipFor = model.ShippingDate,
                             Status = 1
                         };
+                        string result = string.Empty;
 
-                        var result = await apptLogic.SetAppointment(appointment, order.PurchaseOrderId);
+                        try
+                        {
+
+                            result = await apptLogic.SetAppointment(appointment, order.PurchaseOrderId);
+                        }
+                        catch
+                        {
+                            
+                            //return new HttpStatusCodeResult(HttpStatusCode.ExpectationFailed, result);
+
+                        }
 
                         if (!string.IsNullOrEmpty(result))
                         {
                             sb.AppendLine($"Order: {order.PickTicketId} Purchase Order: {order.PurchaseOrderId}, got the follow error: {result}");
                         }
+
 
                     }
                 }

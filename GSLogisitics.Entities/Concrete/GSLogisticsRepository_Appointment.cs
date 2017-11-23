@@ -341,7 +341,7 @@ namespace GSLogistics.Entities.Concrete
                 {
                     dbTran.Rollback();
 
-                    return $"{exc.Message} : { exc.InnerException.Message} ";
+                    return $"{exc.Message} : { exc.InnerException?.Message} ";
                 }
 
             }

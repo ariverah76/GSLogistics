@@ -305,10 +305,7 @@
                                 subtotal[groupid]["Driver"] = "";
                             }
                             subtotal[groupid]["Driver"] = val['DriverName'];
-                            if (typeof subtotal[groupid]["Pallets"] == 'undefined') {
-                                subtotal[groupid]["Pallets"] = 0;
-                            }
-                            subtotal[groupid]["Pallets"] = val['Pallets'];
+                           
                            
                         }
                         else {
@@ -317,7 +314,13 @@
                             if (typeof subtotal[groupid]["Driver"] == 'undefined') {
                                 subtotal[groupid]["Driver"] = "";
                             }
+                           
+
                         }
+                        if (typeof subtotal[groupid]["Pallets"] == 'undefined') {
+                            subtotal[groupid]["Pallets"] = 0;
+                        }
+                        subtotal[groupid]["Pallets"] = val['Pallets'];
                         if (val['pathPOD'].length == 0 && childPOD.search("checked") < 0) {
                             
                             textHeader = textHeader.replace("{button}", textButton);
@@ -358,7 +361,7 @@
                     }
                     val = api.row(api.row($(rows).eq(i)).index()).data();      //current order index
                     $.each(val, function (index2, val2) {
-                        if (index2 == "Pieces" || index2 == "BoxesNumber" || index2 == "Pallets") {
+                        if (index2 == "Pieces" || index2 == "BoxesNumber" ) {
                             if (typeof subtotal[groupid] == 'undefined') {
                                 subtotal[groupid] = new Array();
                             }

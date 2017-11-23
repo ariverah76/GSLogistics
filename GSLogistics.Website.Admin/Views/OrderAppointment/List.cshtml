@@ -887,7 +887,7 @@
                         //window.location.href = "List";
                     },
                     error: function (result) {
-                        toastr.error('something went wrong');
+                        toastr.error(result.result);
                     }
                 });
                 $('#setAppointmentModal').modal("hide");
