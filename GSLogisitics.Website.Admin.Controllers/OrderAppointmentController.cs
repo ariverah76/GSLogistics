@@ -1089,7 +1089,7 @@ namespace GSLogistics.Website.Admin.Controllers
         public async Task<ActionResult> LogReport()
         {
             var model = new LogReportIndex_ViewModel();
-            model.SelectedDay = new DateTime(2017, 11, 6); // DateTime.Today;
+            model.SelectedDay = DateTime.Today;
 
             var userContext = Session["UserContext"] as GSLogisticsUserContext;
             if (userContext !=null)

@@ -290,12 +290,13 @@
                             </div>
                             <div class="form-group">
                                 @Html.LabelFor(m => m.ShippingTime)
-                                @Html.DateTimePicker(model => model.ShippingTime, null, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight: false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
+                                @Html.DateTimePicker(model => model.ShippingTime, new Dictionary<string, object> { { "class" , "startDate" } }, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight: false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
                                 @Html.ValidationMessageFor(m => m.ShippingTime)
                             </div>
                             <div class="form-group">
                                 @Html.LabelFor(m => m.ShippingTimeLimit)
-                                @Html.DateTimePicker(model => model.ShippingTimeLimit, null, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight: false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
+                                @Html.DateTimePicker(model => model.ShippingTimeLimit, new Dictionary<string, object> { { "class", "endDate" } }, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight: false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
+                                @Html.ValidationMessageFor(m => m.ShippingTimeLimit)
                             </div>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ShippingCompanyId)
@@ -375,7 +376,18 @@
 
         }(300));
 
-
+        $.validator.addMethod("endDate", function(value, element) {
+            var startDate = $('.startDate').val();
+            if (value == ""){
+                return true;
+            }
+            else{
+                var d1 = new Date('October 13, 2014 '+ startDate.replace("am", "").replace("pm", ""));
+                var d2 = new Date('October 13, 2014 ' + value.replace("am", "").replace("pm", "") );
+                return d1 <= d2 ;
+            }
+        
+        }, "* End date must be after start date");
 
         $(document).ajaxStop(function () {
             $body = $("body");

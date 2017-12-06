@@ -423,11 +423,13 @@
                     subtd += '<td> <span><strong> ' + subtotal[i]["Pieces"] + '</strong></span></td>';
                     subtd += '<td><span><strong>' + subtotal[i]["BoxesNumber"] + '</strong></span></td>';
                     if (subtotal[i]["Pallets"] > 0) {
-                        subtd += '<td colspan=2><span> Pallets: ' + subtotal[i]["Pallets"] + '</span></td>';
+                        
                     }
                     else {
-                        subtd += '<td colspan=2></td>';
-                    }
+                        subtotal[i]["Pallets"] = 0;
+                    }                    
+                    subtd += '<td colspan=2><span> Pallets: ' + subtotal[i]["Pallets"] + '</span></td>';
+
                     if (subtotal[i]["Driver"] !== "") {
                         subtd += '<td colspan=3><span> Driver: ' + subtotal[i]["Driver"] + '</span></td>';
                     }
