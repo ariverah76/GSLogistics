@@ -264,63 +264,80 @@
             </div>
             <div class="modal-body">
                 <form role="form" class="validate">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                @Html.LabelFor(m => m.DeliveryTypeId)
-                                <div class="radio-inline">
-                                    @Html.RadioButtonFor(m => m.DeliveryTypeId, 1, new { id = "IsPickup" })
-                                    <span style="padding-right:20px">Pickup</span>
-                                    @Html.RadioButtonFor(m => m.DeliveryTypeId, 2, new { id = "IsDelivery" })
-                                    <span>Delivery</span>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.DeliveryTypeId)
+                                    <div class="radio-inline">
+                                        @Html.RadioButtonFor(m => m.DeliveryTypeId, 1, new { id = "IsPickup" })
+                                        <span style="padding-right:20px">Pickup</span>
+                                        @Html.RadioButtonFor(m => m.DeliveryTypeId, 2, new { id = "IsDelivery" })
+                                        <span>Delivery</span>
+                                    </div>
                                     @Html.ValidationMessageFor(m => m.DeliveryTypeId)
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                @Html.LabelFor(m => m.AppointmentNumber)
-                                @Html.TextBoxFor(m => m.AppointmentNumber, new { @class = "form-control" })
-                                @Html.ValidationMessageFor(m => m.AppointmentNumber)
-                            </div>
-                            <div class="form-group">
-                                @Html.LabelFor(m => m.ShippingDate)
-                                @Html.DatePicker(m => m.ShippingDate, minDateDays: -2, htmlAttributes:  new { @class = "form-control" })
-                                @Html.ValidationMessageFor(m => m.ShippingDate)
-                                @*@Html.DatePicker(m => m.ReScheduleDate, minDateDays: -2, htmlAttributes: new { @class = "form-control" })*@
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.AppointmentNumber)
+                                    @Html.TextBoxFor(m => m.AppointmentNumber, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.AppointmentNumber)
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Pallets)
+                                    @Html.TextBoxFor(model => model.Pallets, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Pallets)
+                                </div>
+                                <div id="panelTruckInfo" style="display:none">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.DriverId)
+                                        @Html.DropDownListFor(m => m.DriverId, drivers, "Select", new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.DriverId)
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.TruckId)
+                                        @Html.DropDownListFor(m => m.TruckId, trucks, "Select", new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.TruckId)
+                                    </div>
+                                </div>
+
 
                             </div>
-                            <div class="form-group">
-                                @Html.LabelFor(m => m.ShippingTime)
-                                @Html.DateTimePicker(model => model.ShippingTime, new Dictionary<string, object> { { "class" , "startDate" } }, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight: false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
-                                @Html.ValidationMessageFor(m => m.ShippingTime)
-                            </div>
-                            <div class="form-group">
-                                @Html.LabelFor(m => m.ShippingTimeLimit)
-                                @Html.DateTimePicker(model => model.ShippingTimeLimit, new Dictionary<string, object> { { "class", "endDate" } }, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight: false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
-                                @Html.ValidationMessageFor(m => m.ShippingTimeLimit)
-                            </div>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ShippingCompanyId)
-                                @Html.DropDownListFor(m => m.ShippingCompanyId, scacCodes, null, new { @class = "form-control" })
-                                @Html.ValidationMessageFor(m => m.ShippingCompanyId)
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ShippingDate)
+                                    @Html.DatePicker(m => m.ShippingDate, minDateDays: -2, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.ShippingDate)
+                                    @*@Html.DatePicker(m => m.ReScheduleDate, minDateDays: -2, htmlAttributes: new { @class = "form-control" })*@
+
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ShippingTime)
+                                    @Html.DateTimePicker(model => model.ShippingTime, new Dictionary<string, object> { { "class", "startDate form-control" } }, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight: false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
+                                    @Html.ValidationMessageFor(m => m.ShippingTime)
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ShippingTimeLimit)
+                                    @Html.DateTimePicker(model => model.ShippingTimeLimit, new Dictionary<string, object> { { "class", "endDate form-control" } }, jsFormat: "hh:ii p", cFormat: "LT", todayHighlight: false, minView: DateTimePickerView.Hour, startView: DateTimePickerView.Day)
+                                    @Html.ValidationMessageFor(m => m.ShippingTimeLimit)
+                                </div>
+
                             </div>
                             
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.Pallets)
-                                @Html.TextBoxFor(model => model.Pallets)
-                                @Html.ValidationMessageFor(m => m.Pallets)
-                            </div>
-                            <div id="panelTruckInfo" style="display:none">
+                        <div class="row">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.DriverId)
-                                    @Html.DropDownListFor(m => m.DriverId, drivers, "Select", new { @class = "form-control" })
-                                    @Html.ValidationMessageFor(m => m.DriverId)
+                                    @Html.LabelFor(model => model.ShippingCompanyId)
+                                    @Html.DropDownListFor(m => m.ShippingCompanyId, scacCodes, "Select", new { @class = "form-control"})
+                                    @Html.ValidationMessageFor(m => m.ShippingCompanyId)
                                 </div>
+                                
+                            </div>
+                            <div class="col-md-12">
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.TruckId)
-                                    @Html.DropDownListFor(m => m.TruckId, trucks, "Select", new { @class = "form-control" })
-                                    @Html.ValidationMessageFor(m => m.TruckId)
+                                    @Html.LabelFor(model => model.Notes)
+                                    @Html.TextAreaFor(model => model.Notes, new { @class = "form-control", @style = "min-width: 100%" })
+                                    @Html.ValidationMessageFor(m => m.Notes)
                                 </div>
                             </div>
                         </div>
@@ -328,15 +345,28 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <ul class="list-group" id="summary">
-                    <li class="list-group-item"><span class="badge" id="totPcs"></span>Total Pieces:&nbsp;</li>
-                    <li class="list-group-item"><span class="badge" id="totalCtns"></span>Total Ctns:&nbsp;</li>
-                    <li class="list-group-item"><span class="badge" id="totalLbs"></span>Total Weight:&nbsp;</li>
-                    <li class="list-group-item"><span class="badge" id="totalCubic"></span>Total Cubic:&nbsp;</li>
-                    <li class="list-group-item"><span class="badge" id="totalgohs"></span>Total GOH's:&nbsp;</li>
-
-
-                </ul>
+                <div class="row" id="summary">
+                    <div class="col-md-4">
+                        <ul class="list-group" >
+                            <li class="list-group-item"><span class="badge" id="totPcs"></span>Total Pieces:&nbsp;</li>
+                            <li class="list-group-item"><span class="badge" id="totalCtns"></span>Total Ctns:&nbsp;</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <ul class="list-group">
+                            <li class="list-group-item"><span class="badge" id="totalgohs"></span>Total GOH's:&nbsp;</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <ul class="list-group">
+                            <li class="list-group-item"><span class="badge" id="totalLbs"></span>Total Weight:&nbsp;</li>
+                            <li class="list-group-item"><span class="badge" id="totalCubic"></span>Total Cubic:&nbsp;</li>
+                        </ul>
+                    </div>
+                    
+                </div>
+               
+               
                 <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                 <button type="button" id="btnSave" onclick="setNewAppointment()" class="btn btn-info">Set Appointment</button>
             </div>
@@ -605,7 +635,9 @@
             // model.ReScheduleDate = $("#ReScheduleDate").val();
             model.DriverId = $("#DriverId").val();
             model.TruckId = $("#TruckId").val();
+            model.Notes = $("#Notes").val();
             var pallets = $("#Pallets").val();
+
 
             if (pallets.length > 0) {
                 pallets = parseInt(pallets);
@@ -828,6 +860,7 @@
         $("#ShippingCompanyId")[0].selectedIndex = 0;
         $("#AppointmentNumber").val('');
         $("#Pallets").val('');
+        $("#Notes").val('');
         $("#ShippingTimeLimit").val('');
         $("#ShippingCompanyId").val('').trigger('change');
         $('input[name = DeliveryTypeId]').attr('checked', false);
@@ -878,6 +911,7 @@
                 model.Pallets = $("#Pallets").val();
                 model.TruckId = $("#TruckId").val();
                 model.DriverId = $("#DriverId").val();
+                model.Notes = $("#Notes").val();
 
                 model.Orders = orders;
 

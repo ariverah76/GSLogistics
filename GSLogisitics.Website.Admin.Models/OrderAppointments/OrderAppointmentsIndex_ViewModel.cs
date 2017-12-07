@@ -130,6 +130,9 @@ namespace GSLogistics.Website.Admin.Models
         [Required(ErrorMessage = "Please select a truck/vehicle")]
         public short? TruckId { get; set; }
 
+        [Display(Name ="Notes")]
+        [MaxLength(200, ErrorMessage = "Notes should not excceed 200 characters")]
+        public string Notes { get; set; }
         #endregion
     }
 }

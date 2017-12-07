@@ -456,6 +456,7 @@ namespace GSLogistics.Website.Admin.Controllers
                             PtBulk = order.PtBulk,
                             CustomerId = order.CustomerId,
                             ShipFor = model.ShippingDate,
+                            Notes = model.Notes,
                             Status = 1
                         };
                         string result = string.Empty;
@@ -463,7 +464,7 @@ namespace GSLogistics.Website.Admin.Controllers
                         try
                         {
 
-                            result = await apptLogic.SetAppointment(appointment, order.PurchaseOrderId);
+                            result = await apptLogic.SetAppointment(appointment, oappt);
                         }
                         catch
                         {
@@ -587,7 +588,7 @@ namespace GSLogistics.Website.Admin.Controllers
                     {
                         appointment.ShippingTimeLimit = new DateTime(model.ShippingDate.Year, model.ShippingDate.Month, model.ShippingDate.Day, model.ShippingTimeLimit.Value.Hour, model.ShippingTimeLimit.Value.Minute, 0);
                     }
-                    await logic.UpdateScript(appointment);
+                    await logic.UpdateScript(appointment, model.Notes);
                     //await logic.Update(appointment);
 
                    // repository.UpdateAppointment(appointment);

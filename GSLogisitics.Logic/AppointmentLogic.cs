@@ -38,14 +38,14 @@ namespace GSLogistics.Logic
         }
 
 
-        public async Task<int> UpdateScript(Appointment appointment)
+        public async Task<int> UpdateScript(Appointment appointment, string Notes)
         {
-            return await Repository.UpdateScript(appointment);
+            return await Repository.UpdateScript(appointment, Notes);
         }
 
-        public async Task<string> SetAppointment(Appointment appointment, string purchaseOrder)
+        public async Task<string> SetAppointment(Appointment appointment, OrderAppointment order)
         {
-            return await Repository.SetAppointment(appointment, purchaseOrder);
+            return await Repository.SetAppointment(appointment, order);
         }
     }
 }

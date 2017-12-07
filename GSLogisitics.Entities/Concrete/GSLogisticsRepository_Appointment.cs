@@ -264,7 +264,7 @@ namespace GSLogistics.Entities.Concrete
 
         }
 
-        public async Task<string> SetAppointment(Model.Appointment appointmentModel, string purchaseOrder)
+        public async Task<string> SetAppointment(Model.Appointment appointmentModel, Model.OrderAppointment order)
         {
             using (System.Data.Entity.DbContextTransaction dbTran = context.Database.BeginTransaction())
             {
@@ -322,13 +322,14 @@ namespace GSLogistics.Entities.Concrete
                     var ptBulk = string.IsNullOrEmpty(appointment.PtBulk) ? "" : appointment.PtBulk;
 
                     
-                    var entity = await context.OrderAppointments.Where(x => x.PurchaseOrderId == purchaseOrder && x.PickTicketId == appointment.PickTicketId && x.CustomerId == appointment.CustomerId && x.PtBulk == ptBulk).FirstOrDefaultAsync();
+                    var entity = await context.OrderAppointments.Where(x => x.PurchaseOrderId == order.PurchaseOrderId && x.PickTicketId == appointment.PickTicketId && x.CustomerId == appointment.CustomerId && x.PtBulk == ptBulk).FirstOrDefaultAsync();
 
                     if (entity != null)
                     {
 
                         entity.Status = 1;
                         entity.ShipFor = appointmentModel.ShippingDate.Value;
+                        entity.Notes = !string.IsNullOrEmpty(entity.Notes) ? $"{entity.Notes} / {order.Notes}" : order.Notes;
                     }
 
                     await context.SaveChangesAsync();
@@ -346,7 +347,7 @@ namespace GSLogistics.Entities.Concrete
 
             }
         }
-        public async Task<int> UpdateScript(Model.Appointment appointment)
+        public async Task<int> UpdateScript(Model.Appointment appointment, string Notes)
         {
          
             var reschDate = appointment.ReScheduleDate.HasValue ? appointment.ReScheduleDate.Value.ToShortDateString() : string.Empty;
@@ -363,7 +364,7 @@ namespace GSLogistics.Entities.Concrete
                             AND PickTicket = {5} 
                             AND Posted = 0";
 
-            var scriptOrder = @"UPDATE dbo.OrderAppointment SET ShipFor = CAST({0} AS DATETIME) WHERE CustomerId = {1} AND PickTicketId = {2} ";
+            var scriptOrder = @"UPDATE dbo.OrderAppointment SET ShipFor = CAST({0} AS DATETIME), Notes = {3} WHERE CustomerId = {1} AND PickTicketId = {2} ";
 
             try
             {
@@ -384,7 +385,7 @@ namespace GSLogistics.Entities.Concrete
                     appointment.TruckId.HasValue ? $"{appointment.TruckId.Value}": "NULL", 
                     appointment.DriverId.HasValue ? $"{appointment.DriverId.Value}" : "NULL");
 
-                scriptOrder = string.Format(scriptOrder, $"'{shippingTime}'", $"'{appointment.CustomerId}'", $"'{appointment.PickTicket}'");
+                scriptOrder = string.Format(scriptOrder, $"'{shippingTime}'", $"'{appointment.CustomerId}'", $"'{appointment.PickTicket}'", $"'{Notes}'");
 
                 var result = await context.Database.ExecuteSqlCommandAsync(script);
                 result = await context.Database.ExecuteSqlCommandAsync(scriptOrder);

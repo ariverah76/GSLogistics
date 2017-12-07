@@ -11,8 +11,8 @@ namespace GSLogistics.Logic.Interface
         IList<Model.Appointment> ToList(AppointmentQuery query);
         Task<string> Update(Appointment appointment);
         Task<int> Create(Model.Appointment appointmentModel);
-        Task<int> UpdateScript(Appointment appointment);
+        Task<int> UpdateScript(Appointment appointment, string Notes);
 
-        Task<string> SetAppointment(Appointment appointment, string purchaseOrder);
+        Task<string> SetAppointment(Appointment appointment, OrderAppointment order);
     }
 }

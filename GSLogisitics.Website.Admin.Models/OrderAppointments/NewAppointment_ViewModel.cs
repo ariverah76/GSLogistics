@@ -21,6 +21,7 @@ namespace GSLogistics.Website.Admin.Models.OrderAppointments
         public int? Pallets { get; set; }
         public short? DriverId { get; set; }
         public short? TruckId { get; set; }
+        public string Notes { get; set; }
 
     }
 
