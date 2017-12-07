@@ -73,6 +73,8 @@ namespace GSLogistics.Website.Admin.Models
 
         public bool AnyChildBolHasPOD {get;set;}
 
+        public string Status { get; set; }
+        public string Notes { get; set; }
 
 
     }

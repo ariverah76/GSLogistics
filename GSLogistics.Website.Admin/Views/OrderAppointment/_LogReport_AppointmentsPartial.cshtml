@@ -55,6 +55,8 @@
             <th></th>
             <th></th>
             <th></th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -124,6 +126,12 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.AnyChildBolHasPOD)
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Notes)
+                </td>
                 <td></td>
 
 
@@ -135,12 +143,14 @@
 
 
 <script type="text/javascript">
+    var isAdmin = @Html.Raw(Json.Encode(User.IsInRole("Administrators")));
+    var isShipping = @Html.Raw(Json.Encode(User.IsInRole("Shipping")));
 
     $(document).ready(function () {
 
         var table = $("#tableLogReport").DataTable({
             dom: 'lfTrtip',
-            
+
             paging: false,
             order: [[13, "asc"], [0,"asc"]],
             columns: [
@@ -239,20 +249,30 @@
                 }
                 ,
                 {
+                    data: 'Status',
+                    visible:  false
+                }
+                ,
+                {
+                     data: 'Notes',
+                     visible:  false
+                }
+                ,
+                {
                     data: null,
                     defaultContent: '<button class="btn btn-danger btn-xs" type="button" data-toggle="tooltip" title="See POD" ><span class="fa fa-file-pdf-o"><span/></button> ',
                 }
-                
-                
+
+
             ]
             ,
             "drawCallback": function (settings) {
                 var api = this.api();
-                
+
                 var rows = api.rows({ page: 'current' }).nodes();
                 var allRows = api.rows({ page: 'current' }).nodes();
                 var columna = api.row(0).data.length;
-                
+
                 var last = null;
                 var lastSub = null;
                 var mySubGroup = null;
@@ -261,12 +281,13 @@
                 var groupid = -1;
                 var subtotal = new Array();
 
+
                 //$(rows).each(function () {
                 //    console.log(this.cells);
                 //    groupName = this.cells[13].innerHTML;
                 //    mySubGroup = this.cells[0].innerHTML;
 
-                   
+
 
                 //    if (last !== groupName) {
                 //        $(this).before('<tr class="group"><td colspan="14">' + groupName + '</td></tr>');
@@ -279,6 +300,7 @@
                 //});
 
                 api.column(13, { page: 'current' }).data().each(function (group, i) {
+
                     if (last !== group) {
                         groupid++;
                         var groupDisplay = group;
@@ -296,17 +318,18 @@
                             subtotal[groupid] = new Array();
                         }
 
-                        var textHeader = '<tr class="group"><td colspan=1>{button}</td><td colspan=6>BOL: ' + groupDisplay + ' Appointment #: </td></tr>';
+                        var textHeader = '<tr class="group"><td colspan=1>{button}{sentButton}</td><td colspan=6>BOL: ' + groupDisplay + ' Appointment #: </td></tr>';
                         var textButton = '<button class="btn btn-info" type="button" data-toggle="tooltip" title="Re-Schedule" onclick="reschedule(\'' + group + '\',\'' + bol + '\')" id=btnresch_' + group + '><i class="fa fa-calendar-plus-o"/></button> '
+                        var textMarkAsSentButton = '<button class="btn btn-info" type="button" data-toggle="tooltip" title="Sent" onclick="markAsSent(\'' + group + '\',\'' + bol + '\')" id=btnsent_' + group + '><i class="fa fa-truck"/></button> '
 
                         if (val['DeliveryTypeId'] == 2) {
-                           
+
                             if (typeof subtotal[groupid]["Driver"] == 'undefined') {
                                 subtotal[groupid]["Driver"] = "";
                             }
                             subtotal[groupid]["Driver"] = val['DriverName'];
-                           
-                           
+
+
                         }
                         else {
                             //textHeader = textHeader.replace("| {DriverName}", "");
@@ -314,28 +337,37 @@
                             if (typeof subtotal[groupid]["Driver"] == 'undefined') {
                                 subtotal[groupid]["Driver"] = "";
                             }
-                           
+
 
                         }
                         if (typeof subtotal[groupid]["Pallets"] == 'undefined') {
                             subtotal[groupid]["Pallets"] = 0;
                         }
                         subtotal[groupid]["Pallets"] = val['Pallets'];
-                        if (val['pathPOD'].length == 0 && childPOD.search("checked") < 0) {
-                            
-                            textHeader = textHeader.replace("{button}", textButton);
-                            //$(rows).eq(i).before(
-                            // textHeader
-                            //);
-                            //'<tr class="group"><td colspan=1><button class="btn btn-info" type="button" data-toggle="tooltip" title="Re-Schedule" onclick="reschedule(\'' + group + '\',\'' + bol + '\')" id=btnresch_' + group + '><i class="fa fa-calendar-plus-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
+                        if (val['pathPOD'].length == 0 && childPOD.search("checked") < 0) { // We put the Reschedule Button instead
+                            if (isAdmin == true){
+                                textHeader = textHeader.replace("{button}", textButton);
+                                textHeader = textHeader.replace("{sentButton}", "");
+                            }
+                            else {
+                                textHeader = textHeader.replace("{button}", "");
+                                // TODO: Create a new role for shipping people and add sent button if applies
+                                if (isShipping == true){
+                                    textHeader = textHeader.replace("{sentButton}", textMarkAsSentButton);
+                                }
+
+                                
+                            }
+
                         }
                         else {
-                            // var header = '<tr class="group"><td colspan=1><button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> </td><td colspan=6> Appointment #: ' + bol + ' - BOL: ' + group + '</td></tr>'
                             var extcol = val['ExternalBol'];
-                           
+
+                            textHeader = textHeader.replace("{sentButton}", "");
+
                             textButton = '<button class="btn btn-danger" type="button" data-toggle="tooltip" title="See POD" onclick="donwloadPOD(\'' + group + '\')" id=btn_' + group + '><i class="fa fa-file-pdf-o"/></button> ';
                             if (extcol.search("checked") > 0 ) {
-                                
+
                                 textButton = textButton.replace("btn btn-danger", "btn btn-warning");
                                 textButton = textButton.replace("See POD", "See External POD");
                                 textButton = textButton.replace("</button>", 'E</button>');
@@ -347,6 +379,7 @@
                             if (val['MasterBillOfLading'] !== "") {
                                 textHeader = textHeader.replace("{button}", "");
                             } else {
+
                                 textHeader = textHeader.replace("{button}", textButton);
                             }
                         }
@@ -354,7 +387,7 @@
                             textHeader = textHeader.replace("group", "group groupmaster")
                             textHeader = textHeader.replace("BOL:", "Master BOL:")
                         }
-                       
+
                         $(rows).eq(i).before(textHeader);
 
                         last = group;
@@ -383,6 +416,18 @@
                             }
 
                         }
+                        if (index2 == "Notes") {
+                            if (typeof subtotal[groupid] == 'undefined') {
+                                subtotal[groupid] = new Array();
+                            }
+                            if (typeof subtotal[groupid][index2] == 'undefined') {
+                                subtotal[groupid][index2] = "";
+                            }
+                            if (subtotal[groupid][index2].search(val2) == -1) {
+                                subtotal[groupid][index2] += val2 + " "
+                            }
+
+                        }
                         if (index2 == "pathPOD") {
                             if (typeof subtotal[groupid][index2] == 'undefined') {
                                 subtotal[groupid][index2] = "";
@@ -391,7 +436,7 @@
                                 subtotal[groupid][index2] += val2 + ","
                             }
                         }
-                        
+
                     });
 
                 });
@@ -399,7 +444,7 @@
                 $('tbody').find('.group').each(function (i, v) {
                     console.log(subtotal);
                     var rowCount = $(this).nextUntil('.group').length;
-                    //If we need to check all the orders has a pathPOD this is where we can inject the button instead 
+                    //If we need to check all the orders has a pathPOD this is where we can inject the button instead
                     //Check if all the bols has a valid path
                     if (subtotal[groupid]["pathPOD"].length > 0) {
                         $(this).find('td button').removeClass("btn warning")
@@ -419,15 +464,17 @@
 
                     $(this).find('td:nth-child(2)').append($('<span />', { 'class': 'rowCount-grid' }).append($('<b />', { 'text': ' ('+ totalWord + rowCount+')' })));
                     var subtd = '';
-              
+                    if ( subtotal[i]["Notes"] !== "") {
+                        $(this).find('td:nth-child(2)').append('</br><span><b>Shipping Dpt Instructions: </b>' + subtotal[i]["Notes"] + ' </span>');
+                    }
                     subtd += '<td> <span><strong> ' + subtotal[i]["Pieces"] + '</strong></span></td>';
                     subtd += '<td><span><strong>' + subtotal[i]["BoxesNumber"] + '</strong></span></td>';
                     if (subtotal[i]["Pallets"] > 0) {
-                        
+
                     }
                     else {
                         subtotal[i]["Pallets"] = 0;
-                    }                    
+                    }
                     subtd += '<td colspan=2><span> Pallets: ' + subtotal[i]["Pallets"] + '</span></td>';
 
                     if (subtotal[i]["Driver"] !== "") {
@@ -440,8 +487,8 @@
                     $(this).append(subtd);
 
                 });
-						
-            
+
+
             },
             "createdRow": function (row, data, dataIndex) {
 
@@ -458,7 +505,7 @@
                 }
 
             }
-            
+
        });
        var timer;
 
@@ -477,8 +524,8 @@
             var data = table.row($(this).parents('tr')).data();
             donwloadPOD(data["PickTicket"].replace("BOL:", ""));
         });
-    
+
     });
 
-    
+
 </script>

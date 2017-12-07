@@ -349,7 +349,30 @@
         }
 
     }
+    function markAsSent(bol, apptnumber) {
 
+        if (confirm("Are you sure this Bill of Lading was already sent?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("MarkBolAsSent", "OrderAppointment")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({ "bol": bol, "appointmentnumber": apptnumber }),
+                dataType: "json",
+
+            }).done(function (returnValue) {
+                if (returnValue.result.length == 0) {
+                    toastr.success("Status set succesfully!");
+                    $("#btnRefresh").trigger('click');
+                }
+                else {
+                    toastr.error("Error trying to mark these orders as sent: " + returnValue.result);
+                }
+            }).fail(function () {
+                toastr.error("Error trying to set status as sent");
+            });
+        }
+
+    }
 
 </script>
 

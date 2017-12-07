@@ -444,6 +444,10 @@ namespace GSLogistics.Entities.Concrete
                     {
                         entity.ReScheduleDate = appointment.ReScheduleDate;
                     }
+                    if (!string.IsNullOrEmpty(appointment.Status))
+                    {
+                        entity.Status = appointment.Status;
+                    }
 
                     entity.IsReSchedule = appointment.IsReSchedule;
 

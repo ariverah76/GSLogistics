@@ -784,7 +784,7 @@ namespace GSLogistics.Website.Admin.Controllers
                         DriverName = appt.DriverName,
                         DriverId = appt.DriverId,
                         Pallets = appt.Pallets,
-
+                        Status = appt.Status
                     };
 
                     var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
@@ -799,6 +799,7 @@ namespace GSLogistics.Website.Admin.Controllers
                         thisAppointment.AnyChildBolHasPOD = !string.IsNullOrEmpty(orderAppt.PathPOD);
                         thisAppointment.ExternalBol = orderAppt.ExternalBol;
                         thisAppointment.MasterBillOfLading = orderAppt.MasterBillOfLading;
+                        thisAppointment.Notes = orderAppt.Notes;
 
                         //remove this after tests 
                         //if (orderAppt.BillOfLading == "06799500002077790" || orderAppt.BillOfLading == "06799500002077806" || orderAppt.BillOfLading == "06799500002077820")
@@ -855,7 +856,8 @@ namespace GSLogistics.Website.Admin.Controllers
                             AnyChildBolHasPOD = g.Any(x => !string.IsNullOrEmpty(x.pathPOD)),
                             ExternalBol = o.Any(x => x.ExternalBol),
                             DeliveryTypeId =singleOrder.DeliveryTypeId,
-                            pathPOD = o.FirstOrDefault(x => !string.IsNullOrEmpty(x.pathPOD))?.pathPOD
+                            pathPOD = o.FirstOrDefault(x => !string.IsNullOrEmpty(x.pathPOD))?.pathPOD,
+                            Notes = singleOrder.Notes
 
                         };
 
@@ -881,27 +883,27 @@ namespace GSLogistics.Website.Admin.Controllers
                 List<string> renderPods = new List<string>(); 
                 if (orders.Any())
                 {
-                    var mockBols = new List<string> { "06799500002077790", "06799500002077806", "06799500002077820" };
-                    for (var i = 0; i < 3; i++)
-                    {
-                        var fName = this.PutPODFileOnSession(@"C:\\Temp\hunter.pdf", mockBols.ToArray()[i]);
-                        renderPods.Add(fName);
-                    }
-
-
-                    //var childBols = orders.GroupBy(x => x.BillOfLading);
-                    //foreach(var g in childBols)
+                    //var mockBols = new List<string> { "06799500002077790", "06799500002077806", "06799500002077820" };
+                    //for (var i = 0; i < 3; i++)
                     //{
-                    //    var order = g.FirstOrDefault(x => !string.IsNullOrEmpty(x.PathPOD));
-
-                    //    var fName = this.PutPODFileOnSession(order.PathPOD, order.BillOfLading);
-
-                    //    if (!string.IsNullOrEmpty(fName))
-                    //    {
-                    //        renderPods.Add(fName);
-                    //    }
-
+                    //    var fName = this.PutPODFileOnSession(@"C:\\Temp\hunter.pdf", mockBols.ToArray()[i]);
+                    //    renderPods.Add(fName);
                     //}
+
+
+                    var childBols = orders.GroupBy(x => x.BillOfLading);
+                    foreach(var g in childBols)
+                    {
+                        var order = g.FirstOrDefault(x => !string.IsNullOrEmpty(x.PathPOD));
+
+                        var fName = this.PutPODFileOnSession(order.PathPOD, order.BillOfLading);
+
+                        if (!string.IsNullOrEmpty(fName))
+                        {
+                            renderPods.Add(fName);
+                        }
+
+                    }
                      
                 }
 
@@ -1015,6 +1017,52 @@ namespace GSLogistics.Website.Admin.Controllers
                     foreach (var appt in appointments)
                     {
                         appt.IsReSchedule = true;
+
+                        var result = await aLogic.Update(appt);
+
+                        if (!string.IsNullOrEmpty(result))
+                        {
+                            sb.AppendLine($"Picket Ticket {appt.PickTicket}, Bill Of Lading {bol}, could not be re-scheduled. Error: {result}");
+                        }
+                    }
+                }
+            }
+
+            return Json(new { result = sb.ToString() }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> MarkBolAsSent(string bol, string appointmentnumber)
+        {
+            StringBuilder sb = new StringBuilder();
+            using (var oLogic = Kernel.Get<IOrderAppointmentLogic>())
+            using (var aLogic = Kernel.Get<IAppointmentLogic>())
+            {
+
+                if (string.IsNullOrEmpty(bol))
+                {
+                    sb.AppendLine("Missing Bill Of Lading Number.");
+                }
+                else
+                {
+                    IList<Model.Appointment> appointments = new List<Model.Appointment>();
+
+                    // check if it is a master bol
+                    var orders = await oLogic.ToListAsync(new OrderAppointmentQuery() { MasterBillOfLading = bol });
+
+                    if (orders.Any())
+                    {
+                        appointments = await aLogic.ToListAsync(new AppointmentQuery() { MasterBillOfLading = bol, Posted = true});
+
+                    }
+                    else
+                    {
+                        appointments = await aLogic.ToListAsync(new AppointmentQuery() { BillOfLading = bol, Posted = true });
+                    }
+
+                    foreach (var appt in appointments)
+                    {
+                        appt.Status = "S";
 
                         var result = await aLogic.Update(appt);
 
