@@ -40,5 +40,6 @@ namespace GSLogistics.Model.Query
 
         public bool? KeyColumnSearch { get; set; }
         public string KeySearch { get; set; }
+        public DateTime? ShipFor { get; set; }
     }
 }

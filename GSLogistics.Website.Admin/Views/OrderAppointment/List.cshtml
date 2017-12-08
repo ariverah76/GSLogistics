@@ -123,15 +123,15 @@
                                 <div class="form-group">
                                     @*<input type="checkbox" id="chkShipForSearch" />*@
 
-                                    @Html.CheckBoxFor(m => m.EnableShipForFilter, new { @id = "chkShipForSearch" })
+                                    @Html.CheckBoxFor(m => m.EnableShipForFilter, new { @id = "ShipForSearchOrder" })
                                     @Html.LabelFor(model => model.ShipFor)
                                     @if (!Model.EnableShipForFilter)
                                     {
-                                        @Html.DatePicker(x => x.ShipFor, htmlAttributes: new { @class = "form-control", @disabled = "disabled" })
+                                        @Html.DatePicker(x => x.ShipFor, htmlAttributes: new { @class = "form-control ShipForOrder", @disabled = "disabled" })
                                     }
                                     else
                                     {
-                                        @Html.DatePicker(x => x.ShipFor, htmlAttributes: new { @class = "form-control" })
+                                        @Html.DatePicker(x => x.ShipFor, htmlAttributes: new { @class = "form-control ShipForOrder" })
                                     }
                                 </div>
                             </div>
@@ -203,6 +203,23 @@
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.ShippingDateEnd)
                                             @Html.DatePicker(x => x.ShippingDateEnd, minDateDays: 0, htmlAttributes: new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+
+                                            @Html.CheckBoxFor(m => m.EnableShipForFilter, new { @id = "ShipForSearchAppt" })
+                                            @Html.LabelFor(model => model.ShipForAppt)
+                                            @if (!Model.EnableShipForFilter)
+                                            {
+                                                @Html.DatePicker(x => x.ShipForAppt, htmlAttributes: new { @class = "form-control ShipForAppt", @disabled = "disabled", @id = "ShipForAppt" })
+                                            }
+                                            else
+                                            {
+                                                @Html.DatePicker(x => x.ShipForAppt, htmlAttributes: new { @class = "form-control ShipForAppt", @id = "ShipForAppt" })
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -472,16 +489,32 @@
             });
 
 
-            $('#chkShipForSearch').change(function () {
-                if ($('#chkShipForSearch').prop('checked') == true) {
-                    $('#ShipFor').removeAttr('disabled');
+            $('#ShipForSearchOrder').change(function () {
+                if ($('#ShipForSearchOrder').prop('checked') == true) {
+                    $('.ShipForOrder').removeAttr('disabled');
                     $('#CancelDateStartDate').attr('disabled', 'disabled');
                     $('#CancelDateEndDate').attr('disabled', 'disabled');
 
                 } else {
-                    $('#ShipFor').attr('disabled', 'disabled');
+                    $('.ShipForOrder').attr('disabled', 'disabled');
                     $('#CancelDateStartDate').removeAttr('disabled');
                     $('#CancelDateEndDate').removeAttr('disabled');
+                }
+
+
+            });
+
+            $('#ShipForSearchAppt').change(function () {
+                if ($('#ShipForSearchAppt').prop('checked') == true) {
+                    $('.ShipForAppt').removeAttr('disabled');
+                    $('#ShippingDateStart').attr('disabled', 'disabled');
+                    $('#ShippingDateEnd').attr('disabled', 'disabled');
+
+                } else {
+                    $('.ShipForAppt').attr('disabled', 'disabled');
+                    $('.ShipForAppt').val('');
+                    $('#ShippingDateStart').removeAttr('disabled');
+                    $('#ShippingDateEnd').removeAttr('disabled');
                 }
 
 

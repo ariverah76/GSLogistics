@@ -672,6 +672,11 @@ namespace GSLogistics.Website.Admin.Controllers
                 query.ShippingDateEnd = model.ShippingDateEnd.Value;
             }
 
+            if (model.ShipForAppt.HasValue)
+            {
+                query.ShipFor = model.ShipForAppt;
+            }
+
             query.Status = "A";
 
             using (var aLogic = Kernel.Get<IAppointmentLogic>())

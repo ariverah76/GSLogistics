@@ -133,6 +133,11 @@ namespace GSLogistics.Entities.Concrete
             {
                 q = q.Where(x => x.MasterBillOfLading == query.MasterBillOfLading);
             }
+
+            if (query.ShipFor.HasValue)
+            {
+                q = q.Where(x => x.ShipDate == query.ShipFor.Value);
+            }
             // var q1 = q.ToList().Count();
             //  var q2 = anotherq.ToList().Count();
             return q;
