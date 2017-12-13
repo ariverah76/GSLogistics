@@ -64,6 +64,10 @@
       <Project>{23a77c79-28de-4b99-a56a-4069eb6d1548}</Project>
       <Name>GSLogistics.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GSLogisitics.Website.Admin.Models\GSLogistics.Website.Admin.Models.csproj">
+      <Project>{D44145FE-6E91-4DD4-8A22-78A78CC3D0C8}</Project>
+      <Name>GSLogistics.Website.Admin.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GSLogistics.Logic.Interface\GSLogistics.Logic.Interface.csproj">
       <Project>{D7CCE6EE-8C18-4D86-A449-4D90401F632F}</Project>
       <Name>GSLogistics.Logic.Interface</Name>

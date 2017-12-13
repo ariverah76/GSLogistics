@@ -75,6 +75,12 @@ namespace GSLogistics.Website.Admin.Models
 
         public string Status { get; set; }
         public string Notes { get; set; }
+        public int? ReScheduleCount { get; set; }
+
+        public bool ComeFromReSchedule
+        {
+            get { return ReScheduleCount.HasValue; }
+        }
 
 
     }

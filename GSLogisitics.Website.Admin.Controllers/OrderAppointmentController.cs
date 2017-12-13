@@ -417,11 +417,15 @@ namespace GSLogistics.Website.Admin.Controllers
                     sb.AppendLine($"Order has missing info. Purchase Order: {order.PurchaseOrderId}, PickTicket: {order.PickTicketId} Customer: {order.CustomerId} Division: {order.DivisionId}");
                 }
             }
+            List<Model.OrderAppointment> orders = new List<Model.OrderAppointment>();
+
             if (sb.Length == 0)
             {
                 using (var ol = Kernel.Get<IOrderAppointmentLogic>())
                 using (var apptLogic = ol.GetLogic<IAppointmentLogic>())
                 {
+
+                   
 
                     foreach (var order in model.Orders)
                     {
@@ -459,26 +463,26 @@ namespace GSLogistics.Website.Admin.Controllers
                             Notes = model.Notes,
                             Status = 1
                         };
-                        string result = string.Empty;
+                        orders.Add(oappt);
+                   
 
-                        try
-                        {
+                    }
+                    string result = string.Empty;
+                    try
+                    {
 
-                            result = await apptLogic.SetAppointment(appointment, oappt);
-                        }
-                        catch
-                        {
-                            
-                            //return new HttpStatusCodeResult(HttpStatusCode.ExpectationFailed, result);
+                        result = await apptLogic.SetAppointment(model,orders.ToArray(), User.Identity.Name);
+                    }
+                    catch
+                    {
 
-                        }
+                        //return new HttpStatusCodeResult(HttpStatusCode.ExpectationFailed, result);
 
-                        if (!string.IsNullOrEmpty(result))
-                        {
-                            sb.AppendLine($"Order: {order.PickTicketId} Purchase Order: {order.PurchaseOrderId}, got the follow error: {result}");
-                        }
+                    }
 
-
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        sb.AppendLine($"The attempt of appointment got the follow error: {result}");
                     }
                 }
             }
@@ -789,7 +793,8 @@ namespace GSLogistics.Website.Admin.Controllers
                         DriverName = appt.DriverName,
                         DriverId = appt.DriverId,
                         Pallets = appt.Pallets,
-                        Status = appt.Status
+                        Status = appt.Status,
+                        ReScheduleCount = appt.RescheduleCount
                     };
 
                     var orderAppt = orderAppts.Where(x => x.CustomerId == thisAppointment.CustomerId && x.PickTicketId == thisAppointment.PickTicket).FirstOrDefault();
@@ -805,6 +810,7 @@ namespace GSLogistics.Website.Admin.Controllers
                         thisAppointment.ExternalBol = orderAppt.ExternalBol;
                         thisAppointment.MasterBillOfLading = orderAppt.MasterBillOfLading;
                         thisAppointment.Notes = orderAppt.Notes;
+                        
 
                         //remove this after tests 
                         //if (orderAppt.BillOfLading == "06799500002077790" || orderAppt.BillOfLading == "06799500002077806" || orderAppt.BillOfLading == "06799500002077820")
@@ -989,7 +995,12 @@ namespace GSLogistics.Website.Admin.Controllers
 
             return fName;
         }
-
+        /// <summary>
+        /// Set a BOL as 'Reschedule  from Log Report
+        /// </summary>
+        /// <param name="bol">bol string</param>
+        /// <param name="appointmentnumber">appt #</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult> RescheduleBol(string bol, string appointmentnumber)
         {
@@ -1511,7 +1522,11 @@ namespace GSLogistics.Website.Admin.Controllers
 
             return thisAppointment;
         }
-
+        /// <summary>
+        /// Save the BOL as reschedule once is selected from reschedule view
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult> RescheduleBillOfLading(NewReschedule_ViewModel model)
         {

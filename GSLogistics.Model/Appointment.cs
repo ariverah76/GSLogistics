@@ -31,7 +31,7 @@ namespace GSLogistics.Model
         public string BillOfLading { get; set; }
 
         public DateTime? ReScheduleDate { get; set; }
-        public bool IsReSchedule { get; set; }
+        public bool? IsReSchedule { get; set; }
         public int? Pallets { get; set; }
         public short? TruckId { get; set; }
         public short? DriverId { get; set; }
@@ -39,5 +39,7 @@ namespace GSLogistics.Model
         public string DriverName { get; set; }
 
         public string MasterBillOfLading { get; set; }
+
+        public int? RescheduleCount { get; set; }
     }
 }

@@ -78,6 +78,9 @@ namespace GSLogistics.Entities
         [Column("DriverNo", Order =19)]
         public short? DriverId { get; set; }
 
+        [Column("RescheduleCount", Order = 20)]
+        public int? RescheduleCount { get; set; }
+
         [ForeignKey("TruckId")]
         public virtual Truck Truck { get; set; }
         [ForeignKey("DriverId")]

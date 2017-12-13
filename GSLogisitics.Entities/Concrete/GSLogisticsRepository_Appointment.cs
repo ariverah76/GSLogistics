@@ -1,4 +1,5 @@
 ﻿using GSLogistics.Model.Query;
+using GSLogistics.Website.Admin.Models.OrderAppointments;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -22,7 +23,7 @@ namespace GSLogistics.Entities.Concrete
                          join division in context.CustomerDivisions on a.DivisionId equals division.DivisionId
                          into y
                          from z in y.DefaultIfEmpty()
-                         select new { a.PickTicketId, a.Pallets, a.IsReSchedule, a.Posted, a.AppointmentNumber, a.CustomerId,a.DivisionId, a.UserName, a.PtBulk, a.DeliveryTypeId, a.DateAdd,  a.ReScheduleDate, a.ScacCode, a.ShippingTimeLimit, a.ShipTime, a.Status, a.Transferred, ShipDate = orders.ShipFor, DivisionName = z != null? z.Description : string.Empty, DivisionNameId = z != null ? z.NameId : string.Empty, Customer = customer, a.CatScacCode, a.DriverId, a.TruckId, a.Driver, a.Truck, BillOfLading = orders.BillOfLading, PurchaseOrder = orders.PurchaseOrderId, MasterBillOfLading = orders.MasterBillOfLading});
+                         select new { a.PickTicketId, a.Pallets, a.IsReSchedule, a.Posted, a.AppointmentNumber, a.CustomerId,a.DivisionId, a.UserName, a.PtBulk, a.DeliveryTypeId, a.DateAdd,  a.ReScheduleDate, a.ScacCode, a.ShippingTimeLimit, a.ShipTime, a.Status, a.Transferred, ShipDate = orders.ShipFor, DivisionName = z != null? z.Description : string.Empty, DivisionNameId = z != null ? z.NameId : string.Empty, Customer = customer, a.CatScacCode, a.DriverId, a.TruckId, a.Driver, a.Truck, BillOfLading = orders.BillOfLading, PurchaseOrder = orders.PurchaseOrderId, MasterBillOfLading = orders.MasterBillOfLading, RescheduleCount = a.RescheduleCount});
 
 
 
@@ -178,7 +179,8 @@ namespace GSLogistics.Entities.Concrete
                 DriverId = x.DriverId,
                 DriverName = x.Driver?.Name,
                 TruckId = x.TruckId,
-                TruckDescription = x.Truck?.Description
+                TruckDescription = x.Truck?.Description,
+                RescheduleCount = x.RescheduleCount
 
 
 
@@ -222,7 +224,9 @@ namespace GSLogistics.Entities.Concrete
                 DriverId = x.DriverId,
                 DriverName  =  x.Driver != null ? $"{x.Driver.Name} {x.Driver.SurName}" : null,
                 TruckId = x.TruckId,
-                TruckDescription = x.Truck?.Description
+                TruckDescription = x.Truck?.Description,
+                RescheduleCount = x.RescheduleCount
+
             });
 
             return result.ToList();
@@ -267,6 +271,128 @@ namespace GSLogistics.Entities.Concrete
             }
 
 
+        }
+
+
+        public async Task<string> SetAppointment(NewAppointment_ViewModel newAppointmentModel, Model.OrderAppointment[] orders, string userName)
+        {
+            using (System.Data.Entity.DbContextTransaction dbTran = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    foreach (var order in orders)
+                    {
+
+                        Model.Appointment appointmentModel = new Model.Appointment();
+                        appointmentModel.CustomerId = order.CustomerId;
+                        appointmentModel.PickTicket = order.PickTicketId;
+                        appointmentModel.DivisionId = order.DivisionId == 0 ? default(int?) : order.DivisionId;
+
+                        appointmentModel.ScacCode = newAppointmentModel.ScacCode;
+                        appointmentModel.ShippingDate = newAppointmentModel.ShippingDate;
+                        appointmentModel.ShippingTime = new DateTime(newAppointmentModel.ShippingDate.Year, newAppointmentModel.ShippingDate.Month, newAppointmentModel.ShippingDate.Day, newAppointmentModel.ShippingTime.Hour, newAppointmentModel.ShippingTime.Minute, 0);
+                        appointmentModel.AppointmentNumber = newAppointmentModel.AppointmentNumber;
+                        appointmentModel.DeliveryTypeId = newAppointmentModel.DeliveryTypeId;
+                        appointmentModel.UserName = userName;
+                        appointmentModel.Pallets = newAppointmentModel.Pallets;
+                        appointmentModel.DriverId = newAppointmentModel.DriverId;
+                        appointmentModel.TruckId = newAppointmentModel.TruckId;
+
+                        if (newAppointmentModel.ShippingTimeLimit.HasValue)
+                        {
+                            appointmentModel.ShippingTimeLimit = new DateTime(newAppointmentModel.ShippingDate.Year, newAppointmentModel.ShippingDate.Month, newAppointmentModel.ShippingDate.Day, newAppointmentModel.ShippingTimeLimit.Value.Hour, newAppointmentModel.ShippingTimeLimit.Value.Minute, 0);
+                        }
+
+                        appointmentModel.PtBulk = order.PtBulk;
+
+
+                        Model.OrderAppointment oappt = new Model.OrderAppointment()
+                        {
+                            PurchaseOrderId = order.PurchaseOrderId,
+                            PickTicketId = order.PickTicketId,
+                            PtBulk = order.PtBulk,
+                            CustomerId = order.CustomerId,
+                            ShipFor = newAppointmentModel.ShippingDate,
+                            Notes = newAppointmentModel.Notes,
+                            Status = 1
+                        };
+
+                        var existingAppt = context.Appointments.Where(x => x.CustomerId == appointmentModel.CustomerId && x.PickTicketId == appointmentModel.PickTicket).FirstOrDefault();
+
+                        if (existingAppt != null)
+                        {
+                            if (existingAppt.Status == "D")
+                            {
+                                // update the existing one, could be a previous cancelation
+                                context.Appointments.Remove(existingAppt);
+                            }
+                            else
+                            {
+                                throw new ArgumentException($"Order with picticket {appointmentModel.PickTicket} for client {appointmentModel.CustomerId} already have an appointment {appointmentModel.AppointmentNumber}");
+                            }
+                        }
+
+
+                        Entities.Appointment appointment = new Entities.Appointment();
+                        appointment.CustomerId = appointmentModel.CustomerId;
+                        appointment.DateAdd = DateTime.Now;
+                        appointment.PickTicketId = appointmentModel.PickTicket;
+                        appointment.DivisionId = appointmentModel.DivisionId;
+
+                        appointment.ScacCode = newAppointmentModel.ScacCode;
+                        // appointment.ShipDate = appointmentModel.ShippingDate.Value;
+                        appointment.ShipTime = new DateTime(appointmentModel.ShippingDate.Value.Year, appointmentModel.ShippingDate.Value.Month, appointmentModel.ShippingDate.Value.Day, appointmentModel.ShippingTime.Value.Hour, appointmentModel.ShippingTime.Value.Minute, 0);
+                        appointment.AppointmentNumber = appointmentModel.AppointmentNumber;
+                        appointment.DeliveryTypeId = appointmentModel.DeliveryTypeId.Value;
+                        appointment.UserName = userName;
+                        appointment.Pallets = appointmentModel.Pallets;
+                        appointment.DriverId = appointmentModel.DriverId;
+                        appointment.TruckId = appointmentModel.TruckId;
+
+                        if (newAppointmentModel.ShippingTimeLimit.HasValue)
+                        {
+                            appointment.ShippingTimeLimit = new DateTime(appointmentModel.ShippingDate.Value.Year, appointmentModel.ShippingDate.Value.Month, appointmentModel.ShippingDate.Value.Day, appointmentModel.ShippingTimeLimit.Value.Hour, appointmentModel.ShippingTimeLimit.Value.Minute, 0);
+                        }
+
+                        appointment.PtBulk = string.Empty;
+                        if (!string.IsNullOrEmpty(appointmentModel.PtBulk))
+                        {
+                            appointment.PtBulk = appointmentModel.PtBulk;
+                            appointment.PickTicketId = appointmentModel.PtBulk;
+                        }
+
+                        context.Appointments.Add(appointment);
+
+
+                        var ptBulk = string.IsNullOrEmpty(appointmentModel.PtBulk) ? "" : appointmentModel.PtBulk;
+
+
+                        var entity = await context.OrderAppointments.Where(x => x.PurchaseOrderId == order.PurchaseOrderId && x.PickTicketId == order.PickTicketId && x.CustomerId == order.CustomerId && x.PtBulk == ptBulk).FirstOrDefaultAsync();
+
+                        if (entity != null)
+                        {
+
+                            entity.Status = 1;
+                            entity.ShipFor = appointmentModel.ShippingDate.Value;
+                            entity.Notes = !string.IsNullOrEmpty(entity.Notes) ? $"{entity.Notes} / {order.Notes}" : order.Notes;
+                        }
+
+                        await context.SaveChangesAsync();
+
+                    }
+                    
+
+                    dbTran.Commit();
+
+                    return null;
+                }
+                catch (Exception exc)
+                {
+                    dbTran.Rollback();
+
+                    return $"{exc.Message} : { exc.InnerException?.Message} ";
+                }
+            }
         }
 
         public async Task<string> SetAppointment(Model.Appointment appointmentModel, Model.OrderAppointment order)
@@ -454,7 +580,11 @@ namespace GSLogistics.Entities.Concrete
                         entity.Status = appointment.Status;
                     }
 
-                    entity.IsReSchedule = appointment.IsReSchedule;
+                    if (appointment.IsReSchedule.HasValue)
+                    {
+                        entity.IsReSchedule = appointment.IsReSchedule.Value;
+                        entity.RescheduleCount = entity.RescheduleCount.HasValue ? entity.RescheduleCount + 1 : 1;
+                    }
 
 
                     var result =  await context.SaveChangesAsync();

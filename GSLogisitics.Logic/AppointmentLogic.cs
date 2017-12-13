@@ -1,6 +1,7 @@
 ﻿using GSLogistics.Logic.Interface;
 using GSLogistics.Model;
 using GSLogistics.Model.Query;
+using GSLogistics.Website.Admin.Models.OrderAppointments;
 using Ninject;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,12 @@ namespace GSLogistics.Logic
         public async Task<string> SetAppointment(Appointment appointment, OrderAppointment order)
         {
             return await Repository.SetAppointment(appointment, order);
+        }
+
+        public async Task<string> SetAppointment(NewAppointment_ViewModel newAppointmentModel, OrderAppointment[] orders, string userName)
+        {
+            return await Repository.SetAppointment(newAppointmentModel, orders, userName);
+           // Task<string> SetAppointment(NewAppointment_ViewModel newAppointmentModel, OrderAppointment[] orders, string userName)
         }
     }
 }

@@ -53,6 +53,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GSLogisitics.Website.Admin.Models\GSLogistics.Website.Admin.Models.csproj">
+      <Project>{D44145FE-6E91-4DD4-8A22-78A78CC3D0C8}</Project>
+      <Name>GSLogistics.Website.Admin.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GSLogistics.Model.Query\GSLogistics.Model.Query.csproj">
       <Project>{64DDDA9B-D0B0-467A-86A9-5E398A1C6330}</Project>
       <Name>GSLogistics.Model.Query</Name>
