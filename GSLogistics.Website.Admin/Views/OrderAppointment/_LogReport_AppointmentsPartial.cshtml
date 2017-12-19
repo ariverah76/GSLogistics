@@ -356,16 +356,17 @@
                         if (val['pathPOD'].length == 0 && childPOD.search("checked") < 0) { // We put the Reschedule Button instead
                             if (isAdmin == true){
                                 textHeader = textHeader.replace("{button}", textButton);
-                                textHeader = textHeader.replace("{sentButton}", "");
+                                textHeader = textHeader.replace("{sentButton}", textMarkAsSentButton);
+                               // textHeader = textHeader.replace("{sentButton}", "");
+                            }
+                            if (isShipping == true){
+                                    textHeader = textHeader.replace("{sentButton}", textMarkAsSentButton);
+                                    textHeader = textHeader.replace("{button}", "");
                             }
                             else {
                                 textHeader = textHeader.replace("{button}", "");
-                                // TODO: Create a new role for shipping people and add sent button if applies
-                                if (isShipping == true){
-                                    textHeader = textHeader.replace("{sentButton}", textMarkAsSentButton);
-                                }
-
-                                
+                                textHeader = textHeader.replace("{sentButton}", "")
+                               
                             }
 
                         }
@@ -501,7 +502,7 @@
             },
             "createdRow": function (row, data, dataIndex) {
 
-                var btn = $(":nth-child(14)", row).children().eq(0);
+                var btn = $(":nth-child(15)", row).children().eq(0);
                 if (data['ExternalBol'].search("checked") > 0) {
                     btn.removeClass("btn-danger").addClass("btn-warning");
                 }
