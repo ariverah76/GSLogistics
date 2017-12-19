@@ -45,7 +45,8 @@ namespace GSLogistics.Website.Admin.Models
         [Display(Name = "Ship For")]
         public DateTime? ShipFor { get; set; }
 
-        public bool EnableShipForFilter { get; set; }
+        public bool EnableShipForFilterOrders { get; set; }
+        public bool EnableShipForFilterAppointment { get; set; }
         [Display(Name = "Ship For")]
         public DateTime? ShipForAppt { get; set; }
 

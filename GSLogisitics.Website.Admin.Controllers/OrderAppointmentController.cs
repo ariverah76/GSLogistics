@@ -69,7 +69,9 @@ namespace GSLogistics.Website.Admin.Controllers
         public async  Task<ActionResult> List()
         {
             var model = new OrderAppointmentsIndex_ViewModel();
-          
+
+            model.EnableShipForFilterAppointment = true;
+            model.ShipForAppt = DateTime.Today.AddDays(1);
 
             return await this.List(model);
 

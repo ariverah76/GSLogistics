@@ -319,6 +319,8 @@ namespace GSLogistics.Reporting.Reports {
             
             private global::System.Data.DataColumn columnDivisionNameId;
             
+            private global::System.Data.DataColumn columnNotes;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public DataTable1DataTable() {
@@ -514,6 +516,14 @@ namespace GSLogistics.Reporting.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn NotesColumn {
+                get {
+                    return this.columnNotes;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -569,7 +579,8 @@ namespace GSLogistics.Reporting.Reports {
                         int BoxesNumber, 
                         string ShipTo, 
                         string BillOfLading, 
-                        string DivisionNameId) {
+                        string DivisionNameId, 
+                        string Notes) {
                 DataTable1Row rowDataTable1Row = ((DataTable1Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         CustomerId,
@@ -591,7 +602,8 @@ namespace GSLogistics.Reporting.Reports {
                         BoxesNumber,
                         ShipTo,
                         BillOfLading,
-                        DivisionNameId};
+                        DivisionNameId,
+                        Notes};
                 rowDataTable1Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowDataTable1Row);
                 return rowDataTable1Row;
@@ -634,6 +646,7 @@ namespace GSLogistics.Reporting.Reports {
                 this.columnShipTo = base.Columns["ShipTo"];
                 this.columnBillOfLading = base.Columns["BillOfLading"];
                 this.columnDivisionNameId = base.Columns["DivisionNameId"];
+                this.columnNotes = base.Columns["Notes"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -679,6 +692,8 @@ namespace GSLogistics.Reporting.Reports {
                 base.Columns.Add(this.columnBillOfLading);
                 this.columnDivisionNameId = new global::System.Data.DataColumn("DivisionNameId", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDivisionNameId);
+                this.columnNotes = new global::System.Data.DataColumn("Notes", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnNotes);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1141,6 +1156,22 @@ namespace GSLogistics.Reporting.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Notes {
+                get {
+                    try {
+                        return ((string)(this[this.tableDataTable1.NotesColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Notes\' in table \'DataTable1\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableDataTable1.NotesColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsCustomerIdNull() {
                 return this.IsNull(this.tableDataTable1.CustomerIdColumn);
             }
@@ -1377,6 +1408,18 @@ namespace GSLogistics.Reporting.Reports {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetDivisionNameIdNull() {
                 this[this.tableDataTable1.DivisionNameIdColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsNotesNull() {
+                return this.IsNull(this.tableDataTable1.NotesColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetNotesNull() {
+                this[this.tableDataTable1.NotesColumn] = global::System.Convert.DBNull;
             }
         }
         

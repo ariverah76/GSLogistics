@@ -484,7 +484,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>="Bill of Lading: " + Fields!BillOfLading.Value + "    Appointment #: " + Fields!AppointmentNo.Value + "   Total Orders :" + CStr(Count(Fields!BillOfLading.Value, "BillOfLading", Simple))</Value>
+                              <Value>="Bill of Lading: " + Fields!BillOfLading.Value + "    Appointment #: " + Fields!AppointmentNo.Value + "   Total Orders :" + CStr(Count(Fields!BillOfLading.Value, "BillOfLading", Simple))  &amp; vbCrLf &amp;  "Shipping Dpt Instructions:" &amp; Fields!Notes.Value</Value>
                               <Style>
                                 <FontSize>7pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
@@ -1758,7 +1758,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>="Bill of Lading: " + Fields!BillOfLading.Value + "    Appointment #: " + Fields!AppointmentNo.Value + "   Total Orders :" + CStr(Count(Fields!AppointmentNo.Value, "BillOfLading1", Simple))</Value>
+                              <Value>="Bill of Lading: " + Fields!BillOfLading.Value + "    Appointment #: " + Fields!AppointmentNo.Value + "   Total Orders :" + CStr(Count(Fields!AppointmentNo.Value, "BillOfLading1", Simple)) &amp; vbCrLf &amp;  "Shipping Dpt Instructions:" &amp; Fields!Notes.Value</Value>
                               <Style>
                                 <FontSize>7pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
@@ -1782,6 +1782,7 @@
                       </Style>
                     </Textbox>
                     <ColSpan>10</ColSpan>
+                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell />
@@ -2787,6 +2788,10 @@
         </Field>
         <Field Name="DivisionNameId">
           <DataField>DivisionNameId</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Notes">
+          <DataField>Notes</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
